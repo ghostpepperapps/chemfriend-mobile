@@ -4,7 +4,7 @@ import 'compound_unit.dart';
 import 'compound.dart';
 
 void main() {
-	Equation f = Equation('H2O(l) + BaO(s)');
+	Equation f = Equation('H2O(l)');
 	f.solve();
 	print('Reaction Type: ${typeToString[f.type]}');
 	print(f.toString());
@@ -92,9 +92,8 @@ class Equation {
 				break;
 			case Type.compBase: // No balancing required
 				List<int> counts = [1, 1, 1];
-				for(int i = 0; i < counts.length - 1; i++) {
-
-				}
+				this.reactants[0].number = reactants[1].compound.compoundUnits.values.toList()[1];
+				this.products[0].number = reactants[1].compound.compoundUnits.values.toList()[0];
 				break;
 			case Type.compSalt:
 			// TODO: Handle this case.
@@ -168,17 +167,21 @@ class Equation {
 				return [EquationUnit.fromCompound(Compound.fromUnits({
 					CompoundUnit.fromElement(Element.from('H')): 2,
 					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): 1,
-					CompoundUnit.fromElement(Element.from('O')): reactants[1].compound.compoundUnits.values.toList()[0] + 1,
+					CompoundUnit.fromElement(Element.from('O')): reactants[1].compound.compoundUnits.values.toList()[1] + 1,
 				}), 1)];
 		    break;
 		  case Type.compBase:
 				return [EquationUnit.fromCompound(Compound.fromUnits({
 					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): 1,
-					CompoundUnit.fromCompound(Compound('OH')): reactants[1].compound.compoundUnits.values.toList()[0] + 1,
+					CompoundUnit.fromCompound(Compound('OH')): reactants[1].compound.compoundUnits.keys.toList()[0].element.charge,
 				}), 1)];
 		    break;
 		  case Type.compSalt:
-		    // TODO: Handle this case.
+				return [EquationUnit.fromCompound(Compound.fromUnits({
+					CompoundUnit.fromElement(reactants[0].compound.compoundUnits.keys.toList()[0].element): reactants[0].compound.compoundUnits.values.toList()[0],
+					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): reactants[1].compound.compoundUnits.values.toList()[0],
+					CompoundUnit.fromElement(Element.from('O')): reactants[0].compound.compoundUnits.values.toList()[1] + reactants[1].compound.compoundUnits.values.toList()[1],
+				}), 1)];
 		    break;
 		  case Type.decomp:
 		    // TODO: Handle this case.
@@ -206,6 +209,23 @@ class Equation {
 	}
 	
 	static Type getType(List<EquationUnit> reactants) {
+		if(reactants.length == 1) {
+			if(reactants[0].compound == null) return null;
+			if(reactants[0].compound.compoundUnits.keys.length == 2) return Type.decomp;
+				if(reactants[0].compound.compoundUnits.keys.toList()[0].element.equals('H')) {
+					if(reactants[0].compound.compoundUnits.keys.toList()[2].element.equals('O')) {
+						if(!reactants[0].compound.compoundUnits.keys.toList()[1].element.metal) return Type.decompAcid;
+						return Type.decompBase;
+					}
+				}
+				else if(reactants[0].compound.compoundUnits.keys.toList()[0].element.metal) {
+					if(!reactants[0].compound.compoundUnits.keys.toList()[1].element.metal) {
+						if(reactants[0].compound.compoundUnits.keys.toList()[2].element.equals('O')) {
+							return Type.decompSalt;
+						}
+					}
+				}
+		}
 		if(reactants[0].element != null && reactants[1].element != null) return Type.comp;
 		else if(reactants[0].compound != null && reactants[1].compound != null) {
 			if(reactants[0].compound.formula.compareTo('H2O(l)') == 0) {
@@ -213,6 +233,9 @@ class Equation {
 					if(!reactants[1].compound.compoundUnits.keys.toList()[0].element.metal) return Type.compAcid;
 					return Type.compBase;
 				}
+			}
+			else if(reactants[0].compound.compoundUnits.keys.toList()[1].element.equals('O') && reactants[1].compound.compoundUnits.keys.toList()[1].element.equals('O')) {
+				return Type.compSalt;
 			}
 		}
 		return null;
