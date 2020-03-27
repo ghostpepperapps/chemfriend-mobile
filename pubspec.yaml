@@ -20,8 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  flutter_opencv: ^0.0.3
   periodic_table: ^0.1.2
+  image_picker: ^0.6.3+4
+  image_cropper: ^1.2.1
+  image_crop: ^0.3.2
+  firebase_ml_vision: ^0.9.3+8
+  fluttertoast: ^4.0.1
 
 dev_dependencies:
   flutter_test:

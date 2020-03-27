@@ -1,6 +1,6 @@
-import 'dart:convert';
-
 import 'package:periodic_table/periodic_table.dart' as PT;
+import 'compound_unit.dart';
+import 'equation_unit.dart';
 
 Map<String, List<String>> changeScript = {
 	'0'        : ['\u2070',   '\u2080'      ],
@@ -27,38 +27,41 @@ Map<PT.MatterPhase, String> stateToString = {
 	PT.MatterPhase.gas:    '\u208D\u1d67\u208E',
 };
 
-class Element extends PT.ChemicalElement {
+class Element extends PT.ChemicalElement with CompoundUnit, EquationUnit {
 	bool metal;
 	int charge;
 	int count;
 	Element(
-			String name, String symbol, String category, String appearance,
+			String name, String formula, String category, String appearance,
 			PT.MatterPhase stpPhase, int number, period, int row, column, List<int> shells,
 			num atomicMass, num molecularDensity, num heatCapacity, num meltingPoint, num boilingPoint): super(
-			name: name, symbol: symbol, category: category, appearance: appearance,
+			name: name, symbol: formula, category: category, appearance: appearance,
 			stpPhase: stpPhase, number: number, period: period, row: row, column: column, shells: shells,
 			atomicMass: atomicMass, molecularDensity: molecularDensity, heatCapacity: heatCapacity, meltingPoint: meltingPoint, boilingPoint: boilingPoint
 	);
-	bool equals(String s) {
-		return this.symbol.compareTo(s) == 0;
-	}
+	
 	@override
 	String toString() {
-		String result = this.symbol;
+		String result = this.formula;
 		if(this.count != 1) result += changeScript[this.count.toString()][1];
 		result += stateToString[this.stpPhase];
 		return result;
 	}
+	@override
+	bool equals(String s) {
+		return this.formula.compareTo(s) == 0;
+	}
+
 	static Element clone(PT.ChemicalElement e) {
 		return new Element(
 				e.name, e.symbol, e.category, e.appearance,
 				e.stpPhase, e.number, e.period, e.row, e.column, e.shells,
 				e.atomicMass, e.molecularDensity, e.heatCapacity, e.meltingPoint, e.boilingPoint);
 	}
-	static Element from(String symbol, [int _charge = 0]) {
+	static Element from(String formula, [int _charge = 0]) {
 		Element result;
 		for(PT.ChemicalElement e in PT.periodicTable) {
-			if(e.symbol.compareTo(symbol) == 0) {
+			if(e.symbol.compareTo(formula) == 0) {
 				result = clone(e);
 				break;
 			}
@@ -66,8 +69,8 @@ class Element extends PT.ChemicalElement {
 		if(result.category.contains('metal')) result.metal = !(result.category.contains('nonmetal'));
 		else result.metal = false;
 		if(result.category.contains('diatomic')) result.count = 2;
-		else if(result.symbol.compareTo('P') == 0) result.count = 4;
-		else if(result.symbol.compareTo('S') == 0) result.count = 8;
+		else if(result.formula.compareTo('P') == 0) result.count = 4;
+		else if(result.formula.compareTo('S') == 0) result.count = 8;
 		else result.count = 1;
 		if(result.equals('H')) result.charge = 1;
 		else if(result.category.compareTo('transition metal') != 0) {
@@ -78,9 +81,9 @@ class Element extends PT.ChemicalElement {
 		else result.charge = _charge;
 		return result;
 	}
-	static bool isElement(String symbol) {
+	static bool exists(String formula) {
 		for(PT.ChemicalElement e in PT.periodicTable) {
-			if(e.symbol.compareTo(symbol) == 0) return true;
+			if(e.symbol.compareTo(formula) == 0) return true;
 		}
 		return false;
 	}

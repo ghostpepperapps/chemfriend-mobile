@@ -1,21 +1,21 @@
 import 'element.dart';
 import 'compound.dart';
+import 'compound_unit.dart';
 
-class EquationUnit {
-	Element element;
-	Compound compound;
+abstract class EquationUnit {
+  String formula;
+  String category;
+  String name;
+  bool metal;
+  int count;
+  int charge;
+  List<int> shells;
+  Map<CompoundUnit, int> compoundUnits;
+
+  CompoundUnit compoundUnit;
 	int number;
-	EquationUnit.fromElement(Element e, [int number]) {
-		this.number = number;
-		this.element = e;
-	}
-	EquationUnit.fromCompound(Compound c, [int number]) {
-		this.number = number;
-		this.compound = c;
-	}
-	@override
-	String toString() {
-		if(this.element != null) return this.element.toString();
-		return this.compound.toString();
-	}
+
+  bool equals(String s);
+  bool isElement() { return this.runtimeType == Element; }
+  bool isCompound() { return this.runtimeType == Compound; }
 }

@@ -3,33 +3,31 @@ import 'element.dart';
 import 'compound.dart';
 import 'common_ions.dart' as CI;
 
-class CompoundUnit {
-	Element element;
-	Compound compound;
-	CompoundUnit.fromElement(Element e) {
-		this.element = e;
-	}
-	CompoundUnit.fromCompound(Compound c) {
-		this.compound = c;
-	}
+abstract class CompoundUnit {
+  String formula;
+  String category;
+  String name;
+  bool metal;
+  int count;
+  int charge;
+  List<int> shells;
+  Map<CompoundUnit, int> compoundUnits;
 
+  bool equals(String s);
+  bool isElement() { return this.runtimeType == Element; }
+  bool isCompound() { return this.runtimeType == Compound; }
 	int getCharge() {
-		if(this.element == null) {
+		if(this.isCompound()) {
 			for(Compound c in CI.polyatomicIons) {
-				if(c.formula.compareTo(this.compound.formula) == 0) return c.charge;
+				if(this.equals(c.formula)) return c.charge;
 			}
 		}
-		if(this.element.equals('H')) return 1;
-		if(this.element.category.compareTo('transition metal') != 0) {
-			int valence = this.element.shells[this.element.shells.length - 1];
+		if(this.equals('H')) return 1;
+		if(this.isElement() && this.category.compareTo('transition metal') != 0) {
+			int valence = this.shells[this.shells.length - 1];
 			if(valence < 5) return valence;
 			return valence - 8;
 		}
-		return this.element.charge;
-	}
-	@override
-	String toString() {
-		if(this.element != null) return this.element.toString();
-		return this.compound.toString();
+		return this.charge;
 	}
 }

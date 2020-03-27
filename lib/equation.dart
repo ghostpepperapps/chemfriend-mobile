@@ -4,9 +4,9 @@ import 'compound_unit.dart';
 import 'compound.dart';
 
 void main() {
-	Equation f = Equation('H2O(l)');
+	Equation f = Equation('Cl2(g) + GaF3(aq)');
+	print('Reaction Type: ${typeToString[Equation.getType(f.reactants)]}');
 	f.solve();
-	print('Reaction Type: ${typeToString[f.type]}');
 	print(f.toString());
 }
 
@@ -30,14 +30,14 @@ int gcd(int a, int b) {
 }
 
 class Equation {
-	List<EquationUnit> reactants;
-	List<EquationUnit> products;
+	List<MapEntry<EquationUnit, int>> reactants;
+	List<MapEntry<EquationUnit, int>> products;
 	bool inWater;
 	Type type;
 
 	Equation(String s) {
-		List<EquationUnit> reactants= [];
-		List<EquationUnit> products = [];
+		List<MapEntry<EquationUnit, int>> reactants;
+		List<MapEntry<EquationUnit, int>> products;
 		String reactantStr;
 		String productStr;
 		reactantStr = (s.contains('=>')) ? s.split(' => ')[0] : s;
@@ -45,21 +45,23 @@ class Equation {
 		for(String r in reactantStr.split(' + ')) {
 			int i = 0;
 			while(isNumeric(r[i])) i++;
-			int j = r.length;
+			bool hasState = r[r.length - 1].compareTo(')') == 0;
+			int j = (hasState) ? r.length - 3 : r.length;
 			while(isNumeric(r[j - 1])) j--;
 			int number = (i != 0) ? int.parse(r.substring(0, i)) : 1;
-			if(Element.isElement(r.substring(i, j))) reactants.add(EquationUnit.fromElement(Element.from(r.substring(i, j))));
-			else reactants.add(EquationUnit.fromCompound(Compound(r.substring(i)), number));
+			if(Element.exists(r.substring(i, j))) reactants.add({Element.from(r.substring(i, j)) :  1});
+			else reactants.add({Compound(r.substring(i)) : number});
 		}
 		if(productStr != null) {
 			for(String p in productStr.split(' + ')) {
 				int i = 0;
 				while(isNumeric(p[i])) i++;
-				int j = p.length - 1;
-				while(isNumeric(p[j])) j--;
+				bool hasState = p[p.length - 1].compareTo(')') == 0;
+				int j = (hasState) ? p.length - 3 : p.length;
+				while(isNumeric(p[j - 1])) j--;
 				int number = (i != 0) ? int.parse(p.substring(0, i)) : 1;
-				if(Element.isElement(p.substring(i, j))) products.add(EquationUnit.fromElement(Element.from(p.substring(i, j))));
-				else products.add(EquationUnit.fromCompound(Compound(p.substring(i)), number));
+				if(Element().exists(p.substring(i, j))) products.add({Element.from(p.substring(i, j)) : 1});
+				else products.add(MapEntry(Compound(p.substring(i)), number));
 			}
 		}
 		else products = null;
@@ -67,7 +69,7 @@ class Equation {
 		this.products = products;
 	}
 
-	Equation.fromUnits(List<EquationUnit> reactants, [List<EquationUnit> products]) {
+	Equation.fromUnits(Map<EquationUnit, int> reactants, [Map<EquationUnit, int> products]) {
 		this.reactants = reactants;
 		this.products = products;
 	}
@@ -75,43 +77,62 @@ class Equation {
 	void solve() {
 		type = getType(this.reactants);
 		this.products = (this.products == null) ? getProducts(reactants, type) : this.products;
+		// Balancing
 		switch(type) {
 			case Type.comp:
 				List<double> counts = [1, 1, 1];
 				bool halfElement = false;
 				for(int i = 0; i < counts.length - 1; i++) {
-					counts[i] = this.products[0].compound.compoundUnits.entries.toList()[i].value / this.reactants[i].element.count;
+					counts[i] = this.products[0].compoundUnits.entries.toList()[i].value / this.reactants[i].count;
 					if(counts[i] != counts[i].toInt()) halfElement = true;
 				}
 				if(halfElement) counts = counts.map((count) => count *= 2).toList();
 				for(int i = 0; i < this.reactants.length; i++) this.reactants[i].number = counts[i].toInt();
 				this.products[0].number = counts[counts.length - 1].toInt();
 				break;
-
 			case Type.compAcid: // No balancing required
 				break;
-			case Type.compBase: // No balancing required
-				List<int> counts = [1, 1, 1];
-				this.reactants[0].number = reactants[1].compound.compoundUnits.values.toList()[1];
-				this.products[0].number = reactants[1].compound.compoundUnits.values.toList()[0];
+			case Type.compBase:
+				this.reactants.keys.toList()[0].number = reactants.keys.toList()[1].compoundUnits.values.toList()[1];
+				this.products[0].number = reactants.keys.toList()[1].compoundUnits.values.toList()[0];
 				break;
-			case Type.compSalt:
-			// TODO: Handle this case.
+			case Type.compSalt: // No balancing required
 				break;
 			case Type.decomp:
-			// TODO: Handle this case.
+				List<double> counts = [1, 1, 1];
+				bool halfElement = false;
+				for(int i = 0; i < counts.length - 1; i++) {
+					counts[i] = this.reactants.keys.toList()[0].compoundUnits.entries.toList()[i].value / this.products[i].count;
+					if(counts[i] != counts[i].toInt()) halfElement = true;
+				}
+				if(halfElement) counts = counts.map((count) => count *= 2).toList();
+				for(int i = 0; i < this.products.length; i++) this.products[i].number = counts[i].toInt();
+				this.reactants.keys.toList()[0].number = counts[counts.length - 1].toInt();
 				break;
-			case Type.decompAcid:
-			// TODO: Handle this case.
+			case Type.decompAcid: // No balancing required
 				break;
 			case Type.decompBase:
-			// TODO: Handle this case.
+				this.reactants.keys.toList()[0].number = products[1].compoundUnits.values.toList()[0];
+				this.products[0].number = reactants.keys.toList()[0].number * reactants.keys.toList()[0].compoundUnits.values.toList()[1] ~/ 2;
 				break;
-			case Type.decompSalt:
-			// TODO: Handle this case.
+			case Type.decompSalt: // No balancing required
 				break;
 			case Type.combustion:
-			// TODO: Handle this case.
+				List<double> counts = [1, 1, 1, 1];
+				counts[3] = reactants.keys.toList()[0].compoundUnits.values.toList()[0].toDouble();
+				counts[2] = (reactants.keys.toList()[0].compoundUnits.values.toList()[1]) / 2;
+				counts[1] = (products[0].compoundUnits.values.toList()[1] * counts[2] +
+										products[1].compoundUnits.values.toList()[1] * counts[3]).toDouble();
+				if(reactants.keys.toList()[0].compoundUnits.keys.toList().length > 2)
+					counts[1] -= (reactants.keys.toList()[0].compoundUnits.values.toList()[2] * counts[0]);
+				counts[1] /= 2;
+				bool halfElement = false;
+				for(double c in counts) if(c != c.toInt()) halfElement = true;
+				if(halfElement) counts = counts.map((count) => count *= 2).toList();
+				reactants.keys.toList()[0].number = counts[0].toInt();
+				reactants.keys.toList()[1].number = counts[1].toInt();
+				products[0].number = counts[2].toInt();
+				products[1].number = counts[3].toInt();
 				break;
 			case Type.singleReplacement:
 			// TODO: Handle this case.
@@ -125,81 +146,108 @@ class Equation {
 	@override
 	String toString() {
 		String result = '';
-		for(int i = 0; i < this.reactants.length; i++) {
-			EquationUnit r = this.reactants[i];
-			if(r.number != 1) result += r.number.toString();
-			if(r.element != null) result += r.element.toString();
-			else result += r.compound.toString();
-			if(i < this.reactants.length - 1) result += ' + ';
-			else result += ' => ';
+		for(MapEntry<EquationUnit, int> r in this.reactants.entries) {
+			if(r.value != 1) result += r.value.toString();
+			result += r.key.toString();
+      result += ' + ';
 		}
-		for(int i = 0; i < this.products.length; i++) {
-			EquationUnit p = this.products[i];
-			if(p.number != 1) result += p.number.toString();
-			if(p.element != null) result += p.element.toString();
-			else result += p.compound.toString();
-			if(i < this.products.length - 1) result += ' + ';
+    result = result.substring(0, result.length - 3);
+		result += ' => ';
+		for(MapEntry<EquationUnit, int> p in this.products.entries) {
+			if(p.value != 1) result += p.value.toString();
+			result += p.key.toString();
+      result += ' + ';
 		}
+    result = result.substring(0, result.length - 3);
 		return result;
 	}
 
-	static List<EquationUnit> getProducts(List<EquationUnit> reactants, Type type) {
+	static Map<EquationUnit, int> getProducts(Map<EquationUnit, int> reactants, Type type) {
 		switch(type) {
 			case Type.comp:
 				bool ionic = false;
-				if(reactants[0].element.metal != reactants[1].element.metal) ionic = true;
+				if(reactants.keys.toList()[0].metal != reactants.keys.toList()[1].metal) ionic = true;
 				int count0;
 				int count1;
 				if(ionic) {
-					int lcmCharge = lcm(reactants[0].element.charge, reactants[1].element.charge).abs();
-					count0 = lcmCharge ~/ ((reactants[0].element.charge == 0) ? 1 : reactants[0].element.charge);
-					count1 = -lcmCharge ~/ ((reactants[1].element.charge == 0) ? 1 : reactants[1].element.charge);
+					int lcmCharge = lcm(reactants.keys.toList()[0].charge, reactants.keys.toList()[1].charge).abs();
+					count0 = lcmCharge ~/ ((reactants.keys.toList()[0].charge == 0) ? 1 : reactants.keys.toList()[0].charge);
+					count1 = -lcmCharge ~/ ((reactants.keys.toList()[1].charge == 0) ? 1 : reactants.keys.toList()[1].charge);
 				} else {
-					count0 = reactants[0].element.count;
-					count1 = reactants[0].element.count;
+					count0 = reactants.keys.toList()[0].count;
+					count1 = reactants.keys.toList()[0].count;
 				}
-				return [EquationUnit.fromCompound(Compound.fromUnits({
-					CompoundUnit.fromElement(reactants[0].element): count0,
-					CompoundUnit.fromElement(reactants[1].element): count1,
-				}))];
+				return {Compound.fromUnits({
+					reactants.keys.toList()[0]: count0,
+					reactants.keys.toList()[1]: count1,
+				}): 1};
 				break;
 		  case Type.compAcid:
-				return [EquationUnit.fromCompound(Compound.fromUnits({
-					CompoundUnit.fromElement(Element.from('H')): 2,
-					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): 1,
-					CompoundUnit.fromElement(Element.from('O')): reactants[1].compound.compoundUnits.values.toList()[1] + 1,
-				}), 1)];
+				return {Compound().fromUnits({
+					Element().from('H'): 2,
+					reactants.keys.toList()[1].compoundUnits.keys.toList()[0]: 1,
+					Element().from('O'): reactants.keys.toList()[1].compoundUnits.values.toList()[1] + 1,
+				}): 1};
 		    break;
 		  case Type.compBase:
-				return [EquationUnit.fromCompound(Compound.fromUnits({
-					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): 1,
-					CompoundUnit.fromCompound(Compound('OH')): reactants[1].compound.compoundUnits.keys.toList()[0].element.charge,
-				}), 1)];
+				return {Compound.fromUnits({
+					reactants.keys.toList()[1].compoundUnits.keys.toList()[0]): 1,
+					Compound('OH'): reactants.keys.toList()[1].compoundUnits.keys.toList()[0].charge,
+				}), 1)};
 		    break;
 		  case Type.compSalt:
-				return [EquationUnit.fromCompound(Compound.fromUnits({
-					CompoundUnit.fromElement(reactants[0].compound.compoundUnits.keys.toList()[0].element): reactants[0].compound.compoundUnits.values.toList()[0],
-					CompoundUnit.fromElement(reactants[1].compound.compoundUnits.keys.toList()[0].element): reactants[1].compound.compoundUnits.values.toList()[0],
-					CompoundUnit.fromElement(Element.from('O')): reactants[0].compound.compoundUnits.values.toList()[1] + reactants[1].compound.compoundUnits.values.toList()[1],
+				return [Compound.fromUnits({
+					reactants.keys.toList()[0].compoundUnits.keys.toList()[0]): reactants.keys.toList()[0].compoundUnits.values.toList()[0],
+					reactants.keys.toList()[1].compoundUnits.keys.toList()[0]): reactants.keys.toList()[1].compoundUnits.values.toList()[0],
+					Element.from('O')): reactants.keys.toList()[0].compoundUnits.values.toList()[1] + reactants.keys.toList()[1].compoundUnits.values.toList()[1],
 				}), 1)];
 		    break;
 		  case Type.decomp:
-		    // TODO: Handle this case.
+				return [reactants.keys.toList()[0].compoundUnits.keys.toList()[0]),
+								reactants.keys.toList()[0].compoundUnits.keys.toList()[1])];
 		    break;
 		  case Type.decompAcid:
-		    // TODO: Handle this case.
+				return [Compound('H2O(l)'), 1),
+								Compound.fromUnits({
+								reactants.keys.toList()[0].compoundUnits.keys.toList()[1]): reactants.keys.toList()[0].compoundUnits.values.toList()[1],
+								Element.from('O')): reactants.keys.toList()[0].compoundUnits.values.toList()[2] - 1,
+					}, State.gas), 1)];
 		    break;
 		  case Type.decompBase:
-		    // TODO: Handle this case.
-		    break;
+				int lcmCharge = lcm(reactants.keys.toList()[0].compoundUnits.keys.toList()[0].charge, 2);
+				return [Compound('H2O(l)'), 1),
+								Compound.fromUnits({
+								reactants.keys.toList()[0].compoundUnits.keys.toList()[0]): (-lcmCharge ~/ reactants.keys.toList()[0].compoundUnits.keys.toList()[0].charge).abs(),
+								Element.from('O')): lcmCharge.abs() ~/ 2,
+					}, State.gas), 1)];
+				break;
 		  case Type.decompSalt:
-		    // TODO: Handle this case.
+		  	Compound metalOxide = Compound.fromUnits({
+					reactants.keys.toList()[0].compoundUnits.keys.toList()[0]): reactants.keys.toList()[0].compoundUnits.values.toList()[0],
+					Element.from('O')): (reactants.keys.toList()[0].compoundUnits.values.toList()[0] * reactants.keys.toList()[0].compoundUnits.keys.toList()[0].charge) ~/ 2,
+				});
+				Compound nonmetalOxide = Compound.fromUnits({
+					reactants.keys.toList()[0].compoundUnits.keys.toList()[1]): reactants.keys.toList()[0].compoundUnits.values.toList()[1],
+					Element.from('O')): reactants.keys.toList()[0].compoundUnits.values.toList()[2] - metalOxideUnits.values.toList()[1],
+				});
+				return [metalOxide, 1), nonmetalOxide, 1)];
 		    break;
 		  case Type.combustion:
-		    // TODO: Handle this case.
+		    return [Compound('H2O(g)'), 1), Compound('CO2(g)'), 1)];
 		    break;
 		  case Type.singleReplacement:
-		    // TODO: Handle this case.
+		    if(reactants.keys.toList()[0].metal) return [
+		    	Compound.fromUnits({
+						reactants.keys.toList()[0]): reactants.keys.toList()[1].compoundUnits.values.toList()[0],
+						reactants.keys.toList()[1].compoundUnits.keys.toList()[1]): reactants.keys.toList()[1].compoundUnits.values.toList()[1]})),
+					reactants.keys.toList()[1].compoundUnits.keys.toList()[0]),
+				];
+		    else return [
+					reactants.keys.toList()[1].compoundUnits.keys.toList()[1]),
+					Compound.fromUnits({
+						reactants.keys.toList()[1].compoundUnits.keys.toList()[0]): reactants.keys.toList()[1].compoundUnits.values.toList()[0],
+						reactants.keys.toList()[0]): reactants.keys.toList()[1].compoundUnits.values.toList()[1]})),
+				];
 		    break;
 		  case Type.doubleReplacement:
 		    // TODO: Handle this case.
@@ -208,35 +256,46 @@ class Equation {
 		return null;
 	}
 	
-	static Type getType(List<EquationUnit> reactants) {
-		if(reactants.length == 1) {
-			if(reactants[0].compound == null) return null;
-			if(reactants[0].compound.compoundUnits.keys.length == 2) return Type.decomp;
-				if(reactants[0].compound.compoundUnits.keys.toList()[0].element.equals('H')) {
-					if(reactants[0].compound.compoundUnits.keys.toList()[2].element.equals('O')) {
-						if(!reactants[0].compound.compoundUnits.keys.toList()[1].element.metal) return Type.decompAcid;
-						return Type.decompBase;
+	static Type getType(Map<EquationUnit, int> reactants) {
+		if(reactants.length == 1) { // Decomposition
+			if(reactants.keys.toList()[0].isElement()) return null;
+				if(reactants.keys.toList()[0].compoundUnits.keys.toList()[0].equals('H')) {
+					if(reactants.keys.toList()[0].compoundUnits.keys.toList()[2].equals('O')) {
+						if(!reactants.keys.toList()[0].compoundUnits.keys.toList()[1].metal) return Type.decompAcid;
 					}
 				}
-				else if(reactants[0].compound.compoundUnits.keys.toList()[0].element.metal) {
-					if(!reactants[0].compound.compoundUnits.keys.toList()[1].element.metal) {
-						if(reactants[0].compound.compoundUnits.keys.toList()[2].element.equals('O')) {
+				else if(reactants.keys.toList()[0].compoundUnits.keys.toList()[0].metal) {
+					if(reactants.keys.toList()[0].compoundUnits.keys.toList()[1].isCompound()) {
+						if(reactants.keys.toList()[0].compoundUnits.keys.toList()[1].formula.compareTo('OH') == 0) return Type.decompBase;
+					}
+					if(!reactants.keys.toList()[0].compoundUnits.keys.toList()[1].metal) {
+						if(reactants.keys.toList()[0].compoundUnits.keys.toList()[2].equals('O')) {
 							return Type.decompSalt;
 						}
 					}
 				}
+			if(reactants.keys.toList()[0].compoundUnits.keys.length == 2) return Type.decomp;
 		}
-		if(reactants[0].element != null && reactants[1].element != null) return Type.comp;
-		else if(reactants[0].compound != null && reactants[1].compound != null) {
-			if(reactants[0].compound.formula.compareTo('H2O(l)') == 0) {
-				if(reactants[1].compound.compoundUnits.keys.toList()[1].element.equals('O')) {
-					if(!reactants[1].compound.compoundUnits.keys.toList()[0].element.metal) return Type.compAcid;
+		if(reactants.keys.toList()[0].isElement() && reactants.keys.toList()[1].isElement()) return Type.comp; // Simple Composition
+		else if(reactants.keys.toList()[0].isElement() && reactants.keys.toList()[1].isCompound()) {
+			if(reactants.keys.toList()[0].compoundUnits.keys.toList()[0].isElement()) {
+				if(reactants.keys.toList()[0].compoundUnits.keys.toList()[0].equals('C') &&
+						reactants.keys.toList()[0].compoundUnits.keys.toList()[1].equals('H') &&
+						reactants.keys.toList()[1].equals('O')) return Type.combustion; // Hydrocarbon Combustion
+			}
+			return Type.singleReplacement;
+		}
+		else if(reactants.keys.toList()[0].isCompound() && reactants.keys.toList()[1].isCompound()) {
+			if(reactants.keys.toList()[0].formula.compareTo('H2O(l)') == 0) {
+				if(reactants.keys.toList()[1].compoundUnits.keys.toList()[1].equals('O')) {
+					if(!reactants.keys.toList()[1].compoundUnits.keys.toList()[0].metal) return Type.compAcid;
 					return Type.compBase;
 				}
 			}
-			else if(reactants[0].compound.compoundUnits.keys.toList()[1].element.equals('O') && reactants[1].compound.compoundUnits.keys.toList()[1].element.equals('O')) {
+			else if(reactants.keys.toList()[0].compoundUnits.keys.toList()[1].equals('O') && reactants.keys.toList()[1].compoundUnits.keys.toList()[1].equals('O')) {
 				return Type.compSalt;
 			}
+			return Type.doubleReplacement;
 		}
 		return null;
 	}
