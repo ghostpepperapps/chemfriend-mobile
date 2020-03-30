@@ -1,7 +1,4 @@
-import 'dart:core';
-import 'element.dart';
-import 'compound.dart';
-import 'common_ions.dart' as CI;
+part of chemistry;
 
 abstract class CompoundUnit {
   String formula;
@@ -11,14 +8,14 @@ abstract class CompoundUnit {
   int count;
   int charge;
   List<int> shells;
-  Map<CompoundUnit, int> compoundUnits;
+  List<MapEntry<CompoundUnit, int>> compoundUnits;
 
   bool equals(String s);
   bool isElement() { return this.runtimeType == Element; }
   bool isCompound() { return this.runtimeType == Compound; }
 	int getCharge() {
 		if(this.isCompound()) {
-			for(Compound c in CI.polyatomicIons) {
+			for(Compound c in polyatomicIons) {
 				if(this.equals(c.formula)) return c.charge;
 			}
 		}

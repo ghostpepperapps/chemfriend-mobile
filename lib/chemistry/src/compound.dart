@@ -1,39 +1,9 @@
-import 'element.dart';
-import 'compound_unit.dart';
-import 'equation_unit.dart';
+part of chemistry;
 
 enum State { solid, liquid, gas, aqueous }
-Map<String, List<String>> changeScript = {
-	'0'        : ['\u2070',   '\u2080'      ],
-	'1'        : ['\u00B9',   '\u2081'      ],
-	'2'        : ['\u00B2',   '\u2082'      ],
-	'3'        : ['\u00B3',   '\u2083'      ],
-	'4'        : ['\u2074',   '\u2084'      ],
-	'5'        : ['\u2075',   '\u2085'      ],
-	'6'        : ['\u2076',   '\u2086'      ],
-	'7'        : ['\u2077',   '\u2087'      ],
-	'8'        : ['\u2078',   '\u2088'      ],
-	'9'        : ['\u2079',   '\u2089'      ],
-	's'        : ['\u02e2',   '\u209b'      ],
-	'l'        : ['\u02e1',   '\u2097'      ],
-	'g'        : ['\u1d4d',   '?'           ],
-	'a'        : ['\u1d43',   '\u2090'      ],
-	'q'        : ['?',        '?'           ],
-	'('        : ['\u207D',   '\u208D'      ],
-	')'        : ['\u207E',   '\u208E'      ],
-};
-Map<State, String> stateToString = {
-	State.solid:   '\u208D\u209b\u208E',
-	State.liquid:  '\u208D\u2097\u208E',
-	State.gas:     '\u208D\u1d67\u208E',
-	State.aqueous: '\u208D\u2090\u208E',
-};
 
-bool isNumeric(String s) {
-	return double.parse(s, (e) => null) != null;
-}
 class Compound with CompoundUnit, EquationUnit {
-	Map<CompoundUnit, int> compoundUnits;
+	List<MapEntry<CompoundUnit, int>> compoundUnits;
 	bool ionic;
 	State state;
 	String formula;
@@ -42,7 +12,7 @@ class Compound with CompoundUnit, EquationUnit {
 	Compound(String formula, {bool nested = false, int charge}) {
 		this.formula = formula;
 		this.charge = charge;
-		compoundUnits = {};
+		compoundUnits = [];
 		ionic = false;
 		bool containsMetal = false;
 		bool containsNonmetal = false;
@@ -68,11 +38,11 @@ class Compound with CompoundUnit, EquationUnit {
 				int k = j + 1;
 				while (k < formula.length && isNumeric(formula[k])) k++;
 				Compound c = Compound(formula.substring(i + 1, j), nested: true);
-				if(k==j + 1) compoundUnits[c] = 1;
-				else compoundUnits[c] = int.parse(formula.substring(j + 1, k));
-				for (CompoundUnit cu in c.compoundUnits.keys) {
-					if(cu.metal) containsMetal = true;
-					else if(!cu.metal) containsNonmetal = true;
+				if(k==j + 1) compoundUnits.add(MapEntry(c, 1));
+				else compoundUnits.add(MapEntry(c, int.parse(formula.substring(j + 1, k))));
+				for (MapEntry cu in c.compoundUnits) {
+					if(cu.key.metal) containsMetal = true;
+					else if(!cu.key.metal) containsNonmetal = true;
 				}
 				if(c.formula.compareTo('NH4')==0) containsMetal = true;
 				i = k;
@@ -82,8 +52,8 @@ class Compound with CompoundUnit, EquationUnit {
 			else if(!current.metal) containsNonmetal = true;
 			int j = i;
 			while (j < formula.length && isNumeric(formula[j])) j++;
-			if(i==j) compoundUnits[current] = 1;
-			else compoundUnits[current] = int.parse(formula.substring(i, j));
+			if(i==j) compoundUnits.add(MapEntry(current, 1));
+			else compoundUnits.add(MapEntry(current, int.parse(formula.substring(i, j))));
 			current = null;
 			i = j;
 		}
@@ -99,27 +69,27 @@ class Compound with CompoundUnit, EquationUnit {
 		if(containsMetal && containsNonmetal) ionic = true;
 		_multivalent();
 	}
-	Compound.fromUnits(Map<CompoundUnit, int> units, [State state]) {
+	Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units, [State state]) {
 		this.compoundUnits = units;
-		List<bool> temp = _ionicHelper(compoundUnits.keys.toList());
+		List<bool> temp = _ionicHelper(compoundUnits);
 		ionic = temp[0] == true && temp[1] == true;
 		this.state = state;
 		_multivalent();
 		formula = '';
-		for(MapEntry<CompoundUnit, int> c in this.compoundUnits.entries) {
+		for(MapEntry<CompoundUnit, int> c in this.compoundUnits) {
 			if(c.key.isElement()) formula += c.key.formula;
 			else formula += '(${c.key.formula})';
 			if(c.value != 1) formula += c.value.toString();
 		}
 	}
 
-	List<bool> _ionicHelper(List<CompoundUnit> units, [bool _containsMetal = false, bool _containsNonmetal = false]) {
-		for(CompoundUnit c in units) {
-			if (c.isElement()) {
-				if(c.metal) _containsMetal = true;
+	List<bool> _ionicHelper(List<MapEntry<CompoundUnit, int>> units, [bool _containsMetal = false, bool _containsNonmetal = false]) {
+		for(MapEntry c in units) {
+			if (c.key.isElement()) {
+				if(c.key.metal) _containsMetal = true;
 				else _containsNonmetal = true;
 			} else {
-				List<bool> temp = _ionicHelper(c.compoundUnits.keys.toList(), _containsMetal, _containsNonmetal);
+				List<bool> temp = _ionicHelper(c.key.compoundUnits.keys.toList(), _containsMetal, _containsNonmetal);
 				_containsMetal = temp[0];
 				_containsNonmetal = temp[1];
 			}
@@ -128,10 +98,10 @@ class Compound with CompoundUnit, EquationUnit {
 	}
 	void _multivalent() {
 		if(ionic) {
-			CompoundUnit first = compoundUnits.keys.toList()[0];
+			CompoundUnit first = compoundUnits[0].key;
 			if(first.isElement() && first.getCharge() == null) {
-				int negative = compoundUnits.keys.toList()[1].getCharge() * compoundUnits.values.toList()[1];
-				compoundUnits.keys.toList()[0].charge = -(negative ~/ compoundUnits.values.toList()[0]);
+				int negative = compoundUnits[1].key.getCharge() * compoundUnits[1].value;
+				compoundUnits[0].key.charge = -(negative ~/ compoundUnits[0].value);
 			}
 		}
 	}
@@ -139,7 +109,7 @@ class Compound with CompoundUnit, EquationUnit {
   @override
 	String toString() {
 		String result = '';
-		for(MapEntry<CompoundUnit, int> c in this.compoundUnits.entries) {
+		for(MapEntry<CompoundUnit, int> c in this.compoundUnits) {
 			if(c.key.isElement()) result += c.key.formula;
 			else result += '(${c.key.toString()})';
 			String intString = c.value.toString();
@@ -156,9 +126,9 @@ class Compound with CompoundUnit, EquationUnit {
   }
 	
   void printElements() {
-		for (var compoundUnit in compoundUnits.entries) {
-			if (compoundUnit.key.isElement()) print('${compoundUnit.key.name}: ${compoundUnit.value}');
-			else print('${compoundUnit.key.formula}: ${compoundUnit.value}');
+		for (MapEntry c in compoundUnits) {
+			if (c.key.isElement()) print('${c.key.name}: ${c.value}');
+			else print('${c.key.formula}: ${c.value}');
 		}
 	}
 	void printInfo() {

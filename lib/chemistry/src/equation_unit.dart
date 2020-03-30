@@ -1,6 +1,4 @@
-import 'element.dart';
-import 'compound.dart';
-import 'compound_unit.dart';
+part of chemistry;
 
 abstract class EquationUnit {
   String formula;
@@ -10,7 +8,7 @@ abstract class EquationUnit {
   int count;
   int charge;
   List<int> shells;
-  Map<CompoundUnit, int> compoundUnits;
+  List<MapEntry<CompoundUnit, int>> compoundUnits;
 
   CompoundUnit compoundUnit;
 	int number;

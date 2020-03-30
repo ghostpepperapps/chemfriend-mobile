@@ -1,4 +1,4 @@
-import 'compound.dart';
+part of chemistry;
 
 final List<Compound> polyatomicIons = [
 	Compound('CH3COO', charge: -1),
