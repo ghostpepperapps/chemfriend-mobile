@@ -1,6 +1,6 @@
 # chemfriend
 
-The only chemistry app you&#x27;ll ever need.
+Solving chemical equations, powered by OCR. Built with Flutter.
 
 ## Getting Started
 

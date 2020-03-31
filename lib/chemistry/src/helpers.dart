@@ -20,10 +20,17 @@ Map<String, List<String>> changeScript = {
 	')'        : ['\u207E',   '\u208E'      ],
 };
 
-Map<MatterPhase, String> stateToString = {
+Map<MatterPhase, String> phaseToString = {
 	MatterPhase.solid:  '\u208D\u209b\u208E',
 	MatterPhase.liquid: '\u208D\u2097\u208E',
 	MatterPhase.gas:    '\u208D\u1d67\u208E',
+};
+
+Map<State, String> stateToString = {
+	State.solid:   '\u208D\u209b\u208E',
+	State.liquid:  '\u208D\u2097\u208E',
+	State.gas:     '\u208D\u1d67\u208E',
+  State.aqueous: '\u208D\u2090\u208E'
 };
 
 Map typeToString = { Type.comp: 'Simple Composition', Type.compAcid: 'Composition of an Acid', Type.compBase: 'Composition of a Base', Type.compSalt: 'Composition of a Salt',

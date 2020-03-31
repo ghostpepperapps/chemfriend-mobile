@@ -9,8 +9,8 @@ class Equation {
 	Type type;
 
 	Equation(String s) {
-		List<MapEntry<EquationUnit, int>> reactants;
-		List<MapEntry<EquationUnit, int>> products;
+		List<MapEntry> reactants = [];
+		List<MapEntry> products = [];
 		String reactantStr;
 		String productStr;
 		reactantStr = (s.contains('=>')) ? s.split(' => ')[0] : s;
@@ -42,7 +42,7 @@ class Equation {
 		this.products = products;
 	}
 
-	Equation.fromUnits(List<MapEntry<EquationUnit, int>> reactants, [List<MapEntry<EquationUnit, int>> products]) {
+	Equation.fromUnits(List<MapEntry> reactants, [List<MapEntry> products]) {
 		this.reactants = reactants;
 		this.products = products;
 	}
@@ -56,11 +56,12 @@ class Equation {
 				List<double> counts = [1, 1, 1];
 				bool halfElement = false;
 				for(int i = 0; i < counts.length - 1; i++) {
-					counts[i] = this.products[0].key.compoundUnits[i].value / this.reactants[i].value;
+					counts[i] = this.products[0].key.compoundUnits[i].value / this.reactants[i].key.count;
 					if(counts[i] != counts[i].toInt()) halfElement = true;
 				}
 				if(halfElement) counts = counts.map((count) => count *= 2).toList();
-				for(int i = 0; i < this.reactants.length; i++) this.reactants[i] = MapEntry(this.reactants[i].key, counts[i].toInt());
+				for(int i = 0; i < this.reactants.length; i++) 
+          this.reactants[i] = MapEntry(this.reactants[i].key, counts[i].toInt());
 				this.products[0] = MapEntry(this.products[0].key, counts[counts.length - 1].toInt());
 				break;
 			case Type.compAcid: // No balancing required
@@ -119,14 +120,14 @@ class Equation {
 	@override
 	String toString() {
 		String result = '';
-		for(MapEntry<EquationUnit, int> r in this.reactants) {
+		for(MapEntry r in this.reactants) {
 			if(r.value != 1) result += r.value.toString();
 			result += r.key.toString();
       result += ' + ';
 		}
     result = result.substring(0, result.length - 3);
-		result += ' => ';
-		for(MapEntry<EquationUnit, int> p in this.products) {
+		result += ' \u2192 ';
+		for(MapEntry p in this.products) {
 			if(p.value != 1) result += p.value.toString();
 			result += p.key.toString();
       result += ' + ';
@@ -135,7 +136,7 @@ class Equation {
 		return result;
 	}
 
-	static List<MapEntry<EquationUnit, int>> getProducts(List<MapEntry> reactants, Type type) {
+	static List<MapEntry> getProducts(List<MapEntry> reactants, Type type) {
 		switch(type) {
 			case Type.comp:
 				bool ionic = false;
@@ -234,7 +235,7 @@ class Equation {
 		return null;
 	}
 	
-	static Type getType(List<MapEntry<EquationUnit, int>> reactants) {
+	static Type getType(List<MapEntry> reactants) {
 		if(reactants.length == 1) { // Decomposition
 			if(reactants[0].key.isElement()) return null;
 				if(reactants[0].key.compoundUnits[0].key.equals('H')) {
@@ -255,14 +256,14 @@ class Equation {
 			if(reactants[0].key.compoundUnits.length == 2) return Type.decomp;
 		}
 		if(reactants[0].key.isElement() && reactants[1].key.isElement()) return Type.comp; // Simple Composition
-		else if(reactants[0].key.isElement() && reactants[1].key.isCompound()) {
-			if(reactants[0].key.compoundUnits[0].key.isElement()) {
+		else if(reactants[0].key.isElement() && reactants[1].key.isCompound()) return Type.singleReplacement;
+		else if(reactants[0].key.isCompound() && reactants[1].key.isElement()) {
+      if(reactants[0].key.compoundUnits[0].key.isElement()) {
 				if(reactants[0].key.compoundUnits[0].key.equals('C') &&
 						reactants[0].key.compoundUnits[1].key.equals('H') &&
 						reactants[1].key.equals('O')) return Type.combustion; // Hydrocarbon Combustion
 			}
-			return Type.singleReplacement;
-		}
+    }
 		else if(reactants[0].key.isCompound() && reactants[1].key.isCompound()) {
 			if(reactants[0].key.formula.compareTo('H2O(l)') == 0) {
 				if(reactants[1].key.compoundUnits[1].key.equals('O')) {

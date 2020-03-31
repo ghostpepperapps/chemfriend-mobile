@@ -1,6 +1,7 @@
 part of chemistry;
 
 class Element extends ChemicalElement with CompoundUnit, EquationUnit {
+  MatterPhase state;
 	bool metal;
 	int charge;
 	int count;
@@ -13,17 +14,20 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
     stpPhase: stpPhase, number: number, period: period, row: row, column: column, shells: shells,
     atomicMass: atomicMass, molecularDensity: molecularDensity, heatCapacity: heatCapacity, meltingPoint: meltingPoint, boilingPoint: boilingPoint
 	);
-  Element.clone(ChemicalElement e): this(
-    e.name, e.symbol, e.category, e.appearance,
-    e.stpPhase, e.number, e.period, e.row, e.column, e.shells,
-    e.atomicMass, e.molecularDensity, e.heatCapacity, e.meltingPoint, e.boilingPoint
-	);
-	
+  Element.clone(ChemicalElement e) {
+    this.name = e.name; 
+    this.formula = e.symbol; 
+    this.category = e.category;
+    this.state = e.stpPhase; 
+    this.number = e.number;
+    this.shells = e.shells;
+  }
+
 	@override
 	String toString() {
 		String result = this.formula;
 		if(this.count != 1) result += changeScript[this.count.toString()][1];
-		result += stateToString[this.stpPhase];
+		result += phaseToString[this.state];
 		return result;
 	}
 	@override
@@ -31,13 +35,15 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
 		return this.formula.compareTo(s) == 0;
 	}
 
+  String getName() {
+    return this.name;
+  }
+
 	static Element from(String formula, [int _charge = 0]) {
 		Element result;
 		for(ChemicalElement e in periodicTable) {
 			if(e.symbol.compareTo(formula) == 0) {
 				result = Element.clone(e);
-        result.formula = formula;
-        print(result.category);
 				break;
 			}
     }
