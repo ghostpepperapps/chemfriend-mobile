@@ -47,8 +47,8 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
 				break;
 			}
     }
-		if(result.category.contains('metal')) result.metal = !(result.category.contains('nonmetal'));
-		else result.metal = false;
+    if(result.category.contains('metal')) result.metal = !(result.category.contains('nonmetal'));
+    else result.metal = false;
 		if(result.category.contains('diatomic')) result.count = 2;
 		else if(result.formula.compareTo('P') == 0) result.count = 4;
 		else if(result.formula.compareTo('S') == 0) result.count = 8;

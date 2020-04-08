@@ -13,8 +13,8 @@ class Equation {
 		List<MapEntry> products = [];
 		String reactantStr;
 		String productStr;
-		reactantStr = (s.contains('=>')) ? s.split(' => ')[0] : s;
-		productStr = (s.contains('=>')) ? s.split(' => ')[1] : null;
+		reactantStr = (s.contains('=>')) ? s.split(' => ')[0].trim() : s;
+		productStr = (s.contains('=>')) ? s.split(' => ')[1].trim() : null;
 		for(String r in reactantStr.split(' + ')) {
 			int i = 0;
 			while(isNumeric(r[i])) i++;
@@ -187,7 +187,7 @@ class Equation {
           MapEntry(Compound.fromUnits([
             MapEntry(reactants[0].key.compoundUnits[1].key, reactants[0].key.compoundUnits[1].value),
             MapEntry(Element.from('O'), reactants[0].key.compoundUnits[2].value - 1),
-        ], State.gas), 1)];
+        ], Phase.gas), 1)];
 		    break;
 		  case Type.decompBase:
 				int lcmCharge = lcm(reactants[0].key.compoundUnits[0].key.charge, 2);
@@ -196,7 +196,7 @@ class Equation {
           MapEntry(Compound.fromUnits([
             MapEntry(reactants[0].key.compoundUnits[0].key, (-lcmCharge ~/ reactants[0].key.compoundUnits[0].key.charge).abs()),
             MapEntry(Element.from('O'), lcmCharge.abs() ~/ 2),
-					], State.gas), 1)];
+					], Phase.gas), 1)];
 				break;
 		  case Type.decompSalt:
 		  	Compound metalOxide = Compound.fromUnits([

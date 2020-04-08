@@ -1,11 +1,11 @@
 part of chemistry;
 
-enum State { solid, liquid, gas, aqueous }
+enum Phase { solid, liquid, gas, aqueous }
 
 class Compound with CompoundUnit, EquationUnit {
 	List<MapEntry<CompoundUnit, int>> compoundUnits;
 	bool ionic;
-	State state;
+	Phase state;
 	String formula;
 	int charge;
 
@@ -59,17 +59,17 @@ class Compound with CompoundUnit, EquationUnit {
 		}
 		if(!nested && hasState) {
 			switch(formula[formula.length - 2]) {
-				case 's': this.state = State.solid; break;
-				case 'l': this.state = State.liquid; break;
-				case 'g': this.state = State.gas; break;
-				case 'q': this.state = State.aqueous; break;
+				case 's': this.state = Phase.solid; break;
+				case 'l': this.state = Phase.liquid; break;
+				case 'g': this.state = Phase.gas; break;
+				case 'q': this.state = Phase.aqueous; break;
 			}
 		}
 		else state = null;
 		if(containsMetal && containsNonmetal) ionic = true;
 		_multivalent();
 	}
-	Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units, [State state]) {
+	Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units, [Phase state]) {
 		this.compoundUnits = units;
 		List<bool> temp = _ionicHelper(compoundUnits);
 		ionic = temp[0] == true && temp[1] == true;
@@ -134,7 +134,7 @@ class Compound with CompoundUnit, EquationUnit {
 	void printInfo() {
 		print('Compound: ${this.toString()}');
 		print('Category: ${(ionic) ? 'Ionic' : 'Molecular'}');
-		print('State: ${(state == State.solid) ? 'Solid' : (state == State.liquid) ? 'Liquid' : (state == State.gas) ? 'Gas' : 'Aqueous'}');
+		print('State: ${(state == Phase.solid) ? 'Solid' : (state == Phase.liquid) ? 'Liquid' : (state == Phase.gas) ? 'Gas' : 'Aqueous'}');
 	}
 
 }

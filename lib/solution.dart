@@ -1,16 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-
 class Solution extends StatefulWidget {
-	Solution({Key key, this.pickedImage, this.text}) : super(key: key);
+	Solution({Key key, this.pickedImage, this.text, this.solution}) : super(key: key);
 	final File pickedImage;
 	final String text;
+  final String solution;
 	@override
 	_SolutionState createState() => _SolutionState();
 }
 
 class _SolutionState extends State<Solution> {
+
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
 	@override
 	Widget build(BuildContext context) {
@@ -24,7 +32,7 @@ class _SolutionState extends State<Solution> {
 						width: 200.0,
 						decoration: BoxDecoration(
 							image: DecorationImage(
-								image: FileImage(widget.pickedImage), fit: BoxFit.cover
+								image: FileImage(widget.pickedImage),
 							)
 						),
 					),
@@ -36,6 +44,13 @@ class _SolutionState extends State<Solution> {
 						style: TextStyle(fontSize: 30.0),
 					)
 				),
+        SizedBox(height: 40),
+        Center(
+          child: TextField(
+            controller: controller,
+            textInputAction: TextInputAction.none,
+          ),
+        )
 			],
 		)
 	);

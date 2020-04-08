@@ -1,5 +1,7 @@
 import 'dart:io';
-import 'camera.dart';
+import 'package:chemfriend/chemistry/chemistry.dart';
+
+import 'solution.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +11,6 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
 		return MaterialApp(
@@ -55,11 +56,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
 	void _pushCamera(BuildContext context) async {
 		this._pickedImage = await ImagePicker.pickImage(source: ImageSource.camera);
-		_cropImage();
-		_getText();
+		await _cropImage();
+		await _getText();
+
+    Equation e;
+    try {
+      e = Equation(_visionText.text);
+    } on Error {
+      e = Equation('C6H12O2 + O2');
+    }
+    e.solve();
+    String solution = e.toString();
 		Navigator.push(
 			context,
-			MaterialPageRoute(builder: (context) => Solution(pickedImage: this._pickedImage, text: _visionText.text,)),
+			MaterialPageRoute(builder: (context) => Solution(
+        pickedImage: this._pickedImage,
+        text: _visionText.text,
+        solution: solution,
+      )),
 		);
 	}
 
