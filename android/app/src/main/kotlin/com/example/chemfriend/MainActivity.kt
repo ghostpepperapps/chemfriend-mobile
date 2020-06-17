@@ -1,4 +1,4 @@
-package com.example.chemfriend
+package com.ghostpepperapps.chemfriend
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
