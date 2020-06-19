@@ -1,5 +1,7 @@
 part of chemistry;
+
 // TODO: Make compAcid product have (aq) state
+/// Enum for each possible type of reaction.
 enum Type {
   comp,
   compAcid,
@@ -14,12 +16,16 @@ enum Type {
   doubleReplacement
 }
 
+/// A class representing a chemical equation.
 class Equation {
   List<MapEntry> reactants;
   List<MapEntry> products;
   bool inWater;
   Type type;
 
+  /// Constructs an equation from a String.
+  ///
+  /// [s] contains the reactants and optionally the products as well.
   Equation(String s) {
     List<MapEntry> reactants = [];
     List<MapEntry> products = [];
@@ -60,15 +66,17 @@ class Equation {
     this.products = products;
   }
 
+  /// Constructs an equation from the [reactants] and [products].
   Equation.fromUnits(List<MapEntry> reactants, [List<MapEntry> products]) {
     this.reactants = reactants;
     this.products = products;
   }
 
-  void solve() {
-    type = getType(this.reactants);
+  /// Balances this equation based on its type.
+  void balance() {
+    type = _getType(this.reactants);
     this.products =
-        (this.products == null) ? getProducts(reactants, type) : this.products;
+        (this.products == null) ? _getProducts(reactants, type) : this.products;
     // Balancing
     switch (type) {
       case Type.comp:
@@ -147,6 +155,7 @@ class Equation {
     }
   }
 
+  /// Returns the String representation of this equation.
   @override
   String toString() {
     String result = '';
@@ -166,7 +175,8 @@ class Equation {
     return result;
   }
 
-  static List<MapEntry> getProducts(List<MapEntry> reactants, Type type) {
+  /// Returns the products of an equation based on its [reactants] and [type].
+  static List<MapEntry> _getProducts(List<MapEntry> reactants, Type type) {
     switch (type) {
       case Type.comp:
         bool ionic = false;
@@ -321,13 +331,59 @@ class Equation {
           ];
         break;
       case Type.doubleReplacement:
-        // TODO: Handle this case.
+        var counts = [new List(2), new List(2)];
+        var charges = [
+          [
+            reactants[0].key.compoundUnits[0].key.charge,
+            reactants[0].key.compoundUnits[1].key.charge
+          ],
+          [
+            reactants[1].key.compoundUnits[0].key.charge,
+            reactants[1].key.compoundUnits[1].key.charge
+          ]
+        ];
+        if (reactants[0].key.ionic && reactants[1].key.ionic) {
+          int lcmCharge1 = lcm(charges[0][0], charges[1][1]).abs();
+          int lcmCharge2 = lcm(charges[1][0], charges[0][1]).abs();
+          counts[0][0] =
+              lcmCharge1 ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
+          counts[0][1] =
+              -lcmCharge1 ~/ ((charges[1][1] == 0) ? 1 : charges[1][1]);
+          counts[1][0] =
+              lcmCharge2 ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
+          counts[1][1] =
+              -lcmCharge2 ~/ ((charges[0][1] == 0) ? 1 : charges[0][1]);
+        } else {
+          counts[0] = [
+            reactants[0].key.compoundUnits[0].value,
+            reactants[0].key.compoundUnits[1].value
+          ];
+          counts[1] = [
+            reactants[1].key.compoundUnits[0].value,
+            reactants[1].key.compoundUnits[1].value
+          ];
+        }
+        return [
+          MapEntry(
+              Compound.fromUnits([
+                MapEntry(reactants[0].key.compoundUnits[0].key, counts[0][0]),
+                MapEntry(reactants[1].key.compoundUnits[1].key, counts[0][1]),
+              ]),
+              1),
+          MapEntry(
+              Compound.fromUnits([
+                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][0]),
+                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][1]),
+              ]),
+              1),
+        ];
         break;
     }
     return null;
   }
 
-  static Type getType(List<MapEntry> reactants) {
+  /// Returns the type of an equation based on its [reactants].
+  static Type _getType(List<MapEntry> reactants) {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;
