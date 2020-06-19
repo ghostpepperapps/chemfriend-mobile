@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } on Error {
       e = Equation('C6H12O2(s) + O2(g)');
     } */
-    e.solve();
+    e.balance();
     String solution = e.toString();
     Navigator.push(
       context,

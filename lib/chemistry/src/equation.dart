@@ -1,6 +1,7 @@
 part of chemistry;
 
 // TODO: Make compAcid product have (aq) state
+/// Enum for each possible type of reaction.
 enum Type {
   comp,
   compAcid,
@@ -15,12 +16,16 @@ enum Type {
   doubleReplacement
 }
 
+/// A class representing a chemical equation.
 class Equation {
   List<MapEntry> reactants;
   List<MapEntry> products;
   bool inWater;
   Type type;
 
+  /// Constructs an equation from a String.
+  ///
+  /// [s] contains the reactants and optionally the products as well.
   Equation(String s) {
     List<MapEntry> reactants = [];
     List<MapEntry> products = [];
@@ -61,15 +66,17 @@ class Equation {
     this.products = products;
   }
 
+  /// Constructs an equation from the [reactants] and [products].
   Equation.fromUnits(List<MapEntry> reactants, [List<MapEntry> products]) {
     this.reactants = reactants;
     this.products = products;
   }
 
-  void solve() {
-    type = getType(this.reactants);
+  /// Balances this equation based on its type.
+  void balance() {
+    type = _getType(this.reactants);
     this.products =
-        (this.products == null) ? getProducts(reactants, type) : this.products;
+        (this.products == null) ? _getProducts(reactants, type) : this.products;
     // Balancing
     switch (type) {
       case Type.comp:
@@ -148,6 +155,7 @@ class Equation {
     }
   }
 
+  /// Returns the String representation of this equation.
   @override
   String toString() {
     String result = '';
@@ -167,7 +175,8 @@ class Equation {
     return result;
   }
 
-  static List<MapEntry> getProducts(List<MapEntry> reactants, Type type) {
+  /// Returns the products of an equation based on its [reactants] and [type].
+  static List<MapEntry> _getProducts(List<MapEntry> reactants, Type type) {
     switch (type) {
       case Type.comp:
         bool ionic = false;
@@ -373,7 +382,8 @@ class Equation {
     return null;
   }
 
-  static Type getType(List<MapEntry> reactants) {
+  /// Returns the type of an equation based on its [reactants].
+  static Type _getType(List<MapEntry> reactants) {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;

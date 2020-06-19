@@ -1,51 +1,23 @@
 part of chemistry;
 
+/// A class representing a chemical element.
 class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   MatterPhase state;
   bool metal;
   int charge;
   int count;
-  Element(
-      String name,
-      String formula,
-      String category,
-      String appearance,
-      MatterPhase stpPhase,
-      int number,
-      period,
-      int row,
-      column,
-      List<int> shells,
-      num atomicMass,
-      num molecularDensity,
-      num heatCapacity,
-      num meltingPoint,
-      num boilingPoint)
-      : super(
-            name: name,
-            symbol: formula,
-            category: category,
-            appearance: appearance,
-            stpPhase: stpPhase,
-            number: number,
-            period: period,
-            row: row,
-            column: column,
-            shells: shells,
-            atomicMass: atomicMass,
-            molecularDensity: molecularDensity,
-            heatCapacity: heatCapacity,
-            meltingPoint: meltingPoint,
-            boilingPoint: boilingPoint);
-  Element.clone(ChemicalElement e) {
-    this.name = e.name;
-    this.formula = e.symbol;
-    this.category = e.category;
-    this.state = e.stpPhase;
-    this.number = e.number;
-    this.shells = e.shells;
+
+  /// Constructs an element from the properties of [other].
+  Element.clone(ChemicalElement other) {
+    this.name = other.name;
+    this.formula = other.symbol;
+    this.category = other.category;
+    this.state = other.stpPhase;
+    this.number = other.number;
+    this.shells = other.shells;
   }
 
+  /// Returns the String representation of this element.
   @override
   String toString() {
     String result = this.formula;
@@ -54,19 +26,22 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
     return result;
   }
 
+  /// Returns `true` if this element's formula is [symbol].
   @override
-  bool equals(String s) {
-    return this.formula.compareTo(s) == 0;
+  bool equals(String symbol) {
+    return this.formula.compareTo(symbol) == 0;
   }
 
+  /// Returns the name of this element.
   String getName() {
     return this.name;
   }
 
-  static Element from(String formula, [int _charge]) {
+  /// Returns an element with the symbol [symbol] and charge [_charge].
+  static Element from(String symbol, [int _charge]) {
     Element result;
     for (ChemicalElement e in periodicTable) {
-      if (e.symbol.compareTo(formula) == 0) {
+      if (e.symbol.compareTo(symbol) == 0) {
         result = Element.clone(e);
         break;
       }
@@ -96,9 +71,10 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
     return result;
   }
 
-  static bool exists(String formula) {
+  /// Returns `true` if an element with the symbol [symbol] exists.
+  static bool exists(String symbol) {
     for (ChemicalElement e in periodicTable) {
-      if (e.symbol.compareTo(formula) == 0) return true;
+      if (e.symbol.compareTo(symbol) == 0) return true;
     }
     return false;
   }

@@ -51,7 +51,7 @@ Map<Type, String> typeToString = {
   Type.doubleReplacement: 'Double Replacement'
 };
 
-/// Returns true if [s] contains a number and false otherwise.
+/// Returns `true` if [s] contains a number.
 bool isNumeric(String s) => double.tryParse(s) != null;
 
 /// Returns the least common multiple of [a] and [b].

@@ -1,7 +1,9 @@
 part of chemistry;
 
+/// Enum for each possible state of compounds.
 enum Phase { solid, liquid, gas, aqueous }
 
+/// A class that represents a chemical compound.
 class Compound with CompoundUnit, EquationUnit {
   List<MapEntry<CompoundUnit, int>> compoundUnits;
   bool ionic;
@@ -9,6 +11,7 @@ class Compound with CompoundUnit, EquationUnit {
   String formula;
   int charge;
 
+  /// Constructs a compound from its chemical [formula].
   Compound(String formula, {bool nested = false, int charge}) {
     this.formula = formula;
     this.charge = charge;
@@ -89,6 +92,8 @@ class Compound with CompoundUnit, EquationUnit {
     if (containsMetal && containsNonmetal) ionic = true;
     _multivalent();
   }
+
+  /// Contructs a compound from its individual [units] and its [state].
   Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units, [Phase state]) {
     this.compoundUnits = units;
     List<bool> temp = _ionicHelper(compoundUnits);
@@ -105,6 +110,7 @@ class Compound with CompoundUnit, EquationUnit {
     }
   }
 
+  /// Helps determine whether or not the compound with [units] is ionic.
   List<bool> _ionicHelper(List<MapEntry<CompoundUnit, int>> units,
       [bool _containsMetal = false, bool _containsNonmetal = false]) {
     for (MapEntry c in units) {
@@ -123,6 +129,7 @@ class Compound with CompoundUnit, EquationUnit {
     return [_containsMetal, _containsNonmetal];
   }
 
+  /// Determines the charge of a multivalent metal if this compound is ionic.
   void _multivalent() {
     if (ionic) {
       CompoundUnit first = compoundUnits[0].key;
@@ -134,6 +141,7 @@ class Compound with CompoundUnit, EquationUnit {
     }
   }
 
+  /// Returns the String representation of this compound.
   @override
   String toString() {
     String result = '';
@@ -152,11 +160,13 @@ class Compound with CompoundUnit, EquationUnit {
     return result;
   }
 
+  /// Returns `true` if this element has the formula [formula].
   @override
-  bool equals(String s) {
-    return this.formula.compareTo(s) == 0;
+  bool equals(String formula) {
+    return this.formula.compareTo(formula) == 0;
   }
 
+  /// Prints the individual units of this compound.
   void printElements() {
     for (MapEntry c in compoundUnits) {
       if (c.key.isElement())
@@ -166,6 +176,7 @@ class Compound with CompoundUnit, EquationUnit {
     }
   }
 
+  /// Prints the formula, category, and state of this compound.
   void printInfo() {
     print('Compound: ${this.toString()}');
     print('Category: ${(ionic) ? 'Ionic' : 'Molecular'}');
