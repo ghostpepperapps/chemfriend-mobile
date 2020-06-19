@@ -50,7 +50,7 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   String toString() {
     String result = this.formula;
     if (this.count != 1) result += changeScript[this.count.toString()][1];
-    result += phaseToString[this.state];
+    result += ePhaseToString[this.state];
     return result;
   }
 

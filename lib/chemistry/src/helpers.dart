@@ -1,5 +1,6 @@
 part of chemistry;
 
+/// Maps characters to their superscript and subscript variants.
 Map<String, List<String>> changeScript = {
   '0': ['\u2070', '\u2080'],
   '1': ['\u00B9', '\u2081'],
@@ -20,20 +21,23 @@ Map<String, List<String>> changeScript = {
   ')': ['\u207E', '\u208E'],
 };
 
-Map<MatterPhase, String> phaseToString = {
+/// Maps MatterPhases (for Elements) to their String variants.
+Map<MatterPhase, String> ePhaseToString = {
   MatterPhase.solid: '\u208D\u209b\u208E',
   MatterPhase.liquid: '\u208D\u2097\u208E',
   MatterPhase.gas: '\u208D\u1d67\u208E',
 };
 
-Map<Phase, String> stateToString = {
+/// Maps Phases (for Compounds) to their String variants.
+Map<Phase, String> cPhaseToString = {
   Phase.solid: '\u208D\u209b\u208E',
   Phase.liquid: '\u208D\u2097\u208E',
   Phase.gas: '\u208D\u1d67\u208E',
   Phase.aqueous: '\u208D\u2090\u208E'
 };
 
-Map typeToString = {
+/// Maps Types (for Equations) to their String variants.
+Map<Type, String> typeToString = {
   Type.comp: 'Simple Composition',
   Type.compAcid: 'Composition of an Acid',
   Type.compBase: 'Composition of a Base',
@@ -47,10 +51,13 @@ Map typeToString = {
   Type.doubleReplacement: 'Double Replacement'
 };
 
+/// Returns true if [s] contains a number and false otherwise.
 bool isNumeric(String s) => double.tryParse(s) != null;
 
+/// Returns the least common multiple of [a] and [b].
 int lcm(int a, int b) => (a * b) ~/ gcd(a, b);
 
+/// Returns the greatest common divisor of [a] and [b].
 int gcd(int a, int b) {
   while (b != 0) {
     var t = b;

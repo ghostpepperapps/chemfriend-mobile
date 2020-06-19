@@ -148,7 +148,7 @@ class Compound with CompoundUnit, EquationUnit {
         specialString += '${changeScript[intString[i]][1]}';
       if (c.value != 1) result += specialString;
     }
-    if (this.state != null) result += stateToString[this.state];
+    if (this.state != null) result += cPhaseToString[this.state];
     return result;
   }
 
