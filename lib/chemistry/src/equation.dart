@@ -1,4 +1,5 @@
 part of chemistry;
+
 // TODO: Make compAcid product have (aq) state
 enum Type {
   comp,
@@ -321,7 +322,52 @@ class Equation {
           ];
         break;
       case Type.doubleReplacement:
-        // TODO: Handle this case.
+        var counts = [new List(2), new List(2)];
+        var charges = [
+          [
+            reactants[0].key.compoundUnits[0].key.charge,
+            reactants[0].key.compoundUnits[1].key.charge
+          ],
+          [
+            reactants[1].key.compoundUnits[0].key.charge,
+            reactants[1].key.compoundUnits[1].key.charge
+          ]
+        ];
+        if (reactants[0].key.ionic && reactants[1].key.ionic) {
+          int lcmCharge1 = lcm(charges[0][0], charges[1][1]).abs();
+          int lcmCharge2 = lcm(charges[1][0], charges[0][1]).abs();
+          counts[0][0] =
+              lcmCharge1 ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
+          counts[0][1] =
+              -lcmCharge1 ~/ ((charges[1][1] == 0) ? 1 : charges[1][1]);
+          counts[1][0] =
+              lcmCharge2 ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
+          counts[1][1] =
+              -lcmCharge2 ~/ ((charges[0][1] == 0) ? 1 : charges[0][1]);
+        } else {
+          counts[0] = [
+            reactants[0].key.compoundUnits[0].value,
+            reactants[0].key.compoundUnits[1].value
+          ];
+          counts[1] = [
+            reactants[1].key.compoundUnits[0].value,
+            reactants[1].key.compoundUnits[1].value
+          ];
+        }
+        return [
+          MapEntry(
+              Compound.fromUnits([
+                MapEntry(reactants[0].key.compoundUnits[0].key, counts[0][0]),
+                MapEntry(reactants[1].key.compoundUnits[1].key, counts[0][1]),
+              ]),
+              1),
+          MapEntry(
+              Compound.fromUnits([
+                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][0]),
+                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][1]),
+              ]),
+              1),
+        ];
         break;
     }
     return null;

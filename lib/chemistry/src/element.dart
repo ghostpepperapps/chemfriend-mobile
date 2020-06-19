@@ -93,7 +93,6 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
         result.charge = valence - 8;
     } else
       result.charge = _charge;
-    print("Name: ${result.name}; Charge: ${result.charge}");
     return result;
   }
 
