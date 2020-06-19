@@ -1,7 +1,12 @@
 import 'package:chemfriend/chemistry/chemistry.dart';
+import 'dart:io';
 
 import 'solution.dart';
 import 'package:flutter/material.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,6 +31,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  File _pickedImage;
+  VisionText _visionText;
   final controller = TextEditingController();
 
   @override
@@ -63,14 +70,17 @@ class _MyHomePageState extends State<MyHomePage> {
         ]));
   }
 
-  void _pushSolution(BuildContext context, String text) async {
+  void _pushSolution(BuildContext context, String inputText) async {
     Equation e;
-    e = Equation(text);
-    /* try {
-      e = Equation(text);
-    } on Error {
-      e = Equation('C6H12O2(s) + O2(g)');
-    } */
+    if (inputText == '') {
+      this._pickedImage =
+          await ImagePicker.pickImage(source: ImageSource.camera);
+      await _cropImage();
+      await _getText();
+      e = Equation(_visionText.text);
+    } else {
+      e = Equation(inputText);
+    }
     e.balance();
     String solution = e.toString();
     Navigator.push(
@@ -80,5 +90,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 solution: solution,
               )),
     );
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: _pickedImage.path,
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Crop Image',
+        ));
+    this._pickedImage = croppedFile;
+  }
+
+  Future _getText() async {
+    FirebaseVisionImage fvImage = FirebaseVisionImage.fromFile(_pickedImage);
+    TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
+    _visionText = await recognizeText.processImage(fvImage);
   }
 }
