@@ -53,15 +53,25 @@ void main() {
       e.balance();
       expect(e.toString(), equals('H₂O₍ₗ₎ + CO₂₍ᵧ₎ → H₂CO₃'));
     });
+    test('.solve() works correctly for composition of a base', () {
+      Equation e = Equation('H2O(l) + Na2O(aq)');
+      e.balance();
+      expect(e.toString(), equals('H₂O₍ₗ₎ + Na₂O₍ₐ₎ → 2NaOH'));
+    });
     test('.solve() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
       e.balance();
       expect(e.toString(), equals('C₆H₁₂O₆₍ₛ₎ + 6O₂₍ᵧ₎ → 6H₂O₍ᵧ₎ + 6CO₂₍ᵧ₎'));
     });
-    /* test('.solve() works correctly for double replacement', () {
+    test('.solve() works correctly for single replacement', () {
+      Equation e = Equation('F2(g) + Ga2O3(s)');
+      e.balance();
+      expect(e.toString(), equals('6F₂₍ᵧ₎ + 2Ga₂O₃₍ₛ₎ → 3O₂₍ᵧ₎ + 4GaF₃'));
+    });
+    test('.solve() works correctly for double replacement', () {
       Equation e = Equation('AlF3(aq) + CaCl2(aq)');
       e.balance();
       expect(e.toString(), equals('2AlF₃₍ₐ₎ + 3CaCl₂₍ₐ₎ → 2AlCl₃ + 3CaF₂'));
-    }); */
+    });
   });
 }
