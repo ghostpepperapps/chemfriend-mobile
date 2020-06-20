@@ -331,8 +331,8 @@ class Equation {
           ];
         break;
       case Type.doubleReplacement:
-        var counts = [new List(2), new List(2)];
-        var charges = [
+        List<List<int>> counts = [new List(2), new List(2)];
+        List<List<int>> charges = [
           [
             reactants[0].key.compoundUnits[0].key.charge,
             reactants[0].key.compoundUnits[1].key.charge
