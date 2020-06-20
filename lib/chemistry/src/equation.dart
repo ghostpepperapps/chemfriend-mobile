@@ -305,30 +305,48 @@ class Equation {
         ];
         break;
       case Type.singleReplacement:
-        if (reactants[0].key.metal)
+        Element e = (reactants[0].key.isElement())
+            ? reactants[0].key
+            : reactants[1].key;
+        Compound c = (reactants[0].key.isCompound())
+            ? reactants[0].key
+            : reactants[1].key;
+        List<int> counts = new List(2);
+        if (c.ionic) {
+          List<List<int>> charges = [
+            [
+              e.charge,
+            ],
+            [c.compoundUnits[0].key.charge, c.compoundUnits[1].key.charge]
+          ];
+          int lcmCharge = lcm(charges[0][0], charges[1][0]).abs();
+          counts[0] = lcmCharge ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
+          counts[1] = -lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
+        } else {
+          counts[0] = c.compoundUnits[0].key.count;
+          counts[1] = e.count;
+        }
+        if (e.metal) {
           return [
+            MapEntry(c.compoundUnits[1].key, 1),
             MapEntry(
                 Compound.fromUnits([
-                  MapEntry(reactants[0].key,
-                      reactants[1].key.compoundUnits[0].value),
-                  MapEntry(reactants[1].key.compoundUnits[1].key,
-                      reactants[1].key.compoundUnits[1].value)
+                  MapEntry(e, counts[1]),
+                  MapEntry(c.compoundUnits[0].key, counts[0])
                 ]),
-                1),
-            MapEntry(reactants[1].key.compoundUnits[0].key, 1),
+                1)
           ];
-        else
+        } else {
           return [
-            MapEntry(reactants[1].key.compoundUnits[1].key, 1),
+            MapEntry(c.compoundUnits[1].key, 1),
             MapEntry(
                 Compound.fromUnits([
-                  MapEntry(reactants[1].key.compoundUnits[0].key,
-                      reactants[1].key.compoundUnits[0].value),
-                  MapEntry(reactants[0].key,
-                      reactants[1].key.compoundUnits[1].value),
+                  MapEntry(c.compoundUnits[0].key, counts[0]),
+                  MapEntry(e, counts[1]),
                 ]),
-                1),
+                1)
           ];
+        }
         break;
       case Type.doubleReplacement:
         List<List<int>> counts = [new List(2), new List(2)];
