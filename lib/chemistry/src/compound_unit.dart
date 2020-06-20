@@ -34,7 +34,8 @@ abstract class CompoundUnit {
       }
     }
     if (this.equals('H')) return 1;
-    if (this.isElement() && this.category.compareTo('transition metal') != 0) {
+    if (this.isElement() &&
+        this.category.compareTo('transition metal') != 0) {
       int valence = this.shells[this.shells.length - 1];
       if (valence < 5) return valence;
       return valence - 8;

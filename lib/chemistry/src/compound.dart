@@ -94,7 +94,8 @@ class Compound with CompoundUnit, EquationUnit {
   }
 
   /// Contructs a compound from its individual [units] and its [state].
-  Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units, [Phase state]) {
+  Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units,
+      [Phase state]) {
     this.compoundUnits = units;
     List<bool> temp = _ionicHelper(compoundUnits);
     ionic = temp[0] == true && temp[1] == true;

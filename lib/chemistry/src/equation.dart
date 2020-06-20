@@ -75,8 +75,9 @@ class Equation {
   /// Balances this equation based on its type.
   void balance() {
     type = _getType(this.reactants);
-    this.products =
-        (this.products == null) ? _getProducts(reactants, type) : this.products;
+    this.products = (this.products == null)
+        ? _getProducts(reactants, type)
+        : this.products;
     // Balancing
     switch (type) {
       case Type.comp:
@@ -91,14 +92,14 @@ class Equation {
         for (int i = 0; i < this.reactants.length; i++)
           this.reactants[i] =
               MapEntry(this.reactants[i].key, counts[i].toInt());
-        this.products[0] =
-            MapEntry(this.products[0].key, counts[counts.length - 1].toInt());
+        this.products[0] = MapEntry(
+            this.products[0].key, counts[counts.length - 1].toInt());
         break;
       case Type.compAcid: // No balancing required
         break;
       case Type.compBase:
-        this.reactants[0] =
-            MapEntry(reactants[0].key, reactants[1].key.compoundUnits[1].value);
+        this.reactants[0] = MapEntry(
+            reactants[0].key, reactants[1].key.compoundUnits[1].value);
         this.products[0] = MapEntry(
             this.products[0].key, reactants[1].key.compoundUnits[0].value);
         break;
@@ -114,17 +115,21 @@ class Equation {
         }
         if (halfElement) counts = counts.map((count) => count *= 2).toList();
         for (int i = 0; i < this.products.length; i++)
-          this.products[i] = MapEntry(this.products[i].key, counts[i].toInt());
-        this.reactants[0] =
-            MapEntry(this.reactants[0].key, counts[counts.length - 1].toInt());
+          this.products[i] =
+              MapEntry(this.products[i].key, counts[i].toInt());
+        this.reactants[0] = MapEntry(
+            this.reactants[0].key, counts[counts.length - 1].toInt());
         break;
       case Type.decompAcid: // No balancing required
         break;
       case Type.decompBase:
         this.reactants[0] = MapEntry(
             this.reactants[0].key, products[1].key.compoundUnits[0].value);
-        this.products[0] = MapEntry(this.products[0].key,
-            reactants[0].value * reactants[0].key.compoundUnits[1].value ~/ 2);
+        this.products[0] = MapEntry(
+            this.products[0].key,
+            reactants[0].value *
+                reactants[0].key.compoundUnits[1].value ~/
+                2);
         break;
       case Type.decompSalt: // No balancing required
         break;
@@ -245,7 +250,8 @@ class Equation {
       case Type.decomp:
         return [
           MapEntry(
-              Element.from(reactants[0].key.compoundUnits[0].key.formula), 1),
+              Element.from(reactants[0].key.compoundUnits[0].key.formula),
+              1),
           MapEntry(
               Element.from(reactants[0].key.compoundUnits[1].key.formula), 1)
         ];
@@ -271,7 +277,8 @@ class Equation {
               Compound.fromUnits([
                 MapEntry(
                     reactants[0].key.compoundUnits[0].key,
-                    (-lcmCharge ~/ reactants[0].key.compoundUnits[0].key.charge)
+                    (-lcmCharge ~/
+                            reactants[0].key.compoundUnits[0].key.charge)
                         .abs()),
                 MapEntry(Element.from('O'), lcmCharge.abs() ~/ 2),
               ], Phase.gas),
@@ -320,8 +327,10 @@ class Equation {
             [c.compoundUnits[0].key.charge, c.compoundUnits[1].key.charge]
           ];
           int lcmCharge = lcm(charges[0][0], charges[1][0]).abs();
-          counts[0] = lcmCharge ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
-          counts[1] = -lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
+          counts[0] =
+              lcmCharge ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
+          counts[1] =
+              -lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
         } else {
           counts[0] = c.compoundUnits[0].key.count;
           counts[1] = e.count;
@@ -384,14 +393,18 @@ class Equation {
         return [
           MapEntry(
               Compound.fromUnits([
-                MapEntry(reactants[0].key.compoundUnits[0].key, counts[0][0]),
-                MapEntry(reactants[1].key.compoundUnits[1].key, counts[0][1]),
+                MapEntry(
+                    reactants[0].key.compoundUnits[0].key, counts[0][0]),
+                MapEntry(
+                    reactants[1].key.compoundUnits[1].key, counts[0][1]),
               ]),
               1),
           MapEntry(
               Compound.fromUnits([
-                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][0]),
-                MapEntry(reactants[1].key.compoundUnits[0].key, counts[1][1]),
+                MapEntry(
+                    reactants[1].key.compoundUnits[0].key, counts[1][0]),
+                MapEntry(
+                    reactants[1].key.compoundUnits[0].key, counts[1][1]),
               ]),
               1),
         ];
@@ -412,7 +425,12 @@ class Equation {
         }
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
         if (reactants[0].key.compoundUnits[1].key.isCompound()) {
-          if (reactants[0].key.compoundUnits[1].key.formula.compareTo('OH') ==
+          if (reactants[0]
+                  .key
+                  .compoundUnits[1]
+                  .key
+                  .formula
+                  .compareTo('OH') ==
               0) return Type.decompBase;
         }
         if (!reactants[0].key.compoundUnits[1].key.metal) {
@@ -434,7 +452,8 @@ class Equation {
             reactants[1].key.equals('O'))
           return Type.combustion; // Hydrocarbon Combustion
       }
-    } else if (reactants[0].key.isCompound() && reactants[1].key.isCompound()) {
+    } else if (reactants[0].key.isCompound() &&
+        reactants[1].key.isCompound()) {
       if (reactants[0].key.formula.compareTo('H2O(l)') == 0) {
         if (reactants[1].key.compoundUnits[1].key.equals('O')) {
           if (!reactants[1].key.compoundUnits[0].key.metal)
