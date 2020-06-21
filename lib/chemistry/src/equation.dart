@@ -356,39 +356,47 @@ class Equation {
         Compound c = (reactants[0].key.isCompound())
             ? reactants[0].key
             : reactants[1].key;
+        // The indices of the element being replaced and the one staying the same.
+        int rIndex = e.metal ? 0 : 1;
+        int sIndex = 1 - rIndex;
         List<int> counts = new List(2);
         if (c.ionic) {
           List<List<int>> charges = [
             [
               e.charge,
             ],
-            [c.compoundUnits[0].key.charge, c.compoundUnits[1].key.charge]
+            [
+              c.compoundUnits[sIndex].key.charge,
+              c.compoundUnits[rIndex].key.charge
+            ]
           ];
-          int lcmCharge = lcm(charges[0][0], charges[1][0]).abs();
+          int lcmCharge = lcm(charges[0][0], charges[1][0]);
           counts[0] =
-              lcmCharge ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
+              (lcmCharge ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]))
+                  .abs();
           counts[1] =
-              -lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]);
+              (lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]))
+                  .abs();
         } else {
           counts[0] = c.compoundUnits[0].key.count;
           counts[1] = e.count;
         }
         if (e.metal) {
           return [
-            MapEntry(c.compoundUnits[1].key, 1),
+            MapEntry(c.compoundUnits[rIndex].key, 1),
             MapEntry(
                 Compound.fromUnits([
                   MapEntry(e, counts[1]),
-                  MapEntry(c.compoundUnits[0].key, counts[0])
+                  MapEntry(c.compoundUnits[sIndex].key, counts[0])
                 ]),
                 1)
           ];
         } else {
           return [
-            MapEntry(c.compoundUnits[1].key, 1),
+            MapEntry(c.compoundUnits[rIndex].key, 1),
             MapEntry(
                 Compound.fromUnits([
-                  MapEntry(c.compoundUnits[0].key, counts[0]),
+                  MapEntry(c.compoundUnits[sIndex].key, counts[0]),
                   MapEntry(e, counts[1]),
                 ]),
                 1)
