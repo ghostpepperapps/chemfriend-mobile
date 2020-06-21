@@ -75,10 +75,9 @@ void main() {
       expect(e.toString(), equals('3Na(s) + GaF₃(s) → Ga(s) + 3NaF'));
     });
     test('.solve() works correctly for double replacement', () {
-      Equation e = Equation('AlF3(aq) + CaCl2(aq)');
+      Equation e = Equation('Na3P(aq) + CaCl2(aq)');
       e.balance();
-      expect(
-          e.toString(), equals('2AlF₃(aq) + 3CaCl₂(aq) → 2AlCl₃ + 3CaF₂'));
+      expect(e.toString(), equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂'));
     });
   });
 }

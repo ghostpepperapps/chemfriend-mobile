@@ -152,6 +152,7 @@ class Equation {
         products[1] = MapEntry(products[1].key, counts[3].toInt());
         break;
       case Type.singleReplacement:
+
         // 2-dimensional list to hold number of each molecule.
         List<List<double>> counts = [new List(2), new List(2)];
         MapEntry<dynamic, dynamic> e1 =
@@ -167,12 +168,12 @@ class Equation {
         int rIndex = e1.key.metal ? 0 : 1;
         int sIndex = 1 - rIndex;
 
-        int lcmCount1 =
-            lcm(c1.key.compoundUnits[sIndex].value, c2.key.compoundUnits[sIndex].value)
-                .abs();
+        int lcmCount = lcm(c1.key.compoundUnits[sIndex].value,
+                c2.key.compoundUnits[sIndex].value)
+            .abs();
 
-        counts[0][1] = lcmCount1 / c1.key.compoundUnits[sIndex].value;
-        counts[1][1] = lcmCount1 / c2.key.compoundUnits[sIndex].value;
+        counts[0][1] = lcmCount / c1.key.compoundUnits[sIndex].value;
+        counts[1][1] = lcmCount / c2.key.compoundUnits[sIndex].value;
         counts[0][0] = (counts[1][1] * c2.key.compoundUnits[rIndex].value) /
             e1.key.count;
         counts[1][0] = (counts[0][1] * c1.key.compoundUnits[rIndex].value) /
@@ -198,6 +199,30 @@ class Equation {
         break;
       case Type.doubleReplacement:
         // TODO: Handle this case.
+        // 2-dimensional list to hold number of each molecule.
+        List<List<double>> counts = [new List(2), new List(2)];
+        Compound r1 = reactants[0].key;
+        Compound r2 = reactants[1].key;
+        Compound p1 = products[0].key;
+        Compound p2 = products[1].key;
+
+        int lcmCount1 =
+            lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value).abs();
+        int lcmCount2 =
+            lcm(p1.compoundUnits[1].value, r2.compoundUnits[1].value).abs();
+        counts[1][0] = (lcmCount1 / p1.compoundUnits[0].value) *
+            (lcmCount2 / p1.compoundUnits[1].value);
+        counts[0][0] = (counts[1][0] * p1.compoundUnits[0].value) /
+            r1.compoundUnits[0].value;
+        counts[0][1] = (counts[1][0] * p1.compoundUnits[1].value) /
+            r2.compoundUnits[1].value;
+        counts[1][1] = (counts[0][1] * r2.compoundUnits[0].value) /
+            p2.compoundUnits[0].value;
+
+        reactants[0] = MapEntry(r1, counts[0][0].toInt());
+        reactants[1] = MapEntry(r2, counts[0][1].toInt());
+        products[0] = MapEntry(p1, counts[1][0].toInt());
+        products[1] = MapEntry(p2, counts[1][1].toInt());
         break;
     }
   }
@@ -454,7 +479,7 @@ class Equation {
                 MapEntry(
                     reactants[1].key.compoundUnits[0].key, counts[1][0]),
                 MapEntry(
-                    reactants[1].key.compoundUnits[0].key, counts[1][1]),
+                    reactants[0].key.compoundUnits[1].key, counts[1][1]),
               ]),
               1),
         ];
