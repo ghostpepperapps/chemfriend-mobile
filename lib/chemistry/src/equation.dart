@@ -163,16 +163,20 @@ class Equation {
         MapEntry<dynamic, dynamic> c2 =
             (products[0].key.isCompound()) ? products[0] : products[1];
 
+        // The indices of the element being replaced and the one staying the same.
+        int rIndex = e1.key.metal ? 0 : 1;
+        int sIndex = 1 - rIndex;
+
         int lcmCount1 =
-            lcm(c1.key.compoundUnits[0].value, c2.key.compoundUnits[0].value)
+            lcm(c1.key.compoundUnits[sIndex].value, c2.key.compoundUnits[sIndex].value)
                 .abs();
 
-        counts[0][1] = lcmCount1 / c1.key.compoundUnits[0].value;
-        counts[1][1] = lcmCount1 / c2.key.compoundUnits[0].value;
-        counts[0][0] =
-            (counts[1][1] * c2.key.compoundUnits[1].value) / e1.key.count;
-        counts[1][0] =
-            (counts[0][1] * c1.key.compoundUnits[1].value) / e2.key.count;
+        counts[0][1] = lcmCount1 / c1.key.compoundUnits[sIndex].value;
+        counts[1][1] = lcmCount1 / c2.key.compoundUnits[sIndex].value;
+        counts[0][0] = (counts[1][1] * c2.key.compoundUnits[rIndex].value) /
+            e1.key.count;
+        counts[1][0] = (counts[0][1] * c1.key.compoundUnits[rIndex].value) /
+            e2.key.count;
 
         while (counts[0][0] != counts[0][0].toInt()) {
           counts[0][0] *= 2;

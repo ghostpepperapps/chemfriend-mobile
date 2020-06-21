@@ -64,10 +64,15 @@ void main() {
       expect(
           e.toString(), equals('C₆H₁₂O₆(s) + 6O₂(g) → 6H₂O(g) + 6CO₂(g)'));
     });
-    test('.solve() works correctly for single replacement', () {
+    test('.solve() works correctly for single replacement of nonmetal', () {
       Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
       expect(e.toString(), equals('3S₈(s) + 16GaF₃(s) → 24F₂(g) + 8Ga₂S₃'));
+    });
+    test('.solve() works correctly for single replacement of metal', () {
+      Equation e = Equation('Na(s) + GaF3(s)');
+      e.balance();
+      expect(e.toString(), equals('3Na(s) + GaF₃(s) → Ga(s) + 3NaF'));
     });
     test('.solve() works correctly for double replacement', () {
       Equation e = Equation('AlF3(aq) + CaCl2(aq)');
