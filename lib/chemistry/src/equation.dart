@@ -152,7 +152,45 @@ class Equation {
         products[1] = MapEntry(products[1].key, counts[3].toInt());
         break;
       case Type.singleReplacement:
-        // TODO: Handle this case.
+        // 2-dimensional list to hold number of each molecule.
+        List<List<double>> counts = [new List(2), new List(2)];
+        MapEntry<dynamic, dynamic> e1 =
+            (reactants[0].key.isElement()) ? reactants[0] : reactants[1];
+        MapEntry<dynamic, dynamic> e2 =
+            (products[0].key.isElement()) ? products[0] : products[1];
+        MapEntry<dynamic, dynamic> c1 =
+            (reactants[0].key.isCompound()) ? reactants[0] : reactants[1];
+        MapEntry<dynamic, dynamic> c2 =
+            (products[0].key.isCompound()) ? products[0] : products[1];
+
+        int lcmCount1 =
+            lcm(c1.key.compoundUnits[0].value, c2.key.compoundUnits[0].value)
+                .abs();
+
+        counts[0][1] = lcmCount1 / c1.key.compoundUnits[0].value;
+        counts[1][1] = lcmCount1 / c2.key.compoundUnits[0].value;
+        counts[0][0] =
+            (counts[1][1] * c2.key.compoundUnits[1].value) / e1.key.count;
+        counts[1][0] =
+            (counts[0][1] * c1.key.compoundUnits[1].value) / e2.key.count;
+
+        while (counts[0][0] != counts[0][0].toInt()) {
+          counts[0][0] *= 2;
+          counts[0][1] *= 2;
+          counts[1][0] *= 2;
+          counts[1][1] *= 2;
+        }
+        while (counts[1][0] != counts[1][0].toInt()) {
+          counts[0][0] *= 2;
+          counts[0][1] *= 2;
+          counts[1][0] *= 2;
+          counts[1][1] *= 2;
+        }
+
+        reactants[0] = MapEntry(e1.key, counts[0][0].toInt());
+        reactants[1] = MapEntry(c1.key, counts[0][1].toInt());
+        products[0] = MapEntry(e2.key, counts[1][0].toInt());
+        products[1] = MapEntry(c2.key, counts[1][1].toInt());
         break;
       case Type.doubleReplacement:
         // TODO: Handle this case.
