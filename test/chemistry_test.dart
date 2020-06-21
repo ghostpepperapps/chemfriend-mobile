@@ -9,7 +9,7 @@ void main() {
     });
     test('.toString() returns the subscripted name', () {
       Element e = Element.from('S');
-      expect(e.toString(), equals('S\u2088\u208D\u209b\u208E'));
+      expect(e.toString(), equals('S₈(s)'));
     });
     test('.equals() returns equality to another element', () {
       Element e = Element.from('Mn');
@@ -27,7 +27,7 @@ void main() {
     });
     test('.toString() returns the subscripted name', () {
       Compound c = Compound('C6H12O6(s)');
-      expect(c.toString(), equals('C₆H₁₂O₆₍ₛ₎'));
+      expect(c.toString(), equals('C₆H₁₂O₆(s)'));
     });
     test('.equals() returns equality to another compound', () {
       Compound c = Compound('Al2O3(s)');
@@ -41,38 +41,39 @@ void main() {
   group('Equation', () {
     test('constructor  works regardless of indentation', () {
       Equation e = Equation('H2(g)  +O2(g)   => H2O(l)\n ');
-      expect(e.toString(), equals('H₂₍ᵧ₎ + O₂₍ᵧ₎ → H₂O₍ₗ₎'));
+      expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O(l)'));
     });
     test('.solve() works correctly for simple composition', () {
       Equation e = Equation('H2(g) + O2(g)');
       e.balance();
-      expect(e.toString(), equals('H₂₍ᵧ₎ + O₂₍ᵧ₎ → H₂O₂'));
+      expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O₂'));
     });
     test('.solve() works correctly for composition of an acid', () {
       Equation e = Equation('H2O(l) + CO2(g)');
       e.balance();
-      expect(e.toString(), equals('H₂O₍ₗ₎ + CO₂₍ᵧ₎ → H₂CO₃'));
+      expect(e.toString(), equals('H₂O(l) + CO₂(g) → H₂CO₃'));
     });
     test('.solve() works correctly for composition of a base', () {
       Equation e = Equation('H2O(l) + Na2O(aq)');
       e.balance();
-      expect(e.toString(), equals('H₂O₍ₗ₎ + Na₂O₍ₐ₎ → 2NaOH'));
+      expect(e.toString(), equals('H₂O(l) + Na₂O(aq) → 2NaOH'));
     });
     test('.solve() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
       e.balance();
       expect(
-          e.toString(), equals('C₆H₁₂O₆₍ₛ₎ + 6O₂₍ᵧ₎ → 6H₂O₍ᵧ₎ + 6CO₂₍ᵧ₎'));
+          e.toString(), equals('C₆H₁₂O₆(s) + 6O₂(g) → 6H₂O(g) + 6CO₂(g)'));
     });
     test('.solve() works correctly for single replacement', () {
       Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
-      expect(e.toString(), equals('3S₈₍ₛ₎ + 16GaF₃₍ₛ₎ → 24F₂₍ᵧ₎ + 8Ga₂S₃'));
+      expect(e.toString(), equals('3S₈(s) + 16GaF₃(s) → 24F₂(g) + 8Ga₂S₃'));
     });
     test('.solve() works correctly for double replacement', () {
       Equation e = Equation('AlF3(aq) + CaCl2(aq)');
       e.balance();
-      expect(e.toString(), equals('2AlF₃₍ₐ₎ + 3CaCl₂₍ₐ₎ → 2AlCl₃ + 3CaF₂'));
+      expect(
+          e.toString(), equals('2AlF₃(aq) + 3CaCl₂(aq) → 2AlCl₃ + 3CaF₂'));
     });
   });
 }

@@ -23,17 +23,17 @@ Map<String, List<String>> changeScript = {
 
 /// Maps MatterPhases (for Elements) to their String variants.
 Map<MatterPhase, String> ePhaseToString = {
-  MatterPhase.solid: '\u208D\u209b\u208E',
-  MatterPhase.liquid: '\u208D\u2097\u208E',
-  MatterPhase.gas: '\u208D\u1d67\u208E',
+  MatterPhase.solid: '(s)',
+  MatterPhase.liquid: '(l)',
+  MatterPhase.gas: '(g)',
 };
 
 /// Maps Phases (for Compounds) to their String variants.
 Map<Phase, String> cPhaseToString = {
-  Phase.solid: '\u208D\u209b\u208E',
-  Phase.liquid: '\u208D\u2097\u208E',
-  Phase.gas: '\u208D\u1d67\u208E',
-  Phase.aqueous: '\u208D\u2090\u208E'
+  Phase.solid: '(s)',
+  Phase.liquid: '(l)',
+  Phase.gas: '(g)',
+  Phase.aqueous: '(aq)'
 };
 
 /// Maps Types (for Equations) to their String variants.
