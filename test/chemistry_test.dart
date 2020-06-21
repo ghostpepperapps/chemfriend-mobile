@@ -61,12 +61,13 @@ void main() {
     test('.solve() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
       e.balance();
-      expect(e.toString(), equals('C₆H₁₂O₆₍ₛ₎ + 6O₂₍ᵧ₎ → 6H₂O₍ᵧ₎ + 6CO₂₍ᵧ₎'));
+      expect(
+          e.toString(), equals('C₆H₁₂O₆₍ₛ₎ + 6O₂₍ᵧ₎ → 6H₂O₍ᵧ₎ + 6CO₂₍ᵧ₎'));
     });
     test('.solve() works correctly for single replacement', () {
-      Equation e = Equation('F2(g) + Ga2O3(s)');
+      Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
-      expect(e.toString(), equals('6F₂₍ᵧ₎ + 2Ga₂O₃₍ₛ₎ → 3O₂₍ᵧ₎ + 4GaF₃'));
+      expect(e.toString(), equals('3S₈₍ₛ₎ + 16GaF₃₍ₛ₎ → 24F₂₍ᵧ₎ + 8Ga₂S₃'));
     });
     test('.solve() works correctly for double replacement', () {
       Equation e = Equation('AlF3(aq) + CaCl2(aq)');
