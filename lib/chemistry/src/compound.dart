@@ -149,8 +149,12 @@ class Compound with CompoundUnit, EquationUnit {
     for (MapEntry<CompoundUnit, int> c in this.compoundUnits) {
       if (c.key.isElement())
         result += c.key.formula;
-      else
-        result += '(${c.key.toString()})';
+      else {
+        if (c.value != 1)
+          result += '(${c.key.toString()})';
+        else
+          result += '${c.key.toString()}';
+      }
       String intString = c.value.toString();
       String specialString = '';
       for (int i = 0; i < intString.length; i++)
