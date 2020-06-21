@@ -1,6 +1,7 @@
 part of chemistry;
 
 // TODO: Make compAcid product have (aq) state
+// TODO: Add gas formation
 /// Enum for each possible type of reaction.
 enum Type {
   comp,
@@ -198,7 +199,6 @@ class Equation {
         products[1] = MapEntry(c2.key, counts[1][1].toInt());
         break;
       case Type.doubleReplacement:
-        // TODO: Handle this case.
         // 2-dimensional list to hold number of each molecule.
         List<List<double>> counts = [new List(2), new List(2)];
         Compound r1 = reactants[0].key;
@@ -283,7 +283,7 @@ class Equation {
                 MapEntry(reactants[1].key.compoundUnits[0].key, 1),
                 MapEntry(Element.from('O'),
                     reactants[1].key.compoundUnits[1].value + 1),
-              ]),
+              ], Phase.aqueous),
               1)
         ];
         break;
@@ -294,7 +294,7 @@ class Equation {
                 MapEntry(reactants[1].key.compoundUnits[0].key, 1),
                 MapEntry(Compound('OH'),
                     reactants[1].key.compoundUnits[0].key.charge),
-              ]),
+              ], Phase.aqueous),
               1)
         ];
         break;

@@ -51,12 +51,12 @@ void main() {
     test('.solve() works correctly for composition of an acid', () {
       Equation e = Equation('H2O(l) + CO2(g)');
       e.balance();
-      expect(e.toString(), equals('H₂O(l) + CO₂(g) → H₂CO₃'));
+      expect(e.toString(), equals('H₂O(l) + CO₂(g) → H₂CO₃(aq)'));
     });
     test('.solve() works correctly for composition of a base', () {
       Equation e = Equation('H2O(l) + Na2O(aq)');
       e.balance();
-      expect(e.toString(), equals('H₂O(l) + Na₂O(aq) → 2NaOH'));
+      expect(e.toString(), equals('H₂O(l) + Na₂O(aq) → 2NaOH(aq)'));
     });
     test('.solve() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
