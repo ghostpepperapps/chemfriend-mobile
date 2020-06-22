@@ -90,6 +90,7 @@ class Compound with CompoundUnit, EquationUnit {
     } else
       state = null;
     if (containsMetal && containsNonmetal) ionic = true;
+    _commonIonCharge();
     _multivalent();
   }
 
@@ -138,6 +139,15 @@ class Compound with CompoundUnit, EquationUnit {
         int negative =
             compoundUnits[1].key.getCharge() * compoundUnits[1].value;
         compoundUnits[0].key.charge = -(negative ~/ compoundUnits[0].value);
+      }
+    }
+  }
+
+  /// Determines the charge of this compound if it is a common ion.
+  void _commonIonCharge() {
+    if (this.getCharge() == null) {
+      if (commonIons.containsKey(this.formula)) {
+        this.charge = commonIons[this.formula];
       }
     }
   }

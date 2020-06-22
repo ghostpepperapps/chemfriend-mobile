@@ -28,11 +28,6 @@ abstract class CompoundUnit {
 
   /// Returns the charge of this unit.
   int getCharge() {
-    if (this.isCompound()) {
-      for (Compound c in polyatomicIons) {
-        if (this.equals(c.formula)) return c.charge;
-      }
-    }
     if (this.equals('H')) return 1;
     if (this.isElement() &&
         this.category.compareTo('transition metal') != 0) {
