@@ -1,6 +1,5 @@
 part of chemistry;
 
-// TODO: Make compAcid product have (aq) state
 // TODO: Add gas formation
 /// Enum for each possible type of reaction.
 enum Type {
@@ -206,19 +205,37 @@ class Equation {
         Compound p1 = products[0].key;
         Compound p2 = products[1].key;
 
-        int lcmCount1 =
-            lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value).abs();
-        int lcmCount2 =
-            lcm(p1.compoundUnits[1].value, r2.compoundUnits[1].value).abs();
-        counts[1][0] = (lcmCount1 / p1.compoundUnits[0].value) *
-            (lcmCount2 / p1.compoundUnits[1].value);
-        counts[0][0] = (counts[1][0] * p1.compoundUnits[0].value) /
-            r1.compoundUnits[0].value;
-        counts[0][1] = (counts[1][0] * p1.compoundUnits[1].value) /
-            r2.compoundUnits[1].value;
-        counts[1][1] = (counts[0][1] * r2.compoundUnits[0].value) /
-            p2.compoundUnits[0].value;
-
+        if ((r1.isAcid() && r2.isBase()) || (r2.isAcid() && r1.isBase())) {
+          int acidIndex = reactants[0].key.isAcid() ? 0 : 1;
+          int baseIndex = 1 - acidIndex;
+          Compound acid = reactants[acidIndex].key;
+          Compound base = reactants[baseIndex].key;
+          int otherCharge =
+              acid.compoundUnits[0].value ~/ acid.compoundUnits[1].value;
+          int lcmCharge = lcm(acid.compoundUnits[0].value,
+                  base.compoundUnits[0].key.charge)
+              .abs();
+          counts[0][0] = lcmCharge / acid.compoundUnits[0].value;
+          counts[0][1] = lcmCharge / base.compoundUnits[0].key.charge;
+          counts[1][0] = acid.compoundUnits[0].value * counts[0][0];
+          counts[1][1] = (counts[0][1] * base.compoundUnits[0].value) /
+              p2.compoundUnits[0].value;
+        } else {
+          int lcmCount1 =
+              lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value)
+                  .abs();
+          int lcmCount2 =
+              lcm(p1.compoundUnits[1].value, r2.compoundUnits[1].value)
+                  .abs();
+          counts[1][0] = (lcmCount1 / p1.compoundUnits[0].value) *
+              (lcmCount2 / p1.compoundUnits[1].value);
+          counts[0][0] = (counts[1][0] * p1.compoundUnits[0].value) /
+              r1.compoundUnits[0].value;
+          counts[0][1] = (counts[1][0] * p1.compoundUnits[1].value) /
+              r2.compoundUnits[1].value;
+          counts[1][1] = (counts[0][1] * r2.compoundUnits[0].value) /
+              p2.compoundUnits[0].value;
+        }
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
         products[0] = MapEntry(p1, counts[1][0].toInt());
@@ -433,6 +450,50 @@ class Equation {
         }
         break;
       case Type.doubleReplacement:
+        if ((reactants[0].key.isAcid() && reactants[1].key.isBase()) ||
+            (reactants[1].key.isAcid() && reactants[0].key.isBase())) {
+          int acidIndex = reactants[0].key.isAcid() ? 0 : 1;
+          int baseIndex = 1 - acidIndex;
+          Compound acid = reactants[acidIndex].key;
+          Compound base = reactants[baseIndex].key;
+          if (acid.compoundUnits.length > 2) {
+            reactants[acidIndex] = MapEntry(
+                Compound.fromUnits([
+                  MapEntry(acid.compoundUnits[0].key,
+                      acid.compoundUnits[0].value),
+                  MapEntry(
+                      Compound.fromUnits(acid.compoundUnits.sublist(1)), 1)
+                ], Phase.aqueous),
+                1);
+            acid = reactants[acidIndex].key;
+          }
+          if (base.compoundUnits.length > 2) {
+            reactants[baseIndex] = MapEntry(
+                Compound.fromUnits([
+                  MapEntry(base.compoundUnits[0].key,
+                      base.compoundUnits[0].value),
+                  MapEntry(
+                      Compound.fromUnits(base.compoundUnits.sublist(1)), 1)
+                ], Phase.aqueous),
+                1);
+            acid = reactants[acidIndex].key;
+          }
+          int otherCharge =
+              acid.compoundUnits[0].value ~/ acid.compoundUnits[1].value;
+          int lcmCharge =
+              lcm(otherCharge, base.compoundUnits[0].key.charge).abs();
+          return [
+            MapEntry(Compound('H2O(l)'), 1),
+            MapEntry(
+                Compound.fromUnits([
+                  MapEntry(base.compoundUnits[0].key,
+                      lcmCharge ~/ base.compoundUnits[0].key.charge),
+                  MapEntry(
+                      acid.compoundUnits[1].key, lcmCharge ~/ otherCharge),
+                ]),
+                1),
+          ];
+        }
         List<List<int>> counts = [new List(2), new List(2)];
         List<List<int>> charges = [
           [

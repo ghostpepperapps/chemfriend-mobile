@@ -80,5 +80,11 @@ void main() {
       e.balance();
       expect(e.toString(), equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂'));
     });
+    test('.balance() works correctly for neutralization', () {
+      Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
+      e.balance();
+      expect(e.toString(),
+          equals('3H₂CO₃(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + Al₂(CO₃)₃'));
+    });
   });
 }

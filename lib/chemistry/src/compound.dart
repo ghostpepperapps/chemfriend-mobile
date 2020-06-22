@@ -171,6 +171,28 @@ class Compound with CompoundUnit, EquationUnit {
     return this.formula.compareTo(formula) == 0;
   }
 
+  /// Returns `true` if this compound contains [substance].
+  bool contains(String substance) {
+    return this.formula.contains(substance);
+  }
+
+  /// Returns `true` if this compound is an acid.
+  ///
+  /// Checks if the first element is `H` and the phase is `Phase.aqueous`.
+  bool isAcid() {
+    return this.compoundUnits[0].key.equals('H') &&
+        this.state == Phase.aqueous;
+  }
+
+  /// Returns `true` is this compound is a base.
+  ///
+  /// Checks is this is ammonia (`NH3`), or is ionic and contains hydroxide
+  /// (`OH`) or carbonate (`CO3`).
+  bool isBase() {
+    return this.equals('NH₃') ||
+        (this.ionic && (this.contains('OH') || this.contains('CO₃')));
+  }
+
   /// Prints the individual units of this compound.
   void printElements() {
     for (MapEntry c in compoundUnits) {
