@@ -86,5 +86,11 @@ void main() {
       expect(e.toString(),
           equals('3H₂CO₃(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + Al₂(CO₃)₃'));
     });
+    test('.balance() works correctly for gas formation', () {
+      Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
+      e.balance();
+      expect(e.toString(),
+          equals('3(NH₄)₂S(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + 6NH₃(g) + Al₂S₃'));
+    });
   });
 }

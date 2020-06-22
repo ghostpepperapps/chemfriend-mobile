@@ -104,7 +104,7 @@ class Compound with CompoundUnit, EquationUnit {
     _multivalent();
     formula = '';
     for (MapEntry<CompoundUnit, int> c in this.compoundUnits) {
-      if (c.key.isElement())
+      if (c.key.isElement() || c.value == 1)
         formula += c.key.formula;
       else
         formula += '(${c.key.formula})';

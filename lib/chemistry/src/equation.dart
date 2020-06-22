@@ -240,7 +240,32 @@ class Equation {
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
         products[0] = MapEntry(p1, counts[1][0].toInt());
         products[1] = MapEntry(p2, counts[1][1].toInt());
+        _gasFormation();
         break;
+    }
+  }
+
+  /// Converts the appropriate products of this equation to gases.
+  /// ```
+  /// H₂CO₃ → H₂O(l) + CO₂(g)
+  /// H₂SO₃ → H₂O(l) + SO₂(g)
+  /// NH₄OH → H₂O(l) + NH₃(g)
+  /// ```
+  void _gasFormation() {
+    for (int i = 0; i < products.length; i++) {
+      if (products[i].key.equals('H2CO3')) {
+        products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
+        products.insert(
+            i + 1, MapEntry(Compound('CO2(g)'), products[i].value));
+      } else if (products[i].key.equals('H2SO3')) {
+        products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
+        products.insert(
+            i + 1, MapEntry(Compound('SO2(g)'), products[i].value));
+      } else if (products[i].key.equals('NH4OH')) {
+        products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
+        products.insert(
+            i + 1, MapEntry(Compound('NH3(g)'), products[i].value));
+      }
     }
   }
 
