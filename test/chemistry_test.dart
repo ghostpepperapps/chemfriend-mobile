@@ -43,38 +43,39 @@ void main() {
       Equation e = Equation('H2(g)  +O2(g)   => H2O(l)\n ');
       expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O(l)'));
     });
-    test('.solve() works correctly for simple composition', () {
+    test('.balance() works correctly for simple composition', () {
       Equation e = Equation('H2(g) + O2(g)');
       e.balance();
       expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O₂'));
     });
-    test('.solve() works correctly for composition of an acid', () {
+    test('.balance() works correctly for composition of an acid', () {
       Equation e = Equation('H2O(l) + CO2(g)');
       e.balance();
       expect(e.toString(), equals('H₂O(l) + CO₂(g) → H₂CO₃(aq)'));
     });
-    test('.solve() works correctly for composition of a base', () {
+    test('.balance() works correctly for composition of a base', () {
       Equation e = Equation('H2O(l) + Na2O(aq)');
       e.balance();
       expect(e.toString(), equals('H₂O(l) + Na₂O(aq) → 2NaOH(aq)'));
     });
-    test('.solve() works correctly for combustion', () {
+    test('.balance() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
       e.balance();
       expect(
           e.toString(), equals('C₆H₁₂O₆(s) + 6O₂(g) → 6H₂O(g) + 6CO₂(g)'));
     });
-    test('.solve() works correctly for single replacement of nonmetal', () {
+    test('.balance() works correctly for single replacement of nonmetal',
+        () {
       Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
       expect(e.toString(), equals('3S₈(s) + 16GaF₃(s) → 24F₂(g) + 8Ga₂S₃'));
     });
-    test('.solve() works correctly for single replacement of metal', () {
+    test('.balance() works correctly for single replacement of metal', () {
       Equation e = Equation('Na(s) + GaF3(s)');
       e.balance();
       expect(e.toString(), equals('3Na(s) + GaF₃(s) → Ga(s) + 3NaF'));
     });
-    test('.solve() works correctly for double replacement', () {
+    test('.balance() works correctly for double replacement', () {
       Equation e = Equation('Na3P(aq) + CaCl2(aq)');
       e.balance();
       expect(e.toString(), equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂'));
