@@ -1,6 +1,5 @@
 part of chemistry;
 
-// TODO: Add gas formation
 /// Enum for each possible type of reaction.
 enum Type {
   comp,
@@ -18,8 +17,8 @@ enum Type {
 
 /// A class representing a chemical equation.
 class Equation {
-  List<MapEntry> reactants;
-  List<MapEntry> products;
+  List<MapEntry<CompoundUnit, int>> reactants;
+  List<MapEntry<CompoundUnit, int>> products;
   bool inWater;
   Type type;
 
@@ -27,8 +26,8 @@ class Equation {
   ///
   /// [s] contains the reactants and optionally the products as well.
   Equation(String s) {
-    List<MapEntry> reactants = [];
-    List<MapEntry> products = [];
+    List<MapEntry<CompoundUnit, int>> reactants = [];
+    List<MapEntry<CompoundUnit, int>> products = [];
     String reactantStr;
     String productStr;
     reactantStr = (s.contains('=>')) ? s.split('=>')[0].trim() : s;
@@ -67,7 +66,8 @@ class Equation {
   }
 
   /// Constructs an equation from the [reactants] and [products].
-  Equation.fromUnits(List<MapEntry> reactants, [List<MapEntry> products]) {
+  Equation.fromUnits(List<MapEntry<CompoundUnit, int>> reactants,
+      [List<MapEntry<CompoundUnit, int>> products]) {
     this.reactants = reactants;
     this.products = products;
   }
@@ -155,13 +155,13 @@ class Equation {
 
         // 2-dimensional list to hold number of each molecule.
         List<List<double>> counts = [new List(2), new List(2)];
-        MapEntry<dynamic, dynamic> e1 =
+        MapEntry<CompoundUnit, int> e1 =
             (reactants[0].key.isElement()) ? reactants[0] : reactants[1];
-        MapEntry<dynamic, dynamic> e2 =
+        MapEntry<CompoundUnit, int> e2 =
             (products[0].key.isElement()) ? products[0] : products[1];
-        MapEntry<dynamic, dynamic> c1 =
+        MapEntry<CompoundUnit, int> c1 =
             (reactants[0].key.isCompound()) ? reactants[0] : reactants[1];
-        MapEntry<dynamic, dynamic> c2 =
+        MapEntry<CompoundUnit, int> c2 =
             (products[0].key.isCompound()) ? products[0] : products[1];
 
         // The indices of the element being replaced and the one staying the same.
@@ -210,8 +210,6 @@ class Equation {
           int baseIndex = 1 - acidIndex;
           Compound acid = reactants[acidIndex].key;
           Compound base = reactants[baseIndex].key;
-          int otherCharge =
-              acid.compoundUnits[0].value ~/ acid.compoundUnits[1].value;
           int lcmCharge = lcm(acid.compoundUnits[0].value,
                   base.compoundUnits[0].key.charge)
               .abs();
@@ -290,7 +288,8 @@ class Equation {
   }
 
   /// Returns the products of an equation based on its [reactants] and [type].
-  static List<MapEntry> _getProducts(List<MapEntry> reactants, Type type) {
+  static List<MapEntry<CompoundUnit, int>> _getProducts(
+      List<MapEntry<CompoundUnit, int>> reactants, Type type) {
     switch (type) {
       case Type.comp:
         bool ionic = false;
@@ -575,7 +574,7 @@ class Equation {
   }
 
   /// Returns the type of an equation based on its [reactants].
-  static Type _getType(List<MapEntry> reactants) {
+  static Type _getType(List<MapEntry<CompoundUnit, int>> reactants) {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;

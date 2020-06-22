@@ -10,6 +10,7 @@ abstract class CompoundUnit {
   bool metal;
   int count;
   int charge;
+  bool ionic;
   List<int> shells;
   List<MapEntry<CompoundUnit, int>> compoundUnits;
 
@@ -24,6 +25,21 @@ abstract class CompoundUnit {
   /// Returns `true` if this unit is a compound.
   bool isCompound() {
     return this.runtimeType == Compound;
+  }
+
+  /// Returns `true` if this unit is an acid.
+  ///
+  /// Checks if the first element is `H` and the phase is `Phase.aqueous`.
+  bool isAcid() {
+    return this.isCompound() && this.isAcid();
+  }
+
+  /// Returns `true` is this unit is a base.
+  ///
+  /// Checks is this is ammonia (`NH3`), or is ionic and contains hydroxide
+  /// (`OH`) or carbonate (`CO3`).
+  bool isBase() {
+    return this.isCompound() && this.isBase();
   }
 
   /// Returns the charge of this unit.
