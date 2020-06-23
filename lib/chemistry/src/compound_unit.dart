@@ -43,6 +43,14 @@ abstract class CompoundUnit {
   }
 
   /// Returns the charge of this unit.
+  ///
+  /// ```dart
+  /// Compound c = new Compound('SO4');
+  /// print(c.getCharge()); // -2
+  ///
+  /// Element e = Element.from('Na');
+  /// print(e.getCharge()); // 1
+  /// ```
   int getCharge() {
     if (this.equals('H')) return 1;
     if (this.isElement() &&

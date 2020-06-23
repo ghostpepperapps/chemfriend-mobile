@@ -4,14 +4,29 @@ part of chemistry;
 enum Phase { solid, liquid, gas, aqueous }
 
 /// A class that represents a chemical compound.
-class Compound with CompoundUnit, EquationUnit {
+class Compound with CompoundUnit {
+  /// A list of MapEntries that map each unit to the number of molecules
+  /// present.
   List<MapEntry<CompoundUnit, int>> compoundUnits;
+
+  /// A Boolean value that represents whether or not this compound is
+  /// ionic.
   bool ionic;
+
+  /// The state of this compound.
   Phase state;
+
+  /// The chemical formula of this compound.
   String formula;
+
+  /// The charge of this compound.
   int charge;
 
   /// Constructs a compound from its chemical [formula].
+  ///
+  /// ```dart
+  /// Compound c = new Compound('H2O(l)');
+  /// ```
   Compound(String formula, {bool nested = false, int charge}) {
     this.formula = formula;
     this.charge = charge;
@@ -95,6 +110,14 @@ class Compound with CompoundUnit, EquationUnit {
   }
 
   /// Contructs a compound from its individual [units] and its [state].
+  ///
+  /// ```dart
+  /// List<MapEntry<CompoundUnit, int>> units = [
+  ///   MapEntry(Element.from('Na'), 2),
+  ///   MapEntry(Compound('SO3'), 1)
+  /// ];
+  /// Compound c = Compound.fromUnits(units, Phase.solid);
+  /// ```
   Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units,
       [Phase state]) {
     this.compoundUnits = units;
@@ -132,6 +155,16 @@ class Compound with CompoundUnit, EquationUnit {
   }
 
   /// Determines the charge of a multivalent metal if this compound is ionic.
+  ///
+  /// To do so, it uses the anion in the compound and assumes the compound is
+  /// properly balanced.
+  /// For example, to find the charge of `Fe` in `Fe₂(SO₃)₃`, the following
+  /// process is used:
+  ///
+  /// 1. Charge of SO₃ = -2
+  /// 2. ∴ Charge of (SO₃)₃ = -2 * 3 = -6
+  /// 3. ∴ Charge of Fe₂ = -6 * -1 = 6
+  /// 4. ∴ Charge of Fe = 6 / 2 = +3
   void _multivalent() {
     if (ionic) {
       CompoundUnit first = compoundUnits[0].key;
@@ -144,6 +177,8 @@ class Compound with CompoundUnit, EquationUnit {
   }
 
   /// Determines the charge of this compound if it is a common ion.
+  ///
+  /// This uses the [commonIons] map of common polyatomic ions.
   void _commonIonCharge() {
     if (this.getCharge() == null) {
       if (commonIons.containsKey(this.formula)) {
@@ -176,12 +211,24 @@ class Compound with CompoundUnit, EquationUnit {
   }
 
   /// Returns `true` if this element has the formula [formula].
+  ///
+  /// ```dart
+  /// Compound c = new Compound('H2O(l)');
+  /// print(c.equals('H2O2(l)')); // false
+  /// print(c.equals('H2O(l)')); // true
+  /// ```
   @override
   bool equals(String formula) {
     return this.formula.compareTo(formula) == 0;
   }
 
   /// Returns `true` if this compound contains [substance].
+  ///
+  /// ```dart
+  /// Compound c = new Compound('H2O(l)');
+  /// print(c.contains('H')); // true
+  /// print(c.contains('Ca')); // false
+  /// ```
   bool contains(String substance) {
     return this.formula.contains(substance);
   }
@@ -189,6 +236,12 @@ class Compound with CompoundUnit, EquationUnit {
   /// Returns `true` if this compound is an acid.
   ///
   /// Checks if the first element is `H` and the phase is `Phase.aqueous`.
+  /// ```dart
+  /// Compound c = new Compound('H2O(l)');
+  /// Compound d = new Compound('H2CO3(aq)');
+  /// print(c.isAcid()); // false
+  /// print(d.isAcid()); // true
+  /// ```
   bool isAcid() {
     return this.compoundUnits[0].key.equals('H') &&
         this.state == Phase.aqueous;
@@ -198,13 +251,19 @@ class Compound with CompoundUnit, EquationUnit {
   ///
   /// Checks is this is ammonia (`NH3`), or is ionic and contains hydroxide
   /// (`OH`) or carbonate (`CO3`).
+  /// ```dart
+  /// Compound c = new Compound('H2O(l)');
+  /// Compound d = new Compound('NaOH(aq)');
+  /// print(c.isBase()); // false
+  /// print(d.isBase()); // true
+  /// ```
   bool isBase() {
     return this.equals('NH₃') ||
         (this.ionic && (this.contains('OH') || this.contains('CO₃')));
   }
 
   /// Prints the individual units of this compound.
-  void printElements() {
+  void printUnits() {
     for (MapEntry c in compoundUnits) {
       if (c.key.isElement())
         print('${c.key.name}: ${c.value}');

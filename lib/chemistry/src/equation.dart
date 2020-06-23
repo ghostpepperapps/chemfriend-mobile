@@ -17,14 +17,27 @@ enum Type {
 
 /// A class representing a chemical equation.
 class Equation {
+  /// The reactants of this equation.
   List<MapEntry<CompoundUnit, int>> reactants;
+
+  /// The products of this equation.
   List<MapEntry<CompoundUnit, int>> products;
+
+  /// A Boolean that represents whether or not this reaction takes place in
+  /// water.
   bool inWater;
+
+  /// The type of this reaction.
   Type type;
 
   /// Constructs an equation from a String.
   ///
   /// [s] contains the reactants and optionally the products as well.
+  /// For example:
+  /// ```dart
+  /// Equation e = new Equation('H2O(l) + CO2(g)');
+  /// Equation f = new Equation('H2(g) + O2(g) => H2O(l)');
+  /// ```
   Equation(String s) {
     List<MapEntry<CompoundUnit, int>> reactants = [];
     List<MapEntry<CompoundUnit, int>> products = [];
@@ -65,19 +78,41 @@ class Equation {
     this.products = products;
   }
 
-  /// Constructs an equation from the [reactants] and [products].
+  /// Constructs an equation from the [reactants] and optionally the
+  /// [products].
+  ///
+  /// ```dart
+  /// List<MapEntry<CompoundUnit, int>> reactants = [
+  ///   MapEntry(Compound('H2O(l)'), 1),
+  ///   MapEntry(Compound('CO2(g)'), 1)
+  /// ];
+  /// List<MapEntry<CompoundUnit, int>> products = [
+  ///   MapEntry(Compound('H2CO3(aq)'), 1)
+  /// ];
+  /// Equation e = new Equation.fromUnits(reactants);
+  /// Equation f = new Equation.fromUnits(reactants, products);
+  /// ```
   Equation.fromUnits(List<MapEntry<CompoundUnit, int>> reactants,
       [List<MapEntry<CompoundUnit, int>> products]) {
     this.reactants = reactants;
     this.products = products;
   }
 
-  /// Balances this equation based on its type.
+  /// Finds the products of this equation and balances it based on its type.
+  ///
+  /// ```dart
+  /// Equation e = Equation('Na3P(aq) + CaCl2(aq)');
+  /// e.balance();
+  /// print(e); // 2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂
+  ///
+  /// Equation f = Equation('H2(g) + O2(g) => H2O(l)');
+  /// f.balance();
+  /// print(f); // 2H₂(g) + O₂(g) → 2H₂O(l)
+  /// ```
   void balance() {
-    type = _getType(this.reactants);
-    this.products = (this.products == null)
-        ? _getProducts(reactants, type)
-        : this.products;
+    type = this.getType();
+    this.products =
+        (this.products == null) ? this.getProducts() : this.products;
     // Balancing
     switch (type) {
       case Type.comp:
@@ -249,6 +284,12 @@ class Equation {
   /// H₂SO₃ → H₂O(l) + SO₂(g)
   /// NH₄OH → H₂O(l) + NH₃(g)
   /// ```
+  /// For example:
+  /// ```dart
+  /// Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
+  /// e.balance();
+  /// print(e); // 3(NH₄)₂S(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + 6NH₃(g) + Al₂S₃
+  /// ```
   void _gasFormation() {
     for (int i = 0; i < products.length; i++) {
       if (products[i].key.equals('H2CO3')) {
@@ -267,7 +308,8 @@ class Equation {
     }
   }
 
-  /// Returns the String representation of this equation.
+  /// Returns the String representation of this equation with the correct
+  /// subscripts.
   @override
   String toString() {
     String result = '';
@@ -288,8 +330,14 @@ class Equation {
   }
 
   /// Returns the products of an equation based on its [reactants] and [type].
-  static List<MapEntry<CompoundUnit, int>> _getProducts(
-      List<MapEntry<CompoundUnit, int>> reactants, Type type) {
+  ///
+  /// The count of each product is 1 because the equation has not yet been
+  /// balanced.
+  /// ```dart
+  /// Equation e = Equation('CaO(s) + Na3P(s)');
+  /// print(e.getProducts()); // [MapEntry(Ca₃P₂: 1), MapEntry(Na₂O: 1)]
+  /// ```
+  List<MapEntry<CompoundUnit, int>> getProducts() {
     switch (type) {
       case Type.comp:
         bool ionic = false;
@@ -574,7 +622,12 @@ class Equation {
   }
 
   /// Returns the type of an equation based on its [reactants].
-  static Type _getType(List<MapEntry<CompoundUnit, int>> reactants) {
+  ///
+  /// ```dart
+  /// Equation e = Equation('H2(g) + O2(g) => H2O(l)');
+  /// print(e.getType()); // Type.comp
+  /// ```
+  Type getType() {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;

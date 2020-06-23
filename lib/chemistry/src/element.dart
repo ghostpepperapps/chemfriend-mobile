@@ -1,11 +1,21 @@
 part of chemistry;
 
 /// A class representing a chemical element.
-class Element extends ChemicalElement with CompoundUnit, EquationUnit {
+class Element extends ChemicalElement with CompoundUnit {
+  /// The state of this element.
   MatterPhase state;
+
+  /// A Boolean value that represents whether or not this element is a metal.
   bool metal;
+
+  /// The charge of this element.
   int charge;
+
+  /// The number of atoms this element needs to have in order to be stable.
   int count;
+
+  /// The number of this element in the periodic table.
+  int number;
 
   /// Constructs an element from the properties of [other].
   Element.clone(ChemicalElement other) {
@@ -27,6 +37,12 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   }
 
   /// Returns `true` if this element's formula is [symbol].
+  ///
+  /// ```dart
+  /// Element e = Element.from('H');
+  /// print(e.equals('H')); // true
+  /// print(e.equals('Ca')); // false
+  /// ```
   @override
   bool equals(String symbol) {
     return this.formula.compareTo(symbol) == 0;
@@ -38,6 +54,11 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   }
 
   /// Returns an element with the symbol [symbol] and charge [_charge].
+  ///
+  /// ```dart
+  /// Element e = Element.from('Ca');
+  /// Element f = Element.from('Fe', 3);
+  /// ```
   static Element from(String symbol, [int _charge]) {
     Element result;
     for (ChemicalElement e in periodicTable) {
@@ -72,6 +93,11 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   }
 
   /// Returns `true` if an element with the symbol [symbol] exists.
+  ///
+  /// ```dart
+  /// print(Element.exists('Na')); // true
+  /// print(Element.exists('Rr')); // false
+  /// ```
   static bool exists(String symbol) {
     for (ChemicalElement e in periodicTable) {
       if (e.symbol.compareTo(symbol) == 0) return true;
