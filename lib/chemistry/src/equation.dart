@@ -145,7 +145,7 @@ class Equation {
         bool halfElement = false;
         for (int i = 0; i < counts.length - 1; i++) {
           counts[i] = this.reactants[0].key.compoundUnits[i].value /
-              this.products[i].value;
+              this.products[i].key.count;
           if (counts[i] != counts[i].toInt()) halfElement = true;
         }
         if (halfElement) counts = counts.map((count) => count *= 2).toList();
@@ -421,7 +421,7 @@ class Equation {
                     reactants[0].key.compoundUnits[1].value),
                 MapEntry(Element.from('O'),
                     reactants[0].key.compoundUnits[2].value - 1),
-              ], Phase.gas),
+              ]),
               1)
         ];
         break;
@@ -437,7 +437,7 @@ class Equation {
                             reactants[0].key.compoundUnits[0].key.charge)
                         .abs()),
                 MapEntry(Element.from('O'), lcmCharge.abs() ~/ 2),
-              ], Phase.gas),
+              ]),
               1)
         ];
         break;
@@ -631,28 +631,23 @@ class Equation {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;
+      if (reactants[0].key.compoundUnits.length == 2) return Type.decomp;
       if (reactants[0].key.compoundUnits[0].key.equals('H')) {
         if (reactants[0].key.compoundUnits[2].key.equals('O')) {
           if (!reactants[0].key.compoundUnits[1].key.metal)
             return Type.decompAcid;
         }
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
-        if (reactants[0].key.compoundUnits[1].key.isCompound()) {
-          if (reactants[0]
-                  .key
-                  .compoundUnits[1]
-                  .key
-                  .formula
-                  .compareTo('OH') ==
-              0) return Type.decompBase;
-        }
+        if (reactants[0].key.compoundUnits[1].key.formula.compareTo('O') ==
+                0 &&
+            reactants[0].key.compoundUnits[2].key.formula.compareTo('H') ==
+                0) return Type.decompBase;
         if (!reactants[0].key.compoundUnits[1].key.metal) {
           if (reactants[0].key.compoundUnits[2].key.equals('O')) {
             return Type.decompSalt;
           }
         }
       }
-      if (reactants[0].key.compoundUnits.length == 2) return Type.decomp;
     }
     if (reactants[0].key.isElement() && reactants[1].key.isElement())
       return Type.comp; // Simple Composition
