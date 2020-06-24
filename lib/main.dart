@@ -1,7 +1,8 @@
 import 'package:chemfriend/chemistry/chemistry.dart';
+import 'package:flutter/material.dart';
 
 import 'solution.dart';
-import 'package:flutter/material.dart';
+import 'input.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ChemFriend',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: MyHomePage(title: 'ChemFriend v0.1'),
     );
@@ -37,48 +38,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: const Text('ChemFriend v.0.0.0.8')),
         body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-          Center(
-              child: SizedBox(
-            width: 200,
-            height: 200,
-            child: FloatingActionButton(
-              heroTag: '_pushSolution',
-              child: SizedBox(
-                width: 150,
-                height: 150,
-                child: Icon(Icons.camera),
-              ),
-              onPressed: () {
-                _pushSolution(context, controller.text);
-              },
-            ),
-          )),
-          TextField(
-            controller: controller,
-            textInputAction: TextInputAction.done,
-          ),
-        ]));
+            children: <Widget>[Input(onPressed: _pushSolution)]));
   }
 
   void _pushSolution(BuildContext context, String text) async {
     Equation e;
     e = Equation(text);
-    /* try {
-      e = Equation(text);
-    } on Error {
-      e = Equation('C6H12O2(s) + O2(g)');
-    } */
     e.balance();
     String solution = e.toString();
+    String type = typeToString[e.getType()];
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Solution(
-                solution: solution,
-              )),
+          builder: (context) => Solution(solution: solution, type: type)),
     );
   }
 }
