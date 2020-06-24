@@ -95,6 +95,14 @@ void main() {
       e.balance();
       expect(e.toString(), equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂'));
     });
+    test(
+        '.balance() works correctly for double replacement of polyatomic ions',
+        () {
+      Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
+      e.balance();
+      expect(
+          e.toString(), equals('NH₄NO₃(aq) + CaSO₃(aq) → NH₄SO₃ + CaNO₃'));
+    });
     test('.balance() works correctly for neutralization', () {
       Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
       e.balance();

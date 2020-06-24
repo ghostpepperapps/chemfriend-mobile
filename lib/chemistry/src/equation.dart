@@ -533,6 +533,33 @@ class Equation {
         }
         break;
       case Type.doubleReplacement:
+        for (int i = 0; i < 2; i++) {
+          MapEntry<CompoundUnit, int> r = reactants[i];
+          if (r.key.compoundUnits.length > 2) {
+            if (r.key.compoundUnits[0].key.equals('N') &&
+                r.key.compoundUnits[0].value == 1 &&
+                r.key.compoundUnits[1].key.equals('H') &&
+                r.key.compoundUnits[1].value == 4) {
+              reactants[i] = MapEntry(
+                  Compound.fromUnits([
+                    MapEntry(Compound('NH4'), 1),
+                    MapEntry(
+                        Compound.fromUnits(r.key.compoundUnits.sublist(2)),
+                        1)
+                  ], r.key.state),
+                  1);
+              r = reactants[i];
+            }
+            reactants[i] = MapEntry(
+                Compound.fromUnits([
+                  MapEntry(r.key.compoundUnits[0].key,
+                      r.key.compoundUnits[0].value),
+                  MapEntry(
+                      Compound.fromUnits(r.key.compoundUnits.sublist(1)), 1)
+                ], r.key.state),
+                1);
+          }
+        }
         List<List<int>> counts = [new List(2), new List(2)];
         List<List<int>> charges = [
           [
