@@ -206,7 +206,7 @@ class Compound with CompoundUnit {
         specialString += '${changeScript[intString[i]][1]}';
       if (c.value != 1) result += specialString;
     }
-    if (this.state != null) result += cPhaseToString[this.state];
+    if (this.state != null) result += phaseToString[this.state];
     return result;
   }
 

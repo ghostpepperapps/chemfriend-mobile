@@ -3,7 +3,7 @@ part of chemistry;
 /// A class representing a chemical element.
 class Element extends ChemicalElement with CompoundUnit {
   /// The state of this element.
-  MatterPhase state;
+  Phase state;
 
   /// A Boolean value that represents whether or not this element is a metal.
   bool metal;
@@ -22,7 +22,7 @@ class Element extends ChemicalElement with CompoundUnit {
     this.name = other.name;
     this.formula = other.symbol;
     this.category = other.category;
-    this.state = other.stpPhase;
+    this.state = mPhaseToPhase[other.stpPhase];
     this.number = other.number;
     this.shells = other.shells;
   }
@@ -32,7 +32,7 @@ class Element extends ChemicalElement with CompoundUnit {
   String toString() {
     String result = this.formula;
     if (this.count != 1) result += changeScript[this.count.toString()][1];
-    result += ePhaseToString[this.state];
+    result += phaseToString[this.state];
     return result;
   }
 

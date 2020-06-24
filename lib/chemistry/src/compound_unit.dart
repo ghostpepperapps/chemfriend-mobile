@@ -13,6 +13,7 @@ abstract class CompoundUnit {
   bool ionic;
   List<int> shells;
   List<MapEntry<CompoundUnit, int>> compoundUnits;
+  Phase state;
 
   /// Returns `true` if this unit has the formula or symbol [s].
   bool equals(String s);

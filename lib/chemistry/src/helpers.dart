@@ -1,5 +1,15 @@
 part of chemistry;
 
+/// Maps MatterPhases to their Phase variants.
+///
+/// MatterPhases are used in ChemicalElements and Phases are used in Elements
+/// and Compounds.
+Map<MatterPhase, Phase> mPhaseToPhase = {
+  MatterPhase.solid: Phase.solid,
+  MatterPhase.liquid: Phase.liquid,
+  MatterPhase.gas: Phase.gas,
+};
+
 /// Maps characters to their superscript and subscript variants.
 Map<String, List<String>> changeScript = {
   '0': ['\u2070', '\u2080'],
@@ -21,15 +31,8 @@ Map<String, List<String>> changeScript = {
   ')': ['\u207E', '\u208E'],
 };
 
-/// Maps MatterPhases (for Elements) to their String variants.
-Map<MatterPhase, String> ePhaseToString = {
-  MatterPhase.solid: '(s)',
-  MatterPhase.liquid: '(l)',
-  MatterPhase.gas: '(g)',
-};
-
-/// Maps Phases (for Compounds) to their String variants.
-Map<Phase, String> cPhaseToString = {
+/// Maps Phases to their String variants.
+Map<Phase, String> phaseToString = {
   Phase.solid: '(s)',
   Phase.liquid: '(l)',
   Phase.gas: '(g)',
