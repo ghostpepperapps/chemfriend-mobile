@@ -54,6 +54,33 @@ Map<Type, String> typeToString = {
   Type.doubleReplacement: 'Double Replacement'
 };
 
+/// Maps ions to ions they combine with to become solid in water.
+Map<List<String>, List<String>> ionToSolid = {
+  ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4', 'NO3', 'ClO3', 'ClO4', 'CH3COO']:
+      [],
+  ['F']: ['Li', 'Mg', 'Ca', 'Sr', 'Ba', 'Fe2+', 'Hg22+', 'Pb2+'],
+  ['Cl', 'Br', 'I']: ['Cu+', 'Ag', 'Hg22+', 'Pb2+', 'Tl+'],
+  ['SO4']: ['Ca', 'Sr', 'Ba', 'Ag', 'Hg22+', 'Pb2+', 'Ra']
+};
+
+/// Maps ions to ions they combine with to become aqueous in water.
+Map<List<String>, List<String>> ionToAqueous = {
+  ['CO3', 'PO4', 'SO3']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['IO3', 'OOCCOO']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['OH']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4']
+};
+
+/// List of formulas of compounds that are solid in water.
+List<String> solidCompounds = [
+  'RbClO4',
+  'CsClO4',
+  'AgCH3COO',
+  'Hg2(CH3COO)2'
+];
+
+/// List of formulas of compounds that are aqueous in water.
+List<String> aqueousCompounds = ['Co(IO3)2', 'Fe2(OOCCOO)3'];
+
 /// Returns `true` if [s] contains a number.
 bool isNumeric(String s) => double.tryParse(s) != null;
 
