@@ -193,12 +193,10 @@ class Equation {
         List<List<double>> counts = [new List(2), new List(2)];
         MapEntry<CompoundUnit, int> e1 =
             (reactants[0].key.isElement()) ? reactants[0] : reactants[1];
-        MapEntry<CompoundUnit, int> e2 =
-            (products[0].key.isElement()) ? products[0] : products[1];
+        MapEntry<CompoundUnit, int> e2 = products[0];
         MapEntry<CompoundUnit, int> c1 =
             (reactants[0].key.isCompound()) ? reactants[0] : reactants[1];
-        MapEntry<CompoundUnit, int> c2 =
-            (products[0].key.isCompound()) ? products[0] : products[1];
+        MapEntry<CompoundUnit, int> c2 = products[1];
 
         // The indices of the element being replaced and the one staying the same.
         int rIndex = e1.key.metal ? 0 : 1;
@@ -207,13 +205,14 @@ class Equation {
         int lcmCount = lcm(c1.key.compoundUnits[sIndex].value,
                 c2.key.compoundUnits[sIndex].value)
             .abs();
+        int e2Count = e2.key.isElement() ? e2.key.count : 1;
 
         counts[0][1] = lcmCount / c1.key.compoundUnits[sIndex].value;
         counts[1][1] = lcmCount / c2.key.compoundUnits[sIndex].value;
         counts[0][0] = (counts[1][1] * c2.key.compoundUnits[rIndex].value) /
             e1.key.count;
-        counts[1][0] = (counts[0][1] * c1.key.compoundUnits[rIndex].value) /
-            e2.key.count;
+        counts[1][0] =
+            (counts[0][1] * c1.key.compoundUnits[rIndex].value) / e2Count;
 
         while (counts[0][0] != counts[0][0].toInt()) {
           counts[0][0] *= 2;
@@ -479,12 +478,10 @@ class Equation {
         ];
         break;
       case Type.singleReplacement:
-        Element e = (reactants[0].key.isElement())
-            ? reactants[0].key
-            : reactants[1].key;
-        Compound c = (reactants[0].key.isCompound())
-            ? reactants[0].key
-            : reactants[1].key;
+        _fixPolyatomicIons();
+        int eIndex = (reactants[0].key.isElement()) ? 0 : 1;
+        Element e = reactants[eIndex].key;
+        Compound c = reactants[1 - eIndex].key;
         // The indices of the element being replaced and the one staying the same.
         int rIndex = e.metal ? 0 : 1;
         int sIndex = 1 - rIndex;
@@ -533,33 +530,7 @@ class Equation {
         }
         break;
       case Type.doubleReplacement:
-        for (int i = 0; i < 2; i++) {
-          MapEntry<CompoundUnit, int> r = reactants[i];
-          if (r.key.compoundUnits.length > 2) {
-            if (r.key.compoundUnits[0].key.equals('N') &&
-                r.key.compoundUnits[0].value == 1 &&
-                r.key.compoundUnits[1].key.equals('H') &&
-                r.key.compoundUnits[1].value == 4) {
-              reactants[i] = MapEntry(
-                  Compound.fromUnits([
-                    MapEntry(Compound('NH4'), 1),
-                    MapEntry(
-                        Compound.fromUnits(r.key.compoundUnits.sublist(2)),
-                        1)
-                  ], r.key.state),
-                  1);
-              r = reactants[i];
-            }
-            reactants[i] = MapEntry(
-                Compound.fromUnits([
-                  MapEntry(r.key.compoundUnits[0].key,
-                      r.key.compoundUnits[0].value),
-                  MapEntry(
-                      Compound.fromUnits(r.key.compoundUnits.sublist(1)), 1)
-                ], r.key.state),
-                1);
-          }
-        }
+        _fixPolyatomicIons();
         List<List<int>> counts = [new List(2), new List(2)];
         List<List<int>> charges = [
           [
@@ -612,32 +583,11 @@ class Equation {
         ];
         break;
       case Type.neutralization:
-        int acidIndex = reactants[0].key.isAcid() ? 0 : 1;
-        int baseIndex = 1 - acidIndex;
-        Compound acid = reactants[acidIndex].key;
-        Compound base = reactants[baseIndex].key;
-        if (acid.compoundUnits.length > 2) {
-          reactants[acidIndex] = MapEntry(
-              Compound.fromUnits([
-                MapEntry(
-                    acid.compoundUnits[0].key, acid.compoundUnits[0].value),
-                MapEntry(
-                    Compound.fromUnits(acid.compoundUnits.sublist(1)), 1)
-              ], Phase.aqueous),
-              1);
-          acid = reactants[acidIndex].key;
-        }
-        if (base.compoundUnits.length > 2) {
-          reactants[baseIndex] = MapEntry(
-              Compound.fromUnits([
-                MapEntry(
-                    base.compoundUnits[0].key, base.compoundUnits[0].value),
-                MapEntry(
-                    Compound.fromUnits(base.compoundUnits.sublist(1)), 1)
-              ], Phase.aqueous),
-              1);
-          acid = reactants[acidIndex].key;
-        }
+        _fixPolyatomicIons();
+        Compound acid =
+            reactants[0].key.isAcid() ? reactants[0].key : reactants[1].key;
+        Compound base =
+            reactants[0].key.isBase() ? reactants[0].key : reactants[1].key;
         int otherCharge =
             acid.compoundUnits[0].value ~/ acid.compoundUnits[1].value;
         int lcmCharge =
@@ -714,5 +664,42 @@ class Equation {
       return Type.doubleReplacement;
     }
     return null;
+  }
+
+  /// Creates a separate compound unit for each polyatomic ion of the
+  /// reactants at the [indices].
+  ///
+  /// ```dart
+  /// Compound([MapEntry(N: 1), MapEntry(H: 3)])
+  /// → Compound([MapEntry(NH₃: 1)])
+  /// ```
+  void _fixPolyatomicIons() {
+    for (int i = 0; i < 2; i++) {
+      MapEntry<CompoundUnit, int> r = reactants[i];
+      if (r.key.isCompound() && r.key.compoundUnits.length > 2) {
+        if (r.key.compoundUnits[0].key.equals('N') &&
+            r.key.compoundUnits[0].value == 1 &&
+            r.key.compoundUnits[1].key.equals('H') &&
+            r.key.compoundUnits[1].value == 4) {
+          reactants[i] = MapEntry(
+              Compound.fromUnits([
+                MapEntry(Compound('NH4'), 1),
+                MapEntry(
+                    Compound.fromUnits(r.key.compoundUnits.sublist(2)), 1)
+              ], r.key.state),
+              1);
+          r = reactants[i];
+        }
+        if (r.key.compoundUnits.length > 2)
+          reactants[i] = MapEntry(
+              Compound.fromUnits([
+                MapEntry(r.key.compoundUnits[0].key,
+                    r.key.compoundUnits[0].value),
+                MapEntry(
+                    Compound.fromUnits(r.key.compoundUnits.sublist(1)), 1)
+              ], r.key.state),
+              1);
+      }
+    }
   }
 }

@@ -121,10 +121,7 @@ class Compound with CompoundUnit {
   Compound.fromUnits(List<MapEntry<CompoundUnit, int>> units,
       [Phase state]) {
     this.compoundUnits = units;
-    List<bool> temp = _ionicHelper(compoundUnits);
-    ionic = temp[0] == true && temp[1] == true;
     this.state = state;
-    _multivalent();
     formula = '';
     for (MapEntry<CompoundUnit, int> c in this.compoundUnits) {
       if (c.key.isElement() || c.value == 1)
@@ -133,25 +130,29 @@ class Compound with CompoundUnit {
         formula += '(${c.key.formula})';
       if (c.value != 1) formula += c.value.toString();
     }
+    ionic = this.isIonic();
+    _commonIonCharge();
+    _multivalent();
   }
 
-  /// Helps determine whether or not the compound with [units] is ionic.
-  List<bool> _ionicHelper(List<MapEntry<CompoundUnit, int>> units,
-      [bool _containsMetal = false, bool _containsNonmetal = false]) {
-    for (MapEntry c in units) {
+  /// Returns true if the compound with [units] is ionic.
+  bool isIonic() {
+    bool _containsMetal = false;
+    bool _containsNonmetal = false;
+    for (MapEntry c in compoundUnits) {
       if (c.key.isElement()) {
         if (c.key.metal)
           _containsMetal = true;
         else
           _containsNonmetal = true;
       } else {
-        List<bool> temp = _ionicHelper(
-            c.key.compoundUnits, _containsMetal, _containsNonmetal);
-        _containsMetal = temp[0];
-        _containsNonmetal = temp[1];
+        if (c.key.getCharge() > 0)
+          _containsMetal = true;
+        else
+          _containsNonmetal = true;
       }
     }
-    return [_containsMetal, _containsNonmetal];
+    return _containsMetal && _containsNonmetal;
   }
 
   /// Determines the charge of a multivalent metal if this compound is ionic.

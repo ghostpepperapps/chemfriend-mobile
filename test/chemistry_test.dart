@@ -90,6 +90,14 @@ void main() {
       e.balance();
       expect(e.toString(), equals('3Na(s) + GaF₃(s) → Ga(s) + 3NaF'));
     });
+    test(
+        '.balance() works correctly for single replacement of polyatomic ions',
+        () {
+      Equation e = Equation('S8(s) + NH4NO3(aq)');
+      e.balance();
+      expect(
+          e.toString(), equals('S₈(s) + 16NH₄NO₃(aq) → 16NO₃ + 8(NH₄)₂S'));
+    });
     test('.balance() works correctly for double replacement', () {
       Equation e = Equation('Na3P(aq) + CaCl2(aq)');
       e.balance();
@@ -100,8 +108,8 @@ void main() {
         () {
       Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
       e.balance();
-      expect(
-          e.toString(), equals('NH₄NO₃(aq) + CaSO₃(aq) → NH₄SO₃ + CaNO₃'));
+      expect(e.toString(),
+          equals('2NH₄NO₃(aq) + CaSO₃(aq) → (NH₄)₂SO₃ + Ca(NO₃)₂'));
     });
     test('.balance() works correctly for neutralization', () {
       Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
