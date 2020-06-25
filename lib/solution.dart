@@ -12,32 +12,36 @@ class Solution extends StatefulWidget {
 }
 
 class _SolutionState extends State<Solution> {
-  final _controller = TextEditingController();
-
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+        body: ListView(
+      controller: _scrollController,
       children: <Widget>[
         SizedBox(height: 40),
         Center(
             child: Text(
           'Type: ${widget.type}',
           style: TextStyle(fontSize: 25.0, fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
         )),
         SizedBox(height: 20),
         Center(
-            child: Text(widget.solution, style: TextStyle(fontSize: 20.0))),
+            child: Text(widget.solution,
+                style: TextStyle(fontSize: 20.0),
+                textAlign: TextAlign.center)),
         SizedBox(height: 40),
         Input(
           onPressed: _reloadSolution,
+          scrollController: _scrollController,
         )
       ],
     ));

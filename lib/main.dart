@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'ChemFriend v0.1'),
+      home: MyHomePage(title: 'ChemFriend v0.0.0.8'),
     );
   }
 }
@@ -27,21 +27,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final controller = TextEditingController();
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
-    controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('ChemFriend v.0.0.0.8')),
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[Input(onPressed: _pushSolution)]));
+        appBar: AppBar(title: Text(widget.title)),
+        body: ListView(controller: _scrollController, children: <Widget>[
+          SizedBox(height: 40),
+          Input(
+            onPressed: _pushSolution,
+            scrollController: _scrollController,
+          )
+        ]));
   }
 
   void _pushSolution(BuildContext context, String text) async {

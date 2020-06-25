@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 class Input extends StatefulWidget {
-  Input({Key key, this.onPressed}) : super(key: key);
+  Input({Key key, this.onPressed, this.scrollController}) : super(key: key);
 
   /// This function is called every time the arrow button is pressed.
   final Function onPressed;
+
+  /// This is ths scroll controller for the page of the input.
+  final ScrollController scrollController;
   @override
   _InputState createState() => _InputState();
 }
 
 class _InputState extends State<Input> {
-  final _controller = TextEditingController();
+  final _textController = TextEditingController();
+  final _key = GlobalKey();
 
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -23,11 +27,15 @@ class _InputState extends State<Input> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('Enter an equation and press the big button:'),
+          Text('Enter an equation and press the big red button:', key: _key),
           Center(
             child: TextField(
-              controller: _controller,
+              controller: _textController,
               textInputAction: TextInputAction.done,
+              onTap: _scrollToStart,
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
             ),
           ),
           SizedBox(height: 25),
@@ -53,20 +61,21 @@ class _InputState extends State<Input> {
           SizedBox(height: 25),
           Center(
               child: SizedBox(
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
             child: FloatingActionButton(
               heroTag: '_onPressed',
               child: Icon(Icons.forward),
               onPressed: () {
-                widget.onPressed(context, _controller.text);
+                widget.onPressed(context, _textController.text);
+                _textController.text = '';
               },
             ),
           ))
         ]);
   }
 
-  /// Returns a button that adds [append] to the end of [_controller]'s text
+  /// Returns a button that adds [append] to the end of [_textController]'s text
   /// and has the label [display].
   Widget addButton(String append, String display) {
     return RaisedButton(
@@ -75,13 +84,22 @@ class _InputState extends State<Input> {
         child: Text(display));
   }
 
-  /// Adds [append] to [_controller]'s text and moves the cursor to the end.
+  /// Adds [append] to [_textController]'s text and moves the cursor to the end.
   void _addText(String append) {
-    int prevOffset = _controller.selection.baseOffset;
-    _controller.text = _controller.text.substring(0, prevOffset) +
+    int prevOffset = _textController.selection.baseOffset;
+    _textController.text = _textController.text.substring(0, prevOffset) +
         append +
-        _controller.text.substring(prevOffset);
-    _controller.selection = TextSelection.fromPosition(
+        _textController.text.substring(prevOffset);
+    _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: prevOffset + append.length));
+  }
+
+  /// Scrolls to the start of the equation input.
+  void _scrollToStart() async {
+    RenderBox box = _key.currentContext.findRenderObject();
+    Offset position = box.localToGlobal(Offset.zero);
+    await Future.delayed(const Duration(milliseconds: 500), () {});
+    widget.scrollController.animateTo(position.dy - 20,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 }
