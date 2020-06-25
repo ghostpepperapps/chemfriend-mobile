@@ -274,10 +274,10 @@ class Equation {
         int lcmCharge = lcm(acid.compoundUnits[0].value,
                 base.compoundUnits[0].key.charge)
             .abs();
-        counts[0][0] = lcmCharge / acid.compoundUnits[0].value;
-        counts[0][1] = lcmCharge / base.compoundUnits[0].key.charge;
-        counts[1][0] = acid.compoundUnits[0].value * counts[0][0];
-        counts[1][1] = (counts[0][1] * base.compoundUnits[0].value) /
+        counts[0][acidIndex] = lcmCharge / acid.compoundUnits[0].value;
+        counts[0][baseIndex] = lcmCharge / base.compoundUnits[0].key.charge;
+        counts[1][0] = acid.compoundUnits[0].value * counts[0][acidIndex];
+        counts[1][1] = (counts[0][baseIndex] * base.compoundUnits[0].value) /
             p2.compoundUnits[0].value;
 
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
@@ -645,7 +645,10 @@ class Equation {
             reactants[1].key.equals('O'))
           return Type.combustion; // Hydrocarbon Combustion
       }
-    } else if (reactants[0].key.isCompound() &&
+    } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
+        reactants[0].key.isBase() && reactants[1].key.isAcid())
+      return Type.neutralization;
+    else if (reactants[0].key.isCompound() &&
         reactants[1].key.isCompound()) {
       if (reactants[0].key.formula.compareTo('H2O(l)') == 0) {
         if (reactants[1].key.compoundUnits[1].key.equals('O')) {
@@ -657,9 +660,6 @@ class Equation {
           reactants[1].key.compoundUnits[1].key.equals('O')) {
         return Type.compSalt;
       }
-      if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
-          reactants[0].key.isBase() && reactants[1].key.isAcid())
-        return Type.neutralization;
       return Type.doubleReplacement;
     }
     return null;
