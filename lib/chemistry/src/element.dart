@@ -17,14 +17,46 @@ class Element extends ChemicalElement with CompoundUnit {
   /// The number of this element in the periodic table.
   int number;
 
-  /// Constructs an element from the properties of [other].
-  Element.clone(ChemicalElement other) {
-    this.name = other.name;
-    this.formula = other.symbol;
-    this.category = other.category;
-    this.state = mPhaseToPhase[other.stpPhase];
-    this.number = other.number;
-    this.shells = other.shells;
+  /// Constructs an element with the symbol [symbol] and charge [_charge].
+  ///
+  /// ```dart
+  /// Element e = new Element('Ca');
+  /// Element f = new Element('Fe', 3);
+  /// ```
+  Element(String symbol, [int _charge]) {
+    for (ChemicalElement e in periodicTable) {
+      if (e.symbol.compareTo(symbol) == 0) {
+        this.name = e.name;
+        this.formula = e.symbol;
+        this.category = e.category;
+        this.state = mPhaseToPhase[e.stpPhase];
+        this.number = e.number;
+        this.shells = e.shells;
+        break;
+      }
+    }
+    if (this.category.contains('metal'))
+      this.metal = !(this.category.contains('nonmetal'));
+    else
+      this.metal = false;
+    if (this.category.contains('diatomic'))
+      this.count = 2;
+    else if (this.formula.compareTo('P') == 0)
+      this.count = 4;
+    else if (this.formula.compareTo('S') == 0)
+      this.count = 8;
+    else
+      this.count = 1;
+    if (this.equals('H'))
+      this.charge = 1;
+    else if (_charge == null) {
+      int valence = this.shells[this.shells.length - 1];
+      if (valence < 5)
+        this.charge = valence;
+      else
+        this.charge = valence - 8;
+    } else
+      this.charge = _charge;
   }
 
   /// Returns the String representation of this element.
@@ -39,7 +71,7 @@ class Element extends ChemicalElement with CompoundUnit {
   /// Returns `true` if this element's formula is [symbol].
   ///
   /// ```dart
-  /// Element e = Element.from('H');
+  /// Element e = new Element('H');
   /// print(e.equals('H')); // true
   /// print(e.equals('Ca')); // false
   /// ```
@@ -51,45 +83,6 @@ class Element extends ChemicalElement with CompoundUnit {
   /// Returns the name of this element.
   String getName() {
     return this.name;
-  }
-
-  /// Returns an element with the symbol [symbol] and charge [_charge].
-  ///
-  /// ```dart
-  /// Element e = Element.from('Ca');
-  /// Element f = Element.from('Fe', 3);
-  /// ```
-  static Element from(String symbol, [int _charge]) {
-    Element result;
-    for (ChemicalElement e in periodicTable) {
-      if (e.symbol.compareTo(symbol) == 0) {
-        result = Element.clone(e);
-        break;
-      }
-    }
-    if (result.category.contains('metal'))
-      result.metal = !(result.category.contains('nonmetal'));
-    else
-      result.metal = false;
-    if (result.category.contains('diatomic'))
-      result.count = 2;
-    else if (result.formula.compareTo('P') == 0)
-      result.count = 4;
-    else if (result.formula.compareTo('S') == 0)
-      result.count = 8;
-    else
-      result.count = 1;
-    if (result.equals('H'))
-      result.charge = 1;
-    else if (_charge == null) {
-      int valence = result.shells[result.shells.length - 1];
-      if (valence < 5)
-        result.charge = valence;
-      else
-        result.charge = valence - 8;
-    } else
-      result.charge = _charge;
-    return result;
   }
 
   /// Returns `true` if an element with the symbol [symbol] exists.

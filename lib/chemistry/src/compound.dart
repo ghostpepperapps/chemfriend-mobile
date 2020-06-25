@@ -45,14 +45,14 @@ class Compound with CompoundUnit {
                     ? formula[formula.length - 2].compareTo('q') == 0 ? 4 : 3
                     : 0)) {
       if (i == formula.length - 1) {
-        current = Element.from(formula[i]);
+        current = new Element(formula[i]);
         i++;
       } else if (formula[i].compareTo('(') != 0) {
         if (Element.exists(formula.substring(i, i + 2))) {
-          current = Element.from(formula.substring(i, i + 2));
+          current = new Element(formula.substring(i, i + 2));
           i += 2;
         } else {
-          current = Element.from(formula[i]);
+          current = new Element(formula[i]);
           i++;
         }
       } else {
@@ -113,7 +113,7 @@ class Compound with CompoundUnit {
   ///
   /// ```dart
   /// List<MapEntry<CompoundUnit, int>> units = [
-  ///   MapEntry(Element.from('Na'), 2),
+  ///   MapEntry(new Element('Na'), 2),
   ///   MapEntry(Compound('SO3'), 1)
   /// ];
   /// Compound c = Compound.fromUnits(units, Phase.solid);

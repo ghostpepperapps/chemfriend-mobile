@@ -4,19 +4,19 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Element', () {
     test('.getName() returns the name', () {
-      Element e = Element.from('O');
+      Element e = new Element('O');
       expect(e.getName(), equals('Oxygen'));
     });
     test('.toString() returns the subscripted name', () {
-      Element e = Element.from('S');
+      Element e = new Element('S');
       expect(e.toString(), equals('S₈(s)'));
     });
     test('.equals() returns equality to another element', () {
-      Element e = Element.from('Mn');
+      Element e = new Element('Mn');
       expect(e.equals('Mn'), equals(true));
     });
     test('.getCharge() returns the charge', () {
-      Element e = Element.from('Al');
+      Element e = new Element('Al');
       expect(e.getCharge(), equals(e.charge));
     });
   });

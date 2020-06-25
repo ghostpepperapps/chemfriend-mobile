@@ -55,7 +55,7 @@ class Equation {
       while (isNumeric(r[j - 1])) j--;
       int number = (i != 0) ? int.parse(r.substring(0, i)) : 1;
       if (Element.exists(r.substring(i, j)))
-        reactants.add(MapEntry(Element.from(r.substring(i, j)), 1));
+        reactants.add(MapEntry(new Element(r.substring(i, j)), 1));
       else
         reactants.add(MapEntry(Compound(r.substring(i)), number));
     }
@@ -69,7 +69,7 @@ class Equation {
         while (isNumeric(p[j - 1])) j--;
         int number = (i != 0) ? int.parse(p.substring(0, i)) : 1;
         if (Element.exists(p.substring(i, j)))
-          products.add(MapEntry(Element.from(p.substring(i, j)), 1));
+          products.add(MapEntry(new Element(p.substring(i, j)), 1));
         else
           products.add(MapEntry(Compound(p.substring(i)), number));
       }
@@ -378,9 +378,9 @@ class Equation {
         return [
           MapEntry(
               Compound.fromUnits([
-                MapEntry(Element.from('H'), 2),
+                MapEntry(new Element('H'), 2),
                 MapEntry(reactants[1].key.compoundUnits[0].key, 1),
-                MapEntry(Element.from('O'),
+                MapEntry(new Element('O'),
                     reactants[1].key.compoundUnits[1].value + 1),
               ], Phase.aqueous),
               1)
@@ -406,7 +406,7 @@ class Equation {
                 MapEntry(reactants[1].key.compoundUnits[0].key,
                     reactants[1].key.compoundUnits[0].value),
                 MapEntry(
-                    Element.from('O'),
+                    new Element('O'),
                     reactants[0].key.compoundUnits[1].value +
                         reactants[1].key.compoundUnits[1].value),
               ]),
@@ -416,10 +416,9 @@ class Equation {
       case Type.decomp:
         return [
           MapEntry(
-              Element.from(reactants[0].key.compoundUnits[0].key.formula),
-              1),
+              new Element(reactants[0].key.compoundUnits[0].key.formula), 1),
           MapEntry(
-              Element.from(reactants[0].key.compoundUnits[1].key.formula), 1)
+              new Element(reactants[0].key.compoundUnits[1].key.formula), 1)
         ];
         break;
       case Type.decompAcid:
@@ -429,7 +428,7 @@ class Equation {
               Compound.fromUnits([
                 MapEntry(reactants[0].key.compoundUnits[1].key,
                     reactants[0].key.compoundUnits[1].value),
-                MapEntry(Element.from('O'),
+                MapEntry(new Element('O'),
                     reactants[0].key.compoundUnits[2].value - 1),
               ]),
               1)
@@ -446,7 +445,7 @@ class Equation {
                     (-lcmCharge ~/
                             reactants[0].key.compoundUnits[0].key.charge)
                         .abs()),
-                MapEntry(Element.from('O'), lcmCharge.abs() ~/ 2),
+                MapEntry(new Element('O'), lcmCharge.abs() ~/ 2),
               ]),
               1)
         ];
@@ -456,7 +455,7 @@ class Equation {
           MapEntry(reactants[0].key.compoundUnits[0].key,
               reactants[0].key.compoundUnits[0].value),
           MapEntry(
-              Element.from('O'),
+              new Element('O'),
               (reactants[0].key.compoundUnits[0].value *
                       reactants[0].key.compoundUnits[0].key.charge) ~/
                   2),
@@ -465,7 +464,7 @@ class Equation {
           MapEntry(reactants[0].key.compoundUnits[1].key,
               reactants[0].key.compoundUnits[1].value),
           MapEntry(
-              Element.from('O'),
+              new Element('O'),
               reactants[0].key.compoundUnits[2].value -
                   metalOxide.compoundUnits[1].value),
         ]);
