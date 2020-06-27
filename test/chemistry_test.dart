@@ -43,6 +43,17 @@ void main() {
       Equation e = Equation('H2(g)  +O2(g)   => H2O(l)\n ');
       expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O(l)'));
     });
+    test('constructor gives correct states for multivalent elements', () {
+      Equation e = Equation('FeF3 + CaCl2(aq)');
+      Equation f = Equation('FeF2 + CaCl2(aq)');
+      e.balance();
+      f.balance();
+      List<Phase> states = [
+        e.reactants[0].key.state,
+        f.reactants[0].key.state
+      ];
+      expect(states, equals([Phase.aqueous, Phase.solid]));
+    });
     test('.balance() works correctly for simple composition', () {
       Equation e = Equation('H2(g) + O2(g)');
       e.balance();

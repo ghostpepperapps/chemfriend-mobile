@@ -94,6 +94,11 @@ List<String> solidCompounds = [
 /// List of formulas of compounds that are aqueous in water.
 List<String> aqueousCompounds = ['Co(IO3)2', 'Fe2(OOCCOO)3'];
 
+/// Returns `true` if [c] is `Hg₂2+`.
+bool isHg22plus(MapEntry<CompoundUnit, int> c) {
+  return c.key.equals('Hg') && c.value == 2 && c.key.charge == 2;
+}
+
 /// Returns `true` if [s] contains a number.
 bool isNumeric(String s) => double.tryParse(s) != null;
 

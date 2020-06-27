@@ -77,7 +77,13 @@ class Element extends ChemicalElement with CompoundUnit {
   /// ```
   @override
   bool equals(String symbol) {
-    return this.formula.compareTo(symbol) == 0;
+    String ionFormula = this.formula;
+    if (this.charge != null &&
+        (symbol.contains('+') || symbol.contains('-'))) {
+      if (this.charge.abs() > 1) ionFormula += this.charge.abs().toString();
+      if (this.charge != 0) ionFormula += (this.charge > 0) ? '+' : '-';
+    }
+    return ionFormula.compareTo(symbol) == 0;
   }
 
   /// Returns the name of this element.

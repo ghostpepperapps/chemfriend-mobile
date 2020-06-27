@@ -170,7 +170,8 @@ class Compound with CompoundUnit {
   void _multivalent() {
     if (ionic) {
       CompoundUnit first = compoundUnits[0].key;
-      if (first.isElement() && first.getCharge() == null) {
+      if (first.isElement() &&
+          first.category.compareTo('transition metal') == 0) {
         int negative =
             compoundUnits[1].key.getCharge() * compoundUnits[1].value;
         compoundUnits[0].key.charge = -(negative ~/ compoundUnits[0].value);
@@ -273,7 +274,9 @@ class Compound with CompoundUnit {
       Map<List<String>, List<String>> ionMap = [ionToSolid, ionToAqueous][i];
       ionMap.forEach((List<String> first, List<String> second) {
         for (String f in first) {
-          if (this.compoundUnits[0].key.equals(f)) {
+          if (this.compoundUnits[0].key.equals(f) ||
+              (f.compareTo('Hg22+') == 0 &&
+                  isHg22plus(this.compoundUnits[0]))) {
             for (String s in second) {
               if (this.compoundUnits[1].key.equals(s)) {
                 result = (i == 0) ? Phase.solid : Phase.aqueous;
@@ -284,7 +287,9 @@ class Compound with CompoundUnit {
               result = (i == 0) ? Phase.aqueous : Phase.solid;
               break;
             }
-          } else if (this.compoundUnits[1].key.equals(f)) {
+          } else if (this.compoundUnits[1].key.equals(f) ||
+              (f.compareTo('Hg22+') == 0 &&
+                  isHg22plus(this.compoundUnits[0]))) {
             for (String s in second) {
               if (this.compoundUnits[0].key.equals(s)) {
                 result = (i == 0) ? Phase.solid : Phase.aqueous;
