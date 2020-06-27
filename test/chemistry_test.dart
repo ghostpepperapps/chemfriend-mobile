@@ -83,25 +83,19 @@ void main() {
         () {
       Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
-      expect(e.toString(), equals('3S₈(s) + 16GaF₃(s) → 24F₂(g) + 8Ga₂S₃'));
+      expect(
+          e.toString(), equals('3S₈(s) + 16GaF₃(aq) → 24F₂(g) + 8Ga₂S₃(s)'));
     });
     test('.balance() works correctly for single replacement of metal', () {
       Equation e = Equation('Na(s) + GaF3(s)');
       e.balance();
-      expect(e.toString(), equals('3Na(s) + GaF₃(s) → Ga(s) + 3NaF'));
-    });
-    test(
-        '.balance() works correctly for single replacement of polyatomic ions',
-        () {
-      Equation e = Equation('S8(s) + NH4NO3(aq)');
-      e.balance();
-      expect(
-          e.toString(), equals('S₈(s) + 16NH₄NO₃(aq) → 16NO₃ + 8(NH₄)₂S'));
+      expect(e.toString(), equals('3Na(s) + GaF₃(aq) → Ga(s) + 3NaF(aq)'));
     });
     test('.balance() works correctly for double replacement', () {
       Equation e = Equation('Na3P(aq) + CaCl2(aq)');
       e.balance();
-      expect(e.toString(), equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl + Ca₃P₂'));
+      expect(e.toString(),
+          equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl(aq) + Ca₃P₂(s)'));
     });
     test(
         '.balance() works correctly for double replacement of polyatomic ions',
@@ -109,19 +103,21 @@ void main() {
       Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
       e.balance();
       expect(e.toString(),
-          equals('2NH₄NO₃(aq) + CaSO₃(aq) → (NH₄)₂SO₃ + Ca(NO₃)₂'));
+          equals('2NH₄NO₃(aq) + CaSO₃(s) → (NH₄)₂SO₃(aq) + Ca(NO₃)₂(aq)'));
     });
     test('.balance() works correctly for neutralization', () {
       Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
       e.balance();
       expect(e.toString(),
-          equals('3H₂CO₃(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + Al₂(CO₃)₃'));
+          equals('3H₂CO₃(aq) + 2Al(OH)₃(s) → 6H₂O(l) + Al₂(CO₃)₃(s)'));
     });
     test('.balance() works correctly for gas formation', () {
       Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
       e.balance();
-      expect(e.toString(),
-          equals('3(NH₄)₂S(aq) + 2Al(OH)₃(aq) → 6H₂O(l) + 6NH₃(g) + Al₂S₃'));
+      expect(
+          e.toString(),
+          equals(
+              '3(NH₄)₂S(aq) + 2Al(OH)₃(s) → 6H₂O(l) + 6NH₃(g) + Al₂S₃(s)'));
     });
   });
 }

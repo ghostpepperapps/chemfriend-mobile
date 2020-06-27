@@ -24,9 +24,13 @@ class Equation {
   /// The products of this equation.
   List<MapEntry<CompoundUnit, int>> products;
 
-  /// A Boolean that represents whether or not this reaction takes place in
-  /// water.
-  bool inWater;
+  /// A Boolean that represents whether or not the reactants of this equation
+  /// are in water.
+  bool rInWater;
+
+  /// A Boolean that represents whether or not the products of this equation
+  /// are in water.
+  bool pInWater;
 
   /// The type of this reaction.
   Type type;
@@ -77,6 +81,8 @@ class Equation {
       products = null;
     this.reactants = reactants;
     this.products = products;
+    this.type = this.getType();
+    _getInWater();
   }
 
   /// Constructs an equation from the [reactants] and optionally the
@@ -97,6 +103,8 @@ class Equation {
       [List<MapEntry<CompoundUnit, int>> products]) {
     this.reactants = reactants;
     this.products = products;
+    this.type = this.getType();
+    _getInWater();
   }
 
   /// Finds the products of this equation and balances it based on its type.
@@ -111,11 +119,10 @@ class Equation {
   /// print(f); // 2H₂(g) + O₂(g) → 2H₂O(l)
   /// ```
   void balance() {
-    type = this.getType();
     this.products =
         (this.products == null) ? this.getProducts() : this.products;
     // Balancing
-    switch (type) {
+    switch (this.type) {
       case Type.comp:
         List<double> counts = [1, 1, 1];
         bool halfElement = false;
@@ -348,7 +355,8 @@ class Equation {
   /// print(e.getProducts()); // [MapEntry(Ca₃P₂: 1), MapEntry(Na₂O: 1)]
   /// ```
   List<MapEntry<CompoundUnit, int>> getProducts() {
-    switch (type) {
+    List<MapEntry<CompoundUnit, int>> result;
+    switch (this.type) {
       case Type.comp:
         bool ionic = false;
         if (reactants[0].key.metal != reactants[1].key.metal) ionic = true;
@@ -365,7 +373,7 @@ class Equation {
           count0 = reactants[0].key.count;
           count1 = reactants[0].key.count;
         }
-        return [
+        result = [
           MapEntry(
               Compound.fromUnits([
                 MapEntry(reactants[0].key, count0),
@@ -375,7 +383,7 @@ class Equation {
         ];
         break;
       case Type.compAcid:
-        return [
+        result = [
           MapEntry(
               Compound.fromUnits([
                 MapEntry(new Element('H'), 2),
@@ -387,7 +395,8 @@ class Equation {
         ];
         break;
       case Type.compBase:
-        return [
+        _fixPolyatomicIons();
+        result = [
           MapEntry(
               Compound.fromUnits([
                 MapEntry(reactants[1].key.compoundUnits[0].key, 1),
@@ -398,7 +407,7 @@ class Equation {
         ];
         break;
       case Type.compSalt:
-        return [
+        result = [
           MapEntry(
               Compound.fromUnits([
                 MapEntry(reactants[0].key.compoundUnits[0].key,
@@ -414,7 +423,7 @@ class Equation {
         ];
         break;
       case Type.decomp:
-        return [
+        result = [
           MapEntry(
               new Element(reactants[0].key.compoundUnits[0].key.formula), 1),
           MapEntry(
@@ -422,7 +431,7 @@ class Equation {
         ];
         break;
       case Type.decompAcid:
-        return [
+        result = [
           MapEntry(Compound('H2O(l)'), 1),
           MapEntry(
               Compound.fromUnits([
@@ -435,8 +444,9 @@ class Equation {
         ];
         break;
       case Type.decompBase:
+        _fixPolyatomicIons();
         int lcmCharge = lcm(reactants[0].key.compoundUnits[0].key.charge, 2);
-        return [
+        result = [
           MapEntry(Compound('H2O(l)'), 1),
           MapEntry(
               Compound.fromUnits([
@@ -468,10 +478,10 @@ class Equation {
               reactants[0].key.compoundUnits[2].value -
                   metalOxide.compoundUnits[1].value),
         ]);
-        return [MapEntry(metalOxide, 1), MapEntry(nonmetalOxide, 1)];
+        result = [MapEntry(metalOxide, 1), MapEntry(nonmetalOxide, 1)];
         break;
       case Type.combustion:
-        return [
+        result = [
           MapEntry(Compound('H2O(g)'), 1),
           MapEntry(Compound('CO2(g)'), 1)
         ];
@@ -507,7 +517,7 @@ class Equation {
           counts[1] = e.count;
         }
         if (e.metal) {
-          return [
+          result = [
             MapEntry(c.compoundUnits[rIndex].key, 1),
             MapEntry(
                 Compound.fromUnits([
@@ -517,7 +527,7 @@ class Equation {
                 1)
           ];
         } else {
-          return [
+          result = [
             MapEntry(c.compoundUnits[rIndex].key, 1),
             MapEntry(
                 Compound.fromUnits([
@@ -562,7 +572,7 @@ class Equation {
             reactants[1].key.compoundUnits[1].value
           ];
         }
-        return [
+        result = [
           MapEntry(
               Compound.fromUnits([
                 MapEntry(
@@ -591,7 +601,7 @@ class Equation {
             acid.compoundUnits[0].value ~/ acid.compoundUnits[1].value;
         int lcmCharge =
             lcm(otherCharge, base.compoundUnits[0].key.charge).abs();
-        return [
+        result = [
           MapEntry(Compound('H2O(l)'), 1),
           MapEntry(
               Compound.fromUnits([
@@ -603,7 +613,8 @@ class Equation {
               1),
         ];
     }
-    return null;
+    result = _getStates(result);
+    return result;
   }
 
   /// Returns the type of an equation based on its [reactants].
@@ -665,6 +676,47 @@ class Equation {
     return null;
   }
 
+  /// Updates this equation's properties based on whether or not its reactants
+  /// and products are in water.
+  void _getInWater() {
+    this.rInWater = [
+      Type.decompBase,
+      Type.decompSalt,
+      Type.singleReplacement,
+      Type.doubleReplacement,
+      Type.neutralization
+    ].contains(this.type);
+    this.pInWater = [
+      Type.compBase,
+      Type.compSalt,
+      Type.singleReplacement,
+      Type.doubleReplacement,
+      Type.neutralization
+    ].contains(this.type);
+  }
+
+  /// Updates each reactant and product's state based on [rInWater] and
+  /// [pInWater].
+  List<MapEntry<CompoundUnit, int>> _getStates(
+      List<MapEntry<CompoundUnit, int>> products) {
+    if (this.rInWater)
+      for (Compound c in this
+          .reactants
+          .map((cu) => cu.key)
+          .where((cu) => (cu.isCompound() && cu.ionic)))
+        if (c.isCompound()) {
+          c.state = c.getWaterState();
+        }
+    if (this.pInWater)
+      for (Compound c in products
+          .map((cu) => cu.key)
+          .where((cu) => (cu.isCompound() && cu.ionic)))
+        if (c.isCompound()) {
+          c.state = c.getWaterState();
+        }
+    return products;
+  }
+
   /// Creates a separate compound unit for each polyatomic ion of the
   /// reactants at the [indices].
   ///
@@ -673,7 +725,7 @@ class Equation {
   /// → Compound([MapEntry(NH₃: 1)])
   /// ```
   void _fixPolyatomicIons() {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < reactants.length; i++) {
       MapEntry<CompoundUnit, int> r = reactants[i];
       if (r.key.isCompound() && r.key.compoundUnits.length > 2) {
         if (r.key.compoundUnits[0].key.equals('N') &&

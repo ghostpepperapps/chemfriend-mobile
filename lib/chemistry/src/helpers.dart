@@ -51,13 +51,26 @@ Map<Type, String> typeToString = {
   Type.decompSalt: 'Decomposition of a Salt',
   Type.combustion: 'Hydrocarbon Combustion',
   Type.singleReplacement: 'Single Replacement',
-  Type.doubleReplacement: 'Double Replacement'
+  Type.doubleReplacement: 'Double Replacement',
+  Type.neutralization: 'Double Replacement (Neutralization)'
 };
 
 /// Maps ions to ions they combine with to become solid in water.
 Map<List<String>, List<String>> ionToSolid = {
-  ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4', 'NO3', 'ClO3', 'ClO4', 'CH3COO']:
-      [],
+  [
+    'H',
+    'Li',
+    'Na',
+    'K',
+    'Rb',
+    'Cs',
+    'Fr',
+    'NH4',
+    'NO3',
+    'ClO3',
+    'ClO4',
+    'CH3COO'
+  ]: [],
   ['F']: ['Li', 'Mg', 'Ca', 'Sr', 'Ba', 'Fe2+', 'Hg22+', 'Pb2+'],
   ['Cl', 'Br', 'I']: ['Cu+', 'Ag', 'Hg22+', 'Pb2+', 'Tl+'],
   ['SO4']: ['Ca', 'Sr', 'Ba', 'Ag', 'Hg22+', 'Pb2+', 'Ra']
@@ -65,9 +78,9 @@ Map<List<String>, List<String>> ionToSolid = {
 
 /// Maps ions to ions they combine with to become aqueous in water.
 Map<List<String>, List<String>> ionToAqueous = {
-  ['CO3', 'PO4', 'SO3']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
-  ['IO3', 'OOCCOO']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
-  ['OH']: ['H', 'Li', 'K', 'Rb', 'Cs', 'Fr', 'NH4']
+  ['CO3', 'PO4', 'SO3']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['IO3', 'OOCCOO']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['OH']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4']
 };
 
 /// List of formulas of compounds that are solid in water.

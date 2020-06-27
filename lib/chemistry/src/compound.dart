@@ -137,6 +137,7 @@ class Compound with CompoundUnit {
 
   /// Returns true if the compound with [units] is ionic.
   bool isIonic() {
+    if (this.equals('H2O')) return false;
     bool _containsMetal = false;
     bool _containsNonmetal = false;
     for (MapEntry c in compoundUnits) {
@@ -261,6 +262,52 @@ class Compound with CompoundUnit {
   bool isBase() {
     return this.equals('NH₃') ||
         (this.ionic && (this.contains('OH') || this.contains('CO₃')));
+  }
+
+  /// Returns the state of this compound when in water.
+  ///
+  /// This method uses data from the solubility chart.
+  Phase getWaterState() {
+    Phase result;
+    for (int i = 0; i < 2; i++) {
+      Map<List<String>, List<String>> ionMap = [ionToSolid, ionToAqueous][i];
+      ionMap.forEach((List<String> first, List<String> second) {
+        for (String f in first) {
+          if (this.compoundUnits[0].key.equals(f)) {
+            for (String s in second) {
+              if (this.compoundUnits[1].key.equals(s)) {
+                result = (i == 0) ? Phase.solid : Phase.aqueous;
+                break;
+              }
+            }
+            if (result == null) {
+              result = (i == 0) ? Phase.aqueous : Phase.solid;
+              break;
+            }
+          } else if (this.compoundUnits[1].key.equals(f)) {
+            for (String s in second) {
+              if (this.compoundUnits[0].key.equals(s)) {
+                result = (i == 0) ? Phase.solid : Phase.aqueous;
+                break;
+              }
+            }
+            if (result == null) {
+              result = (i == 0) ? Phase.aqueous : Phase.solid;
+              break;
+            }
+          }
+        }
+      });
+    }
+    // Exceptions to the above.
+    solidCompounds.forEach((String s) {
+      if (this.equals(s)) result = Phase.solid;
+    });
+    aqueousCompounds.forEach((String s) {
+      if (this.equals(s)) result = Phase.aqueous;
+    });
+    if (result == null) result = Phase.solid;
+    return result;
   }
 
   /// Prints the individual units of this compound.
