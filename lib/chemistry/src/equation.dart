@@ -370,7 +370,13 @@ class Equation {
     switch (this.type) {
       case Type.comp:
         bool ionic = false;
-        if (reactants[0].key.metal != reactants[1].key.metal) ionic = true;
+        if (reactants[0].key.metal != reactants[1].key.metal) {
+          this.productSteps.add("""
+            Since one of the reactants is a metal and the other is a nonmetal, 
+            the product of this equation is an ionic compound.
+          """);
+          ionic = true;
+        }
         int count0;
         int count1;
         if (ionic) {
@@ -380,9 +386,38 @@ class Equation {
               ((reactants[0].key.charge == 0) ? 1 : reactants[0].key.charge);
           count1 = -lcmCharge ~/
               ((reactants[1].key.charge == 0) ? 1 : reactants[1].key.charge);
+          this.productSteps.add("""
+            Since the product of this equation is an ionic compound, the 
+            charges of each of its elements must add up to 0. First, we find 
+            the least common multiple of the charges of the elements. The 
+            least common multiple of ${this.reactants[0].key.charge} and 
+            ${this.reactants[1].key.charge} is $lcmCharge. 
+          """);
+          this.productSteps.add("""
+            To find the count of each element, we divide the least common 
+            multiple by the charge of each element. The count of 
+            ${this.reactants[0].key.toString()} is $lcmCharge / 
+            ${this.reactants[0].key.charge}, which equals $count0. Similarly, 
+            the count of ${this.reactants[1].key.toString()} is $lcmCharge / 
+            ${this.reactants[1].key.charge}, which equals $count1. So, the 
+            product of this equation is: ${Compound.fromUnits([
+            MapEntry(reactants[0].key, count0),
+            MapEntry(reactants[1].key, count1),
+          ]).toString()}. Since $count0 * ${this.reactants[0].key.charge} 
+            and $count1 * ${this.reactants[1].key.charge} add up to 0, the 
+            counts have been calculated properly.
+          """);
         } else {
           count0 = reactants[0].key.count;
           count1 = reactants[0].key.count;
+          this.productSteps.add("""
+            Since the product of this equation is a molecular compound, and it 
+            was not given in the equation, we just assume that the product 
+            will be: ${Compound.fromUnits([
+            MapEntry(reactants[0].key, count0),
+            MapEntry(reactants[1].key, count1),
+          ]).toString()}.
+          """);
         }
         result = [
           MapEntry(
