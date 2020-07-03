@@ -35,6 +35,17 @@ class Equation {
   /// The type of this reaction.
   Type type;
 
+  /// A list of Strings containing the steps of how to find the type of this
+  /// reaction.
+  List<String> typeSteps = [];
+
+  /// A list of Strings containing the steps of how to find the products of
+  /// this reaction.
+  List<String> productSteps = [];
+
+  /// A list of Strings containing the steps of how to balance this reaction.
+  List<String> balanceSteps = [];
+
   /// Constructs an equation from a String.
   ///
   /// [s] contains the reactants and optionally the products as well.
@@ -627,50 +638,115 @@ class Equation {
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;
-      if (reactants[0].key.compoundUnits.length == 2) return Type.decomp;
+      if (reactants[0].key.compoundUnits.length == 2 &&
+          reactants[0].key.compoundUnits[0].key.isElement() &&
+          reactants[0].key.compoundUnits[1].key.isElement()) {
+        typeSteps.add("""
+          Since this equation has one reactant with two elements, it must be 
+          Simple Decomposition.
+        """);
+        return Type.decomp;
+      }
       if (reactants[0].key.compoundUnits[0].key.equals('H')) {
         if (reactants[0].key.compoundUnits[2].key.equals('O')) {
-          if (!reactants[0].key.compoundUnits[1].key.metal)
+          if (!reactants[0].key.compoundUnits[1].key.metal) {
+            typeSteps.add("""
+              Since this equation has one reactant which is an acid, it must 
+              be Decomposition of an Acid.
+            """);
             return Type.decompAcid;
+          }
         }
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
         if (reactants[0].key.compoundUnits[1].key.formula.compareTo('O') ==
                 0 &&
             reactants[0].key.compoundUnits[2].key.formula.compareTo('H') ==
-                0) return Type.decompBase;
+                0) {
+          typeSteps.add("""
+              Since this equation has one reactant which is a base, is must 
+              be Decomposition of a Base.
+            """);
+          return Type.decompBase;
+        }
         if (!reactants[0].key.compoundUnits[1].key.metal) {
           if (reactants[0].key.compoundUnits[2].key.equals('O')) {
+            typeSteps.add("""
+              Since this equation has one reactant which is a combination of a 
+              metal, nonmetal, and oxygen, it must be Decomposition of a Salt.
+            """);
             return Type.decompSalt;
           }
         }
       }
     }
-    if (reactants[0].key.isElement() && reactants[1].key.isElement())
+    if (reactants[0].key.isElement() && reactants[1].key.isElement()) {
+      typeSteps.add("""
+        Since this equation has two reactants, each of which are elements, 
+        it must be Simple Composition.
+      """);
       return Type.comp; // Simple Composition
-    else if (reactants[0].key.isElement() && reactants[1].key.isCompound())
+    } else if (reactants[0].key.isElement() &&
+        reactants[1].key.isCompound()) {
+      typeSteps.add("""
+        Since this equation has two reactants, one of which is an element and 
+        one of which is a compound, it must be a Single Replacement.
+      """);
       return Type.singleReplacement;
-    else if (reactants[0].key.isCompound() && reactants[1].key.isElement()) {
+    } else if (reactants[0].key.isCompound() &&
+        reactants[1].key.isElement()) {
       if (reactants[0].key.compoundUnits[0].key.isElement()) {
         if (reactants[0].key.compoundUnits[0].key.equals('C') &&
             reactants[0].key.compoundUnits[1].key.equals('H') &&
-            reactants[1].key.equals('O'))
+            reactants[1].key.equals('O')) {
+          typeSteps.add("""
+            Since this equation has two reactants, one of which has carbon and 
+            hydrogen, and the other of which is oxygen, it must be 
+            Hydrocarbon Combustion.
+          """);
           return Type.combustion; // Hydrocarbon Combustion
+        }
       }
     } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
-        reactants[0].key.isBase() && reactants[1].key.isAcid())
+        reactants[0].key.isBase() && reactants[1].key.isAcid()) {
+      typeSteps.add("""
+        Since this equation has two reactants, one of which is an acid and the 
+        other of which is a base, it must be Double Replacement 
+        (Neutralization).
+      """);
       return Type.neutralization;
-    else if (reactants[0].key.isCompound() &&
+    } else if (reactants[0].key.isCompound() &&
         reactants[1].key.isCompound()) {
       if (reactants[0].key.formula.compareTo('H2O(l)') == 0) {
         if (reactants[1].key.compoundUnits[1].key.equals('O')) {
-          if (!reactants[1].key.compoundUnits[0].key.metal)
+          if (!reactants[1].key.compoundUnits[0].key.metal) {
+            typeSteps.add("""
+              Since this equation has two reactants, one of which is water and 
+              the other of which is the combination of a nonmetal and oxygen 
+              (making it a nonmetal oxide), it must be Composition of an Acid.
+            """);
             return Type.compAcid;
+          }
+          typeSteps.add("""
+              Since this equation has two reactants, one of which is water and 
+              the other of which is the combination of a metal and oxygen 
+              (making it a metal oxide), it must be Composition of a Base.
+            """);
           return Type.compBase;
         }
       } else if (reactants[0].key.compoundUnits[1].key.equals('O') &&
           reactants[1].key.compoundUnits[1].key.equals('O')) {
+        typeSteps.add("""
+          Since this equation has two reactants, one of which is the 
+          combination of metal and oxygen (making it a metal oxide) and the 
+          other of which is the combination of a nonmetal and oxygen (making 
+          it a nonmetal oxide), it must be Composition of a Salt.
+        """);
         return Type.compSalt;
       }
+      typeSteps.add("""
+        Since this equation has two reactants, both of which are compounds, 
+        it must be Double Replacement.
+      """);
       return Type.doubleReplacement;
     }
     return null;
