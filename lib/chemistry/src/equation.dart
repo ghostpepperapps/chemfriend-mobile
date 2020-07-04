@@ -761,7 +761,7 @@ class Equation {
   /// [pInWater].
   List<MapEntry<CompoundUnit, int>> _getStates(
       List<MapEntry<CompoundUnit, int>> products) {
-    if (this.rInWater)
+    if (this.rInWater) {
       for (Compound c in this
           .reactants
           .map((cu) => cu.key)
@@ -769,13 +769,25 @@ class Equation {
         if (c.isCompound()) {
           c.state = c.getWaterState();
         }
-    if (this.pInWater)
+    } else {
+      for (Compound c in reactants
+          .map((cu) => cu.key)
+          .where((cu) => (cu.isCompound() && cu.ionic)))
+        c.state = Phase.solid;
+    }
+    if (this.pInWater) {
       for (Compound c in products
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
           c.state = c.getWaterState();
         }
+    } else {
+      for (Compound c in products
+          .map((cu) => cu.key)
+          .where((cu) => (cu.isCompound() && cu.ionic)))
+        c.state = Phase.solid;
+    }
     return products;
   }
 

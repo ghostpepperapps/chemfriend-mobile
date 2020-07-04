@@ -67,7 +67,7 @@ void main() {
     test('.balance() works correctly for composition of a base', () {
       Equation e = Equation('H2O(l) + Na2O(aq)');
       e.balance();
-      expect(e.toString(), equals('H₂O(l) + Na₂O(aq) → 2NaOH(aq)'));
+      expect(e.toString(), equals('H₂O(l) + Na₂O(s) → 2NaOH(aq)'));
     });
     test('.balance() works correctly for simple decomposition', () {
       Equation e = Equation('H2O2(l)');
@@ -82,7 +82,7 @@ void main() {
     test('.balance() works correctly for decomposition of a base', () {
       Equation e = Equation('NaOH(aq)');
       e.balance();
-      expect(e.toString(), equals('2NaOH(aq) → H₂O(l) + Na₂O'));
+      expect(e.toString(), equals('2NaOH(aq) → H₂O(l) + Na₂O(s)'));
     });
     test('.balance() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
