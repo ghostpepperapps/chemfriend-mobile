@@ -371,10 +371,8 @@ class Equation {
       case Type.comp:
         bool ionic = false;
         if (reactants[0].key.metal != reactants[1].key.metal) {
-          this.productSteps.add("""
-            Since one of the reactants is a metal and the other is a nonmetal, 
-            the product of this equation is an ionic compound.
-          """);
+          this.productSteps.add(
+              """Since one of the reactants is a metal and the other is a nonmetal, the product of this equation is an ionic compound.""");
           ionic = true;
         }
         int count0;
@@ -386,38 +384,21 @@ class Equation {
               ((reactants[0].key.charge == 0) ? 1 : reactants[0].key.charge);
           count1 = -lcmCharge ~/
               ((reactants[1].key.charge == 0) ? 1 : reactants[1].key.charge);
-          this.productSteps.add("""
-            Since the product of this equation is an ionic compound, the 
-            charges of each of its elements must add up to 0. First, we find 
-            the least common multiple of the charges of the elements. The 
-            least common multiple of ${this.reactants[0].key.charge} and 
-            ${this.reactants[1].key.charge} is $lcmCharge. 
-          """);
-          this.productSteps.add("""
-            To find the count of each element, we divide the least common 
-            multiple by the charge of each element. The count of 
-            ${this.reactants[0].key.toString()} is $lcmCharge / 
-            ${this.reactants[0].key.charge}, which equals $count0. Similarly, 
-            the count of ${this.reactants[1].key.toString()} is $lcmCharge / 
-            ${this.reactants[1].key.charge}, which equals $count1. So, the 
-            product of this equation is: ${Compound.fromUnits([
+          this.productSteps.add(
+              """Since the product of this equation is an ionic compound, the charges of each of its elements must add up to 0. First, we find the least common multiple of the charges of the elements. The least common multiple of ${this.reactants[0].key.charge} and ${this.reactants[1].key.charge} is $lcmCharge. """);
+          this.productSteps.add(
+              """To find the count of each element, we divide the least common multiple by the charge of each element and take the absolute value. The count of ${this.reactants[0].key.formula} is |$lcmCharge / ${this.reactants[0].key.charge}|, which equals $count0. Similarly, the count of ${this.reactants[1].key.formula} is |$lcmCharge / ${this.reactants[1].key.charge}|, which equals $count1. So, the product of this equation is: ${Compound.fromUnits([
             MapEntry(reactants[0].key, count0),
             MapEntry(reactants[1].key, count1),
-          ]).toString()}. Since $count0 * ${this.reactants[0].key.charge} 
-            and $count1 * ${this.reactants[1].key.charge} add up to 0, the 
-            counts have been calculated properly.
-          """);
+          ]).toString()}. Since $count0 * ${this.reactants[0].key.charge} and $count1 * ${this.reactants[1].key.charge} add up to 0, the counts have been calculated properly.""");
         } else {
           count0 = reactants[0].key.count;
           count1 = reactants[0].key.count;
-          this.productSteps.add("""
-            Since the product of this equation is a molecular compound, and it 
-            was not given in the equation, we just assume that the product 
-            will be: ${Compound.fromUnits([
+          this.productSteps.add(
+              """Since the product of this equation is a molecular compound, and it was not given in the equation, we just assume that the product will be: ${Compound.fromUnits([
             MapEntry(reactants[0].key, count0),
             MapEntry(reactants[1].key, count1),
-          ]).toString()}.
-          """);
+          ]).toString()}.""");
         }
         result = [
           MapEntry(
@@ -676,19 +657,15 @@ class Equation {
       if (reactants[0].key.compoundUnits.length == 2 &&
           reactants[0].key.compoundUnits[0].key.isElement() &&
           reactants[0].key.compoundUnits[1].key.isElement()) {
-        typeSteps.add("""
-          Since this equation has one reactant with two elements, it must be 
-          Simple Decomposition.
-        """);
+        typeSteps.add(
+            """Since this equation has one reactant with two elements, it must be Simple Decomposition.""");
         return Type.decomp;
       }
       if (reactants[0].key.compoundUnits[0].key.equals('H')) {
         if (reactants[0].key.compoundUnits[2].key.equals('O')) {
           if (!reactants[0].key.compoundUnits[1].key.metal) {
-            typeSteps.add("""
-              Since this equation has one reactant which is an acid, it must 
-              be Decomposition of an Acid.
-            """);
+            typeSteps.add(
+                """Since this equation has one reactant which is an acid, it must be Decomposition of an Acid.""");
             return Type.decompAcid;
           }
         }
@@ -697,35 +674,27 @@ class Equation {
                 0 &&
             reactants[0].key.compoundUnits[2].key.formula.compareTo('H') ==
                 0) {
-          typeSteps.add("""
-              Since this equation has one reactant which is a base, is must 
-              be Decomposition of a Base.
-            """);
+          typeSteps.add(
+              """Since this equation has one reactant which is a base, is must be Decomposition of a Base.""");
           return Type.decompBase;
         }
         if (!reactants[0].key.compoundUnits[1].key.metal) {
           if (reactants[0].key.compoundUnits[2].key.equals('O')) {
-            typeSteps.add("""
-              Since this equation has one reactant which is a combination of a 
-              metal, nonmetal, and oxygen, it must be Decomposition of a Salt.
-            """);
+            typeSteps.add(
+                """Since this equation has one reactant which is a combination of a metal, nonmetal, and oxygen, it must be Decomposition of a Salt.""");
             return Type.decompSalt;
           }
         }
       }
     }
     if (reactants[0].key.isElement() && reactants[1].key.isElement()) {
-      typeSteps.add("""
-        Since this equation has two reactants, each of which are elements, 
-        it must be Simple Composition.
-      """);
+      typeSteps.add(
+          """Since this equation has two reactants, each of which are elements, it must be Simple Composition.""");
       return Type.comp; // Simple Composition
     } else if (reactants[0].key.isElement() &&
         reactants[1].key.isCompound()) {
-      typeSteps.add("""
-        Since this equation has two reactants, one of which is an element and 
-        one of which is a compound, it must be a Single Replacement.
-      """);
+      typeSteps.add(
+          """Since this equation has two reactants, one of which is an element and one of which is a compound, it must be a Single Replacement.""");
       return Type.singleReplacement;
     } else if (reactants[0].key.isCompound() &&
         reactants[1].key.isElement()) {
@@ -733,55 +702,37 @@ class Equation {
         if (reactants[0].key.compoundUnits[0].key.equals('C') &&
             reactants[0].key.compoundUnits[1].key.equals('H') &&
             reactants[1].key.equals('O')) {
-          typeSteps.add("""
-            Since this equation has two reactants, one of which has carbon and 
-            hydrogen, and the other of which is oxygen, it must be 
-            Hydrocarbon Combustion.
-          """);
+          typeSteps.add(
+              """Since this equation has two reactants, one of which has carbon and hydrogen, and the other of which is oxygen, it must be Hydrocarbon Combustion.""");
           return Type.combustion; // Hydrocarbon Combustion
         }
       }
     } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
         reactants[0].key.isBase() && reactants[1].key.isAcid()) {
-      typeSteps.add("""
-        Since this equation has two reactants, one of which is an acid and the 
-        other of which is a base, it must be Double Replacement 
-        (Neutralization).
-      """);
+      typeSteps.add(
+          """Since this equation has two reactants, one of which is an acid and the other of which is a base, it must be Double Replacement (Neutralization).""");
       return Type.neutralization;
     } else if (reactants[0].key.isCompound() &&
         reactants[1].key.isCompound()) {
       if (reactants[0].key.formula.compareTo('H2O(l)') == 0) {
         if (reactants[1].key.compoundUnits[1].key.equals('O')) {
           if (!reactants[1].key.compoundUnits[0].key.metal) {
-            typeSteps.add("""
-              Since this equation has two reactants, one of which is water and 
-              the other of which is the combination of a nonmetal and oxygen 
-              (making it a nonmetal oxide), it must be Composition of an Acid.
-            """);
+            typeSteps.add(
+                """Since this equation has two reactants, one of which is water and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of an Acid.""");
             return Type.compAcid;
           }
-          typeSteps.add("""
-              Since this equation has two reactants, one of which is water and 
-              the other of which is the combination of a metal and oxygen 
-              (making it a metal oxide), it must be Composition of a Base.
-            """);
+          typeSteps.add(
+              """Since this equation has two reactants, one of which is water and the other of which is the combination of a metal and oxygen (making it a metal oxide), it must be Composition of a Base.""");
           return Type.compBase;
         }
       } else if (reactants[0].key.compoundUnits[1].key.equals('O') &&
           reactants[1].key.compoundUnits[1].key.equals('O')) {
-        typeSteps.add("""
-          Since this equation has two reactants, one of which is the 
-          combination of metal and oxygen (making it a metal oxide) and the 
-          other of which is the combination of a nonmetal and oxygen (making 
-          it a nonmetal oxide), it must be Composition of a Salt.
-        """);
+        typeSteps.add(
+            """Since this equation has two reactants, one of which is the combination of metal and oxygen (making it a metal oxide) and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of a Salt.""");
         return Type.compSalt;
       }
-      typeSteps.add("""
-        Since this equation has two reactants, both of which are compounds, 
-        it must be Double Replacement.
-      """);
+      typeSteps.add(
+          """Since this equation has two reactants, both of which are compounds, it must be Double Replacement.""");
       return Type.doubleReplacement;
     }
     return null;
@@ -863,5 +814,17 @@ class Equation {
               1);
       }
     }
+  }
+
+  /// Returns the formatted explanation of how to find the type and product(s)
+  /// of this equation as well as how to balance it.
+  String getExplanation() {
+    String result = 'Type\n';
+    this.typeSteps.forEach((String step) => result += (step + '\n'));
+    result += '\nProduct(s)\n';
+    this.productSteps.forEach((String step) => result += (step + '\n'));
+    result += '\nBalancing\n';
+    this.balanceSteps.forEach((String step) => result += (step + '\n'));
+    return result;
   }
 }
