@@ -410,13 +410,16 @@ class Equation {
         ];
         break;
       case Type.compAcid:
+        Compound nmOxide = Compound.fromUnits([
+          MapEntry(reactants[1].key.compoundUnits[0].key, 1),
+          MapEntry(
+              new Element('O'), reactants[1].key.compoundUnits[1].value + 1),
+        ]);
         result = [
           MapEntry(
               Compound.fromUnits([
-                MapEntry(new Element('H'), 2),
-                MapEntry(reactants[1].key.compoundUnits[0].key, 1),
-                MapEntry(new Element('O'),
-                    reactants[1].key.compoundUnits[1].value + 1),
+                MapEntry(new Element('H'), nmOxide.getCharge().abs()),
+                MapEntry(nmOxide, 1),
               ], Phase.aqueous),
               1)
         ];

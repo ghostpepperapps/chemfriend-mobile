@@ -183,9 +183,16 @@ class Compound with CompoundUnit {
   ///
   /// This uses the [commonIons] map of common polyatomic ions.
   void _commonIonCharge() {
+    String formulaWithoutState =
+        (this.formula[this.formula.length - 1].compareTo(')') != 0)
+            ? this.formula
+            : this.formula.substring(
+                0,
+                this.formula.length -
+                    ((this.state == Phase.aqueous) ? 4 : 3));
     if (this.getCharge() == null) {
-      if (commonIons.containsKey(this.formula)) {
-        this.charge = commonIons[this.formula];
+      if (commonIons.containsKey(formulaWithoutState)) {
+        this.charge = commonIons[formulaWithoutState];
       }
     }
   }
