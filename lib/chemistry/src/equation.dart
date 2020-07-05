@@ -423,6 +423,10 @@ class Equation {
               ], Phase.aqueous),
               1)
         ];
+        this.productSteps.add(
+            """Since the product of this equation is an acid, it will be made of H and ${reactants[1].key} with one extra oxygen from the water and the state will be aqueous. For the product to be balanced, the count of H needs to be enough for its charge and the charge of the other compound to add up to 0.""");
+        this.productSteps.add(
+            """Since the charge of $nmOxide is ${nmOxide.getCharge()}, the count of H must be ${nmOxide.getCharge().abs()}. So, the product will be: ${result[0].key}.""");
         break;
       case Type.compBase:
         _fixPolyatomicIons();
