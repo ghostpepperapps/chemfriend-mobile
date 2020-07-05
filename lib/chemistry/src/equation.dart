@@ -505,6 +505,8 @@ class Equation {
               ]),
               1)
         ];
+        this.productSteps.add(
+            """Since this is the decomposition of a base, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[0].key.formula} and O with a count of 1 less than the count of OH in the base. So, the second product (without the state) will be ${result[1].key}.""");
         break;
       case Type.decompSalt:
         Compound metalOxide = Compound.fromUnits([
