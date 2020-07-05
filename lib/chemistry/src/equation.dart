@@ -436,7 +436,7 @@ class Equation {
                 MapEntry(reactants[1].key.compoundUnits[0].key, 1),
                 MapEntry(Compound('OH'),
                     reactants[1].key.compoundUnits[0].key.charge),
-              ], Phase.aqueous),
+              ]),
               1)
         ];
         this.productSteps.add(
@@ -459,6 +459,10 @@ class Equation {
               ]),
               1)
         ];
+        this.productSteps.add(
+            """Since the product of this equation is a salt, it will be made of ${reactants[0].key.compoundUnits[0].key.formula}, ${reactants[1].key.compoundUnits[0].key.formula} (whose counts are the same as their counts in the reactants), and O (whose count is the sum of the counts of oxygen in the reactants).""");
+        this.productSteps.add(
+            """So, the product (without the state) will be: ${result[0].key}.""");
         break;
       case Type.decomp:
         result = [
