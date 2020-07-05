@@ -439,6 +439,10 @@ class Equation {
               ], Phase.aqueous),
               1)
         ];
+        this.productSteps.add(
+            """Since the product of this equation is a base, it will be made of ${reactants[1].key.compoundUnits[0].key.formula} and OH (hydroxide). For the product to be balanced, the count of OH needs to be enough for its charge and the charge of the other compound to add up to 0.""");
+        this.productSteps.add(
+            """Since the charge of ${reactants[1].key.compoundUnits[0].key.formula} is ${reactants[1].key.compoundUnits[0].key.charge} and the charge of OH is -1, the count of OH must be ${reactants[1].key.compoundUnits[0].key.charge}. So, the product (without the state) will be: ${result[0].key}.""");
         break;
       case Type.compSalt:
         result = [
