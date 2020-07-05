@@ -471,6 +471,8 @@ class Equation {
           MapEntry(
               new Element(reactants[0].key.compoundUnits[1].key.formula), 1)
         ];
+        this.productSteps.add(
+            """Since this is the decomposition of a compound with 2 elements, ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}, the first product will be ${reactants[0].key.compoundUnits[0].key} and the second product will be ${reactants[0].key.compoundUnits[1].key}.""");
         break;
       case Type.decompAcid:
         result = [
