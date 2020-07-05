@@ -486,6 +486,8 @@ class Equation {
               ]),
               1)
         ];
+        this.productSteps.add(
+            """Since this is the decomposition of an acid, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[1].key.formula} and O with a count of 1 less than the count of O in the acid. So, the second product (without the state) will be ${result[1].key}.""");
         break;
       case Type.decompBase:
         _fixPolyatomicIons();
