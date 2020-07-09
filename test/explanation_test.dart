@@ -42,4 +42,22 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
+  test('Equation.getExplanation() works for decomposition of a salt', () {
+    Equation e = new Equation('MgCO3(aq)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
+  test('Equation.getExplanation() works for combustion', () {
+    Equation e = new Equation('C6H12O6(s) + O2(g)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
+  test('.balance() works correctly for single replacement of metal', () {
+    Equation e = Equation('Ga(s) + Ca3P2(s)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
 }
