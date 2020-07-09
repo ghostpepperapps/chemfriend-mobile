@@ -543,6 +543,8 @@ class Equation {
             """Since this is a hydrocarbon combustion reaction, the products will be H₂O(g) (water vapour) and CO₂(g) (carbon dioxide).""");
         break;
       case Type.singleReplacement:
+        this.productSteps.add(
+            """Since this reaction is single replacement, the first product will be an element and the second product will be a compound. """);
         _fixPolyatomicIons();
         int eIndex = (reactants[0].key.isElement()) ? 0 : 1;
         Element e = reactants[eIndex].key;
@@ -568,9 +570,21 @@ class Equation {
           counts[1] =
               (lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]))
                   .abs();
+          this.productSteps.add(
+              """Since one reactant is an ionic compound, the product which will be a compound must also be ionic. Since ${c.compoundUnits[rIndex].key.formula} is being replaced with ${e.formula}, the ionic compound will be made of ${c.compoundUnits[sIndex].key.formula} and ${e.formula}.""");
+          this.productSteps.add(
+              """To find the counts of each of the elements, we first find the least common multiple of the absolute value of the charges of the elements. In this case, the least common multiple of ${charges[1][0].abs()} and ${charges[0][0].abs()} is $lcmCharge.""");
+          this.productSteps.add(
+              """We then divide this number by the absolute value of the charge of each element to find the count of each element. So, the count of ${c.compoundUnits[sIndex].key.formula} is $lcmCharge / ${charges[1][0].abs()} = ${counts[0]}. Similarly, the count of ${e.formula} is $lcmCharge / ${charges[0][0].abs()} = ${counts[1]}.""");
+          this.productSteps.add(
+              """As a result, the charges of each element multiplied by their counts now sum to 0.""");
         } else {
           counts[0] = c.compoundUnits[0].key.count;
           counts[1] = e.count;
+          this.productSteps.add(
+              """Since one reactant is a molecular compound, the product which will be a compound must also be molecular. As a result, the charges do not need to be balanced.""");
+          this.productSteps.add(
+              """So, we assume that the count of ${c.compoundUnits[1].key.formula} is ${c.compoundUnits[1].value} and the count of ${e.formula} is ${e.count}.""");
         }
         if (e.metal) {
           result = [
@@ -593,6 +607,8 @@ class Equation {
                 1)
           ];
         }
+        this.productSteps.add(
+            """As a result, the first product is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
         break;
       case Type.doubleReplacement:
         _fixPolyatomicIons();
