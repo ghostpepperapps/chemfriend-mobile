@@ -527,6 +527,12 @@ class Equation {
                   metalOxide.compoundUnits[1].value),
         ]);
         result = [MapEntry(metalOxide, 1), MapEntry(nonmetalOxide, 1)];
+        this.productSteps.add(
+            """Since this is the decomposition of a salt, the first product will be a metal oxide (the combination of the metal and oxygen) and the second product will be a nonmetal oxide (the combination of the nonmetal and oxygen).""");
+        this.productSteps.add(
+            """To find the count of oxygen in the metal oxide we take the absolute value of the charge of the metal (${reactants[0].key.compoundUnits[0].key.charge}) divided by the charge of O (-2) to get ${metalOxide.compoundUnits[1].value}.""");
+        this.productSteps.add(
+            """We then add the remaining oxygens to the nonmetal oxide by subtracting the count of the oxygen in the metal oxide from the count of the oxygen in the salt: ${reactants[0].key.compoundUnits[2].value} - ${metalOxide.compoundUnits[1].value} = ${nonmetalOxide.compoundUnits[1].value}.""");
         break;
       case Type.combustion:
         result = [
