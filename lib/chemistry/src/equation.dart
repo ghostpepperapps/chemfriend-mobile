@@ -539,6 +539,8 @@ class Equation {
           MapEntry(Compound('H2O(g)'), 1),
           MapEntry(Compound('CO2(g)'), 1)
         ];
+        this.productSteps.add(
+            """Since this is a hydrocarbon combustion reaction, the products will be H₂O(g) (water vapour) and CO₂(g) (carbon dioxide).""");
         break;
       case Type.singleReplacement:
         _fixPolyatomicIons();
