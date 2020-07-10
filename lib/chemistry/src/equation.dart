@@ -634,6 +634,18 @@ class Equation {
               lcmCharge2 ~/ ((charges[1][0] == 0) ? 1 : charges[1][0]);
           counts[1][1] =
               -lcmCharge2 ~/ ((charges[0][1] == 0) ? 1 : charges[0][1]);
+          this.productSteps.add(
+              """Since the reactants are ionic, the products will also be ionic. The first product will be made of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and the second product will be made of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}.""");
+          this.productSteps.add(
+              """To find the counts of the first product, we find the least common multiple of the absolute values of the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula}. The least common multiple of ${reactants[0].key.compoundUnits[0].key.charge.abs()} and ${reactants[1].key.compoundUnits[1].key.charge.abs()} is $lcmCharge1.""");
+          this.productSteps.add(
+              """We then divide the least common multiple by the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and then take the absolute value to get their counts. The count of ${reactants[0].key.compoundUnits[0].key.formula} is |$lcmCharge1 / ${reactants[0].key.compoundUnits[0].key.charge}| = ${counts[0][0]}. Similarly, the count of ${reactants[1].key.compoundUnits[1].key.formula} is |$lcmCharge1 / ${reactants[1].key.compoundUnits[1].key.charge}| = ${counts[0][1]}.""");
+          this.productSteps.add(
+              """Similarly for the second product, we find that the least common multiple of the absolute values of the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} is $lcmCharge2.""");
+          this.productSteps.add(
+              """Again, we divide the least common multiple by the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} and then take the absolute value. The count of ${reactants[1].key.compoundUnits[0].key.formula} is |$lcmCharge2 / ${reactants[1].key.compoundUnits[0].key.charge}| = ${counts[1][0]}. Similarly, the count of ${reactants[0].key.compoundUnits[1].key.formula} is |$lcmCharge2 / ${reactants[0].key.compoundUnits[1].key.charge}| = ${counts[1][1]}.""");
+          this.productSteps.add(
+              """Using this method, we can ensure that the charges of the anion and the cation in each ionic compound sum to 0.""");
         } else {
           counts[0] = [
             reactants[0].key.compoundUnits[0].value,

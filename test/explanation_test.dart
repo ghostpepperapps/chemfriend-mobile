@@ -60,4 +60,18 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
+  test('.balance() works correctly for double replacement', () {
+    Equation e = Equation('Na3P(aq) + CaCl2(aq)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
+  test(
+      '.balance() works correctly for double replacement of polyatomic ions',
+      () {
+    Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
 }
