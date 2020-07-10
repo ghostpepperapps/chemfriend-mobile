@@ -655,6 +655,8 @@ class Equation {
             reactants[1].key.compoundUnits[0].value,
             reactants[1].key.compoundUnits[1].value
           ];
+          this.productSteps.add(
+              """Since the reactants are molecular compounds, the products will also be molecular compounds. We assume that the counts of each element will stay the same as they were before the reaction.""");
         }
         result = [
           MapEntry(
@@ -674,6 +676,8 @@ class Equation {
               ]),
               1),
         ];
+        this.productSteps.add(
+            """As a result, the first product (without the state) is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
         break;
       case Type.neutralization:
         _fixPolyatomicIons();
