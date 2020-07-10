@@ -74,4 +74,10 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
+  test('.balance() works correctly for neutralization', () {
+    Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
 }

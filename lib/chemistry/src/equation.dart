@@ -700,6 +700,14 @@ class Equation {
               ]),
               1),
         ];
+        this.productSteps.add(
+            """Since this is a neutralization reaction, the first product will be H₂O(l) and the second product will be the combination of the cation of the base (${base.compoundUnits[0].key.formula}) and the anion from the acid (${acid.compoundUnits[1].key.formula}).""");
+        this.productSteps.add(
+            """Since the second product will be ionic, we must calculate the least common multiple of the absolute values of the charges of ${base.compoundUnits[0].key.formula} and ${acid.compoundUnits[1].key.formula}. The least common multiple of ${base.compoundUnits[0].key.charge} and $otherCharge is $lcmCharge.""");
+        this.productSteps.add(
+            """We then divide the least common multiple by the charges of the cation and anion, then take the absolute value to find the counts. The count of ${base.compoundUnits[0].key.formula} will be |$lcmCharge / ${base.compoundUnits[0].key.charge}| = ${result[1].key.compoundUnits[0].value}. Similarly, the count of ${acid.compoundUnits[1].key.formula} will be |$lcmCharge / ${acid.compoundUnits[1].key.charge}| = ${result[1].key.compoundUnits[1].value}.""");
+        this.productSteps.add(
+            """As a result, the first product is H₂O(l) and the second product (without the state) is ${result[1].key}.""");
     }
     result = _getStates(result);
     return result;
