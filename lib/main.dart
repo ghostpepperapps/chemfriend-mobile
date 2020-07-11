@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     e = Equation(text);
     e.balance();
     String solution = e.toString();
-    String type = typeToString[e.getType()];
+    String type = typeToString[e.type];
     Navigator.push(
       context,
       MaterialPageRoute(
