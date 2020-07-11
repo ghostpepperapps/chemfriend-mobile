@@ -132,6 +132,9 @@ class Equation {
   void balance() {
     this.products =
         (this.products == null) ? this.getProducts() : this.products;
+    this
+        .productSteps
+        .add("""So, the equation (before balancing) is: $this.""");
     // Balancing
     switch (this.type) {
       case Type.comp:
@@ -831,27 +834,43 @@ class Equation {
   List<MapEntry<CompoundUnit, int>> _getStates(
       List<MapEntry<CompoundUnit, int>> products) {
     if (this.rInWater) {
+      this.productSteps.add(
+          """Since the type of this equation is ${typeToString[this.type]}, the reactants are in water.""");
       for (Compound c in this
           .reactants
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
+          this.productSteps.add(
+              """Since ${c.formula} is ionic and one of the reactants of this equation, we need to check the solubility chart for its state.""");
           c.state = c.getWaterState();
+          this.productSteps.add(
+              """From the solubility chart, we can see that the state of ${c.formula} should be ${phaseToString[c.state]}.""");
         }
     } else {
+      this.productSteps.add(
+          """Since the type of this equation is ${typeToString[this.type]}, the reactants are not in water; so, each of the ionic reactants must be solid.""");
       for (Compound c in reactants
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         c.state = Phase.solid;
     }
     if (this.pInWater) {
+      this.productSteps.add(
+          """Since the type of this equation is ${typeToString[this.type]}, the products are in water.""");
       for (Compound c in products
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
+          this.productSteps.add(
+              """Since ${c.formula} is ionic and one of the products of this equation, we need to check the solubility chart for its state.""");
           c.state = c.getWaterState();
+          this.productSteps.add(
+              """From the solubility chart, we can see that the state of ${c.formula} should be ${phaseToString[c.state]}.""");
         }
     } else {
+      this.productSteps.add(
+          """Since the type of this equation is ${typeToString[this.type]}, the products are not in water; so, each of the ionic products must be solid.""");
       for (Compound c in products
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
