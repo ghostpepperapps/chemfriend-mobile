@@ -38,20 +38,23 @@ class _SolutionState extends State<Solution> {
         )),
         SizedBox(height: 20),
         Center(
-            child: Text(widget.solution,
-                style: TextStyle(fontSize: 20.0),
-                textAlign: TextAlign.center)),
+            child: Row(children: <Widget>[
+          Padding(
+            padding: EdgeInsets.fromLTRB(10.0, 6.0, 6.0, 6.0),
+            child: FloatingActionButton(
+              heroTag: '_pushExplanation',
+              child: Icon(Icons.info),
+              mini: true,
+              onPressed: () {
+                _pushExplanation(context);
+                _textController.text = '';
+              },
+            ),
+          ),
+          Text(widget.solution,
+              style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center)
+        ])),
         SizedBox(height: 20),
-        Center(
-            child: FloatingActionButton.extended(
-          heroTag: '_pushExplanation',
-          icon: Icon(Icons.info),
-          label: Text("see explanation"),
-          onPressed: () {
-            _pushExplanation(context);
-            _textController.text = '';
-          },
-        )),
         SizedBox(height: 20),
         Input(
           onPressed: _reloadSolution,
