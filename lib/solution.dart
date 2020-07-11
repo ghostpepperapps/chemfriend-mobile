@@ -68,16 +68,15 @@ class _SolutionState extends State<Solution> {
     setState(() {
       widget.equation = e;
       widget.solution = e.toString();
-      widget.type = typeToString[e.getType()];
+      widget.type = typeToString[e.type];
     });
   }
 
   void _pushExplanation(BuildContext context) {
-    String explanation = widget.equation.getExplanation();
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Explanation(explanation: explanation)),
+          builder: (context) => Explanation(equation: widget.equation)),
     );
   }
 }

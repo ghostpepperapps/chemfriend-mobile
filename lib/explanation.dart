@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:chemfriend/chemistry/chemistry.dart';
 
 class Explanation extends StatefulWidget {
-  Explanation({Key key, this.explanation}) : super(key: key);
-  String explanation;
+  Explanation({Key key, this.equation}) : super(key: key);
+  final Equation equation;
   @override
   _ExplanationState createState() => _ExplanationState();
 }
@@ -17,11 +18,27 @@ class _ExplanationState extends State<Explanation> {
           controller: _scrollController,
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(widget.explanation)),
-            SizedBox(
-              height: 80,
-            )
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Type",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(widget.equation.typeSteps.join('\n') + '\n'),
+                  Text(
+                    "Product(s)",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(widget.equation.productSteps.join('\n') + '\n'),
+                  Text(
+                    "Balancing",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(widget.equation.balanceSteps.join('\n'))
+                ],
+              ),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
