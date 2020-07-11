@@ -926,11 +926,11 @@ class Equation {
   /// of this equation as well as how to balance it.
   String getExplanation() {
     String result = 'Type\n';
-    this.typeSteps.forEach((String step) => result += (step + '\n'));
-    result += '\nProduct(s)\n';
-    this.productSteps.forEach((String step) => result += (step + '\n'));
-    result += '\nBalancing\n';
-    this.balanceSteps.forEach((String step) => result += (step + '\n'));
+    result += this.typeSteps.join('\n');
+    result += '\n\nProduct(s)\n';
+    result += this.productSteps.join('\n');
+    result += '\n\nBalancing\n';
+    result += this.balanceSteps.join('\n');
     return result;
   }
 }
