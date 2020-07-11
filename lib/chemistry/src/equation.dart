@@ -327,14 +327,20 @@ class Equation {
         products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
         products.insert(
             i + 1, MapEntry(Compound('CO2(g)'), products[i].value));
+        this.balanceSteps.add(
+            """Since one of the products of this equation is H₂CO₃, it decomposes into H₂O(l) and CO₂(g). The counts of these compounds are the same as the count of H₂CO₃ in the original equation.""");
       } else if (products[i].key.equals('H2SO3')) {
         products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
         products.insert(
             i + 1, MapEntry(Compound('SO2(g)'), products[i].value));
+        this.balanceSteps.add(
+            """Since one of the products of this equation is H₂SO₃, it decomposes into H₂O(l) and SO₂(g). The counts of these compounds are the same as the count of H₂SO₃ in the original equation.""");
       } else if (products[i].key.equals('NH4OH')) {
         products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
         products.insert(
             i + 1, MapEntry(Compound('NH3(g)'), products[i].value));
+        this.balanceSteps.add(
+            """Since one of the products of this equation is NH₄OH, it decomposes into H₂O(l) and NH₃(g). The counts of these compounds are the same as the count of NH₄OH in the original equation.""");
       }
     }
   }
@@ -842,10 +848,10 @@ class Equation {
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
           this.productSteps.add(
-              """Since ${c.formula} is ionic and one of the reactants of this equation, we need to check the solubility chart for its state.""");
+              """Since $c is ionic and one of the reactants of this equation, we need to check the solubility chart for its state.""");
           c.state = c.getWaterState();
           this.productSteps.add(
-              """From the solubility chart, we can see that the state of ${c.formula} should be ${phaseToString[c.state]}.""");
+              """From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.""");
         }
     } else {
       this.productSteps.add(
@@ -863,10 +869,10 @@ class Equation {
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
           this.productSteps.add(
-              """Since ${c.formula} is ionic and one of the products of this equation, we need to check the solubility chart for its state.""");
+              """Since $c is ionic and one of the products of this equation, we need to check the solubility chart for its state.""");
           c.state = c.getWaterState();
           this.productSteps.add(
-              """From the solubility chart, we can see that the state of ${c.formula} should be ${phaseToString[c.state]}.""");
+              """From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.""");
         }
     } else {
       this.productSteps.add(

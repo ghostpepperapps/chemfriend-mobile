@@ -80,4 +80,10 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
+  test('.balance() works correctly for gas formation', () {
+    Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
 }
