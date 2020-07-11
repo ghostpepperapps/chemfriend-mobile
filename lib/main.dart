@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Solution(solution: solution, type: type)),
+          builder: (context) =>
+              Solution(equation: e, solution: solution, type: type)),
     );
   }
 }

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:chemfriend/chemistry/chemistry.dart';
 
 import 'input.dart';
+import 'explanation.dart';
 
 class Solution extends StatefulWidget {
-  Solution({Key key, this.solution, this.type}) : super(key: key);
+  Solution({Key key, this.equation, this.solution, this.type})
+      : super(key: key);
+  Equation equation;
   String solution;
   String type;
   @override
@@ -26,7 +29,7 @@ class _SolutionState extends State<Solution> {
         body: ListView(
       controller: _scrollController,
       children: <Widget>[
-        SizedBox(height: 40),
+        SizedBox(height: 20),
         Center(
             child: Text(
           'Type: ${widget.type}',
@@ -38,7 +41,18 @@ class _SolutionState extends State<Solution> {
             child: Text(widget.solution,
                 style: TextStyle(fontSize: 20.0),
                 textAlign: TextAlign.center)),
-        SizedBox(height: 40),
+        SizedBox(height: 20),
+        Center(
+            child: FloatingActionButton.extended(
+          heroTag: '_pushExplanation',
+          icon: Icon(Icons.info),
+          label: Text("see explanation"),
+          onPressed: () {
+            _pushExplanation(context);
+            _textController.text = '';
+          },
+        )),
+        SizedBox(height: 20),
         Input(
           onPressed: _reloadSolution,
           scrollController: _scrollController,
@@ -52,8 +66,18 @@ class _SolutionState extends State<Solution> {
     e = Equation(text);
     e.balance();
     setState(() {
+      widget.equation = e;
       widget.solution = e.toString();
       widget.type = typeToString[e.getType()];
     });
+  }
+
+  void _pushExplanation(BuildContext context) {
+    String explanation = widget.equation.getExplanation();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Explanation(explanation: explanation)),
+    );
   }
 }
