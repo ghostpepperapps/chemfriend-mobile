@@ -132,9 +132,7 @@ class Equation {
   void balance() {
     this.products =
         (this.products == null) ? this.getProducts() : this.products;
-    this
-        .productSteps
-        .add("""So, the equation (before balancing) is: $this.""");
+    this.productSteps.add("So, the equation (before balancing) is: $this.");
     // Balancing
     switch (this.type) {
       case Type.comp:
@@ -328,19 +326,19 @@ class Equation {
         products.insert(
             i + 1, MapEntry(Compound('CO2(g)'), products[i].value));
         this.balanceSteps.add(
-            """Since one of the products of this equation is H₂CO₃, it decomposes into H₂O(l) and CO₂(g). The counts of these compounds are the same as the count of H₂CO₃ in the original equation.""");
+            "Since one of the products of this equation is H₂CO₃, it decomposes into H₂O(l) and CO₂(g). The counts of these compounds are the same as the count of H₂CO₃ in the original equation.");
       } else if (products[i].key.equals('H2SO3')) {
         products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
         products.insert(
             i + 1, MapEntry(Compound('SO2(g)'), products[i].value));
         this.balanceSteps.add(
-            """Since one of the products of this equation is H₂SO₃, it decomposes into H₂O(l) and SO₂(g). The counts of these compounds are the same as the count of H₂SO₃ in the original equation.""");
+            "Since one of the products of this equation is H₂SO₃, it decomposes into H₂O(l) and SO₂(g). The counts of these compounds are the same as the count of H₂SO₃ in the original equation.");
       } else if (products[i].key.equals('NH4OH')) {
         products[i] = MapEntry(Compound('H2O(l)'), products[i].value);
         products.insert(
             i + 1, MapEntry(Compound('NH3(g)'), products[i].value));
         this.balanceSteps.add(
-            """Since one of the products of this equation is NH₄OH, it decomposes into H₂O(l) and NH₃(g). The counts of these compounds are the same as the count of NH₄OH in the original equation.""");
+            "Since one of the products of this equation is NH₄OH, it decomposes into H₂O(l) and NH₃(g). The counts of these compounds are the same as the count of NH₄OH in the original equation.");
       }
     }
   }
@@ -381,7 +379,7 @@ class Equation {
         bool ionic = false;
         if (reactants[0].key.metal != reactants[1].key.metal) {
           this.productSteps.add(
-              """Since one of the reactants is a metal and the other is a nonmetal, the product of this equation is an ionic compound.""");
+              "Since one of the reactants is a metal and the other is a nonmetal, the product of this equation is an ionic compound.");
           ionic = true;
         }
         int count0;
@@ -394,20 +392,20 @@ class Equation {
           count1 = -lcmCharge ~/
               ((reactants[1].key.charge == 0) ? 1 : reactants[1].key.charge);
           this.productSteps.add(
-              """Since the product of this equation is an ionic compound, the charges of each of its elements must add up to 0. First, we find the least common multiple of the charges of the elements. The least common multiple of ${this.reactants[0].key.charge} and ${this.reactants[1].key.charge} is $lcmCharge. """);
+              "Since the product of this equation is an ionic compound, the charges of each of its elements must add up to 0. First, we find the least common multiple of the charges of the elements. The least common multiple of ${this.reactants[0].key.charge} and ${this.reactants[1].key.charge} is $lcmCharge. ");
           this.productSteps.add(
-              """To find the count of each element, we divide the least common multiple by the charge of each element and take the absolute value. The count of ${this.reactants[0].key.formula} is |$lcmCharge / ${this.reactants[0].key.charge}|, which equals $count0. Similarly, the count of ${this.reactants[1].key.formula} is |$lcmCharge / ${this.reactants[1].key.charge}|, which equals $count1. So, the product of this equation is: ${Compound.fromUnits([
-            MapEntry(reactants[0].key, count0),
-            MapEntry(reactants[1].key, count1),
-          ]).toString()}. Since $count0 * ${this.reactants[0].key.charge} and $count1 * ${this.reactants[1].key.charge} add up to 0, the counts have been calculated properly.""");
+                  "To find the count of each element, we divide the least common multiple by the charge of each element and take the absolute value. The count of ${this.reactants[0].key.formula} is |$lcmCharge / ${this.reactants[0].key.charge}|, which equals $count0. Similarly, the count of ${this.reactants[1].key.formula} is |$lcmCharge / ${this.reactants[1].key.charge}|, which equals $count1. So, the product of this equation is: ${Compound.fromUnits([
+                MapEntry(reactants[0].key, count0),
+                MapEntry(reactants[1].key, count1),
+              ]).toString()}. Since $count0 * ${this.reactants[0].key.charge} and $count1 * ${this.reactants[1].key.charge} add up to 0, the counts have been calculated properly.");
         } else {
           count0 = reactants[0].key.count;
           count1 = reactants[0].key.count;
           this.productSteps.add(
-              """Since the product of this equation is a molecular compound, and it was not given in the equation, we just assume that the product will be: ${Compound.fromUnits([
-            MapEntry(reactants[0].key, count0),
-            MapEntry(reactants[1].key, count1),
-          ]).toString()}.""");
+                  "Since the product of this equation is a molecular compound, and it was not given in the equation, we just assume that the product will be: ${Compound.fromUnits([
+                MapEntry(reactants[0].key, count0),
+                MapEntry(reactants[1].key, count1),
+              ]).toString()}.");
         }
         result = [
           MapEntry(
@@ -433,9 +431,9 @@ class Equation {
               1)
         ];
         this.productSteps.add(
-            """Since the product of this equation is an acid, it will be made of H and ${reactants[1].key} with one extra oxygen from the water and the state will be aqueous. For the product to be balanced, the count of H needs to be enough for its charge and the charge of the other compound to add up to 0.""");
+            "Since the product of this equation is an acid, it will be made of H and ${reactants[1].key} with one extra oxygen from the water and the state will be aqueous. For the product to be balanced, the count of H needs to be enough for its charge and the charge of the other compound to add up to 0.");
         this.productSteps.add(
-            """Since the charge of $nmOxide is ${nmOxide.getCharge()}, the count of H must be ${nmOxide.getCharge().abs()}. So, the product will be: ${result[0].key}.""");
+            "Since the charge of $nmOxide is ${nmOxide.getCharge()}, the count of H must be ${nmOxide.getCharge().abs()}. So, the product will be: ${result[0].key}.");
         break;
       case Type.compBase:
         result = [
@@ -448,9 +446,9 @@ class Equation {
               1)
         ];
         this.productSteps.add(
-            """Since the product of this equation is a base, it will be made of ${reactants[1].key.compoundUnits[0].key.formula} and OH (hydroxide). For the product to be balanced, the count of OH needs to be enough for its charge and the charge of the other compound to add up to 0.""");
+            "Since the product of this equation is a base, it will be made of ${reactants[1].key.compoundUnits[0].key.formula} and OH (hydroxide). For the product to be balanced, the count of OH needs to be enough for its charge and the charge of the other compound to add up to 0.");
         this.productSteps.add(
-            """Since the charge of ${reactants[1].key.compoundUnits[0].key.formula} is ${reactants[1].key.compoundUnits[0].key.charge} and the charge of OH is -1, the count of OH must be ${reactants[1].key.compoundUnits[0].key.charge}. So, the product (without the state) will be: ${result[0].key}.""");
+            "Since the charge of ${reactants[1].key.compoundUnits[0].key.formula} is ${reactants[1].key.compoundUnits[0].key.charge} and the charge of OH is -1, the count of OH must be ${reactants[1].key.compoundUnits[0].key.charge}. So, the product (without the state) will be: ${result[0].key}.");
         break;
       case Type.compSalt:
         result = [
@@ -468,9 +466,9 @@ class Equation {
               1)
         ];
         this.productSteps.add(
-            """Since the product of this equation is a salt, it will be made of ${reactants[0].key.compoundUnits[0].key.formula}, ${reactants[1].key.compoundUnits[0].key.formula} (whose counts are the same as their counts in the reactants), and O (whose count is the sum of the counts of oxygen in the reactants).""");
+            "Since the product of this equation is a salt, it will be made of ${reactants[0].key.compoundUnits[0].key.formula}, ${reactants[1].key.compoundUnits[0].key.formula} (whose counts are the same as their counts in the reactants), and O (whose count is the sum of the counts of oxygen in the reactants).");
         this.productSteps.add(
-            """So, the product (without the state) will be: ${result[0].key}.""");
+            "So, the product (without the state) will be: ${result[0].key}.");
         break;
       case Type.decomp:
         result = [
@@ -480,7 +478,7 @@ class Equation {
               new Element(reactants[0].key.compoundUnits[1].key.formula), 1)
         ];
         this.productSteps.add(
-            """Since this is the decomposition of a compound with 2 elements, ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}, the first product will be ${reactants[0].key.compoundUnits[0].key} and the second product will be ${reactants[0].key.compoundUnits[1].key}.""");
+            "Since this is the decomposition of a compound with 2 elements, ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}, the first product will be ${reactants[0].key.compoundUnits[0].key} and the second product will be ${reactants[0].key.compoundUnits[1].key}.");
         break;
       case Type.decompAcid:
         result = [
@@ -508,7 +506,7 @@ class Equation {
               1)
         ];
         this.productSteps.add(
-            """Since this is the decomposition of an acid, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[1].key.formula} and O with a count of 1 less than the count of O in the acid. So, the second product (without the state) will be ${result[1].key}.""");
+            "Since this is the decomposition of an acid, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[1].key.formula} and O with a count of 1 less than the count of O in the acid. So, the second product (without the state) will be ${result[1].key}.");
         break;
       case Type.decompBase:
         int lcmCharge = lcm(reactants[0].key.compoundUnits[0].key.charge, 2);
@@ -526,7 +524,7 @@ class Equation {
               1)
         ];
         this.productSteps.add(
-            """Since this is the decomposition of a base, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[0].key.formula} and O with a count of 1 less than the count of OH in the base. So, the second product (without the state) will be ${result[1].key}.""");
+            "Since this is the decomposition of a base, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[0].key.formula} and O with a count of 1 less than the count of OH in the base. So, the second product (without the state) will be ${result[1].key}.");
         break;
       case Type.decompSalt:
         Compound metalOxide = Compound.fromUnits([
@@ -548,11 +546,11 @@ class Equation {
         ]);
         result = [MapEntry(metalOxide, 1), MapEntry(nonmetalOxide, 1)];
         this.productSteps.add(
-            """Since this is the decomposition of a salt, the first product will be a metal oxide (the combination of the metal and oxygen) and the second product will be a nonmetal oxide (the combination of the nonmetal and oxygen).""");
+            "Since this is the decomposition of a salt, the first product will be a metal oxide (the combination of the metal and oxygen) and the second product will be a nonmetal oxide (the combination of the nonmetal and oxygen).");
         this.productSteps.add(
-            """To find the count of oxygen in the metal oxide we take the absolute value of the charge of the metal (${reactants[0].key.compoundUnits[0].key.charge}) divided by the charge of O (-2) to get ${metalOxide.compoundUnits[1].value}.""");
+            "To find the count of oxygen in the metal oxide we take the absolute value of the charge of the metal (${reactants[0].key.compoundUnits[0].key.charge}) divided by the charge of O (-2) to get ${metalOxide.compoundUnits[1].value}.");
         this.productSteps.add(
-            """We then add the remaining oxygens to the nonmetal oxide by subtracting the count of the oxygen in the metal oxide from the count of the oxygen in the salt: ${reactants[0].key.compoundUnits[2].value} - ${metalOxide.compoundUnits[1].value} = ${nonmetalOxide.compoundUnits[1].value}.""");
+            "We then add the remaining oxygens to the nonmetal oxide by subtracting the count of the oxygen in the metal oxide from the count of the oxygen in the salt: ${reactants[0].key.compoundUnits[2].value} - ${metalOxide.compoundUnits[1].value} = ${nonmetalOxide.compoundUnits[1].value}.");
         break;
       case Type.combustion:
         result = [
@@ -560,11 +558,11 @@ class Equation {
           MapEntry(Compound('CO2(g)'), 1)
         ];
         this.productSteps.add(
-            """Since this is a hydrocarbon combustion reaction, the products will be H₂O(g) (water vapour) and CO₂(g) (carbon dioxide).""");
+            "Since this is a hydrocarbon combustion reaction, the products will be H₂O(g) (water vapour) and CO₂(g) (carbon dioxide).");
         break;
       case Type.singleReplacement:
         this.productSteps.add(
-            """Since this reaction is single replacement, the first product will be an element and the second product will be a compound. """);
+            "Since this reaction is single replacement, the first product will be an element and the second product will be a compound. ");
         int eIndex = (reactants[0].key.isElement()) ? 0 : 1;
         Element e = reactants[eIndex].key;
         Compound c = reactants[1 - eIndex].key;
@@ -590,20 +588,20 @@ class Equation {
               (lcmCharge ~/ ((charges[0][0] == 0) ? 1 : charges[0][0]))
                   .abs();
           this.productSteps.add(
-              """Since one reactant is an ionic compound, the product which will be a compound must also be ionic. Since ${c.compoundUnits[rIndex].key.formula} is being replaced with ${e.formula}, the ionic compound will be made of ${c.compoundUnits[sIndex].key.formula} and ${e.formula}.""");
+              "Since one reactant is an ionic compound, the product which will be a compound must also be ionic. Since ${c.compoundUnits[rIndex].key.formula} is being replaced with ${e.formula}, the ionic compound will be made of ${c.compoundUnits[sIndex].key.formula} and ${e.formula}.");
           this.productSteps.add(
-              """To find the counts of each of the elements, we first find the least common multiple of the absolute value of the charges of the elements. In this case, the least common multiple of ${charges[1][0].abs()} and ${charges[0][0].abs()} is $lcmCharge.""");
+              "To find the counts of each of the elements, we first find the least common multiple of the absolute value of the charges of the elements. In this case, the least common multiple of ${charges[1][0].abs()} and ${charges[0][0].abs()} is $lcmCharge.");
           this.productSteps.add(
-              """We then divide this number by the absolute value of the charge of each element to find the count of each element. So, the count of ${c.compoundUnits[sIndex].key.formula} is $lcmCharge / ${charges[1][0].abs()} = ${counts[0]}. Similarly, the count of ${e.formula} is $lcmCharge / ${charges[0][0].abs()} = ${counts[1]}.""");
+              "We then divide this number by the absolute value of the charge of each element to find the count of each element. So, the count of ${c.compoundUnits[sIndex].key.formula} is $lcmCharge / ${charges[1][0].abs()} = ${counts[0]}. Similarly, the count of ${e.formula} is $lcmCharge / ${charges[0][0].abs()} = ${counts[1]}.");
           this.productSteps.add(
-              """As a result, the charges of each element multiplied by their counts now sum to 0.""");
+              "As a result, the charges of each element multiplied by their counts now sum to 0.");
         } else {
           counts[0] = c.compoundUnits[0].key.count;
           counts[1] = e.count;
           this.productSteps.add(
-              """Since one reactant is a molecular compound, the product which will be a compound must also be molecular. As a result, the charges do not need to be balanced.""");
+              "Since one reactant is a molecular compound, the product which will be a compound must also be molecular. As a result, the charges do not need to be balanced.");
           this.productSteps.add(
-              """So, we assume that the count of ${c.compoundUnits[1].key.formula} is ${c.compoundUnits[1].value} and the count of ${e.formula} is ${e.count}.""");
+              "So, we assume that the count of ${c.compoundUnits[1].key.formula} is ${c.compoundUnits[1].value} and the count of ${e.formula} is ${e.count}.");
         }
         if (e.metal) {
           result = [
@@ -627,7 +625,7 @@ class Equation {
           ];
         }
         this.productSteps.add(
-            """As a result, the first product is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
+            "As a result, the first product is ${result[0].key} and the second product (without the state) is ${result[1].key}.");
         break;
       case Type.doubleReplacement:
         List<List<int>> counts = [new List(2), new List(2)];
@@ -653,17 +651,17 @@ class Equation {
           counts[1][1] =
               -lcmCharge2 ~/ ((charges[0][1] == 0) ? 1 : charges[0][1]);
           this.productSteps.add(
-              """Since the reactants are ionic, the products will also be ionic. The first product will be made of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and the second product will be made of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}.""");
+              "Since the reactants are ionic, the products will also be ionic. The first product will be made of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and the second product will be made of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula}.");
           this.productSteps.add(
-              """To find the counts of the first product, we find the least common multiple of the absolute values of the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula}. The least common multiple of ${reactants[0].key.compoundUnits[0].key.charge.abs()} and ${reactants[1].key.compoundUnits[1].key.charge.abs()} is $lcmCharge1.""");
+              "To find the counts of the first product, we find the least common multiple of the absolute values of the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula}. The least common multiple of ${reactants[0].key.compoundUnits[0].key.charge.abs()} and ${reactants[1].key.compoundUnits[1].key.charge.abs()} is $lcmCharge1.");
           this.productSteps.add(
-              """We then divide the least common multiple by the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and then take the absolute value to get their counts. The count of ${reactants[0].key.compoundUnits[0].key.formula} is |$lcmCharge1 / ${reactants[0].key.compoundUnits[0].key.charge}| = ${counts[0][0]}. Similarly, the count of ${reactants[1].key.compoundUnits[1].key.formula} is |$lcmCharge1 / ${reactants[1].key.compoundUnits[1].key.charge}| = ${counts[0][1]}.""");
+              "We then divide the least common multiple by the charges of ${reactants[0].key.compoundUnits[0].key.formula} and ${reactants[1].key.compoundUnits[1].key.formula} and then take the absolute value to get their counts. The count of ${reactants[0].key.compoundUnits[0].key.formula} is |$lcmCharge1 / ${reactants[0].key.compoundUnits[0].key.charge}| = ${counts[0][0]}. Similarly, the count of ${reactants[1].key.compoundUnits[1].key.formula} is |$lcmCharge1 / ${reactants[1].key.compoundUnits[1].key.charge}| = ${counts[0][1]}.");
           this.productSteps.add(
-              """Similarly for the second product, we find that the least common multiple of the absolute values of the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} is $lcmCharge2.""");
+              "Similarly for the second product, we find that the least common multiple of the absolute values of the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} is $lcmCharge2.");
           this.productSteps.add(
-              """Again, we divide the least common multiple by the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} and then take the absolute value. The count of ${reactants[1].key.compoundUnits[0].key.formula} is |$lcmCharge2 / ${reactants[1].key.compoundUnits[0].key.charge}| = ${counts[1][0]}. Similarly, the count of ${reactants[0].key.compoundUnits[1].key.formula} is |$lcmCharge2 / ${reactants[0].key.compoundUnits[1].key.charge}| = ${counts[1][1]}.""");
+              "Again, we divide the least common multiple by the charges of ${reactants[1].key.compoundUnits[0].key.formula} and ${reactants[0].key.compoundUnits[1].key.formula} and then take the absolute value. The count of ${reactants[1].key.compoundUnits[0].key.formula} is |$lcmCharge2 / ${reactants[1].key.compoundUnits[0].key.charge}| = ${counts[1][0]}. Similarly, the count of ${reactants[0].key.compoundUnits[1].key.formula} is |$lcmCharge2 / ${reactants[0].key.compoundUnits[1].key.charge}| = ${counts[1][1]}.");
           this.productSteps.add(
-              """Using this method, we can ensure that the charges of the anion and the cation in each ionic compound sum to 0.""");
+              "Using this method, we can ensure that the charges of the anion and the cation in each ionic compound sum to 0.");
         } else {
           counts[0] = [
             reactants[0].key.compoundUnits[0].value,
@@ -674,7 +672,7 @@ class Equation {
             reactants[1].key.compoundUnits[1].value
           ];
           this.productSteps.add(
-              """Since the reactants are molecular compounds, the products will also be molecular compounds. We assume that the counts of each element will stay the same as they were before the reaction.""");
+              "Since the reactants are molecular compounds, the products will also be molecular compounds. We assume that the counts of each element will stay the same as they were before the reaction.");
         }
         result = [
           MapEntry(
@@ -695,7 +693,7 @@ class Equation {
               1),
         ];
         this.productSteps.add(
-            """As a result, the first product (without the state) is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
+            "As a result, the first product (without the state) is ${result[0].key} and the second product (without the state) is ${result[1].key}.");
         break;
       case Type.neutralization:
         Compound acid =
@@ -718,13 +716,13 @@ class Equation {
               1),
         ];
         this.productSteps.add(
-            """Since this is a neutralization reaction, the first product will be H₂O(l) and the second product will be the combination of the cation of the base (${base.compoundUnits[0].key.formula}) and the anion from the acid (${acid.compoundUnits[1].key.formula}).""");
+            "Since this is a neutralization reaction, the first product will be H₂O(l) and the second product will be the combination of the cation of the base (${base.compoundUnits[0].key.formula}) and the anion from the acid (${acid.compoundUnits[1].key.formula}).");
         this.productSteps.add(
-            """Since the second product will be ionic, we must calculate the least common multiple of the absolute values of the charges of ${base.compoundUnits[0].key.formula} and ${acid.compoundUnits[1].key.formula}. The least common multiple of ${base.compoundUnits[0].key.charge} and $otherCharge is $lcmCharge.""");
+            "Since the second product will be ionic, we must calculate the least common multiple of the absolute values of the charges of ${base.compoundUnits[0].key.formula} and ${acid.compoundUnits[1].key.formula}. The least common multiple of ${base.compoundUnits[0].key.charge} and $otherCharge is $lcmCharge.");
         this.productSteps.add(
-            """We then divide the least common multiple by the charges of the cation and anion, then take the absolute value to find the counts. The count of ${base.compoundUnits[0].key.formula} will be |$lcmCharge / ${base.compoundUnits[0].key.charge}| = ${result[1].key.compoundUnits[0].value}. Similarly, the count of ${acid.compoundUnits[1].key.formula} will be |$lcmCharge / ${acid.compoundUnits[1].key.charge}| = ${result[1].key.compoundUnits[1].value}.""");
+            "We then divide the least common multiple by the charges of the cation and anion, then take the absolute value to find the counts. The count of ${base.compoundUnits[0].key.formula} will be |$lcmCharge / ${base.compoundUnits[0].key.charge}| = ${result[1].key.compoundUnits[0].value}. Similarly, the count of ${acid.compoundUnits[1].key.formula} will be |$lcmCharge / ${acid.compoundUnits[1].key.charge}| = ${result[1].key.compoundUnits[1].value}.");
         this.productSteps.add(
-            """As a result, the first product is H₂O(l) and the second product (without the state) is ${result[1].key}.""");
+            "As a result, the first product is H₂O(l) and the second product (without the state) is ${result[1].key}.");
     }
     result = _getStates(result);
     return result;
@@ -745,17 +743,17 @@ class Equation {
           reactants[0].key.compoundUnits[0].key.isElement() &&
           reactants[0].key.compoundUnits[1].key.isElement()) {
         typeSteps.add(
-            """Since this equation has one reactant with two elements, it must be Simple Decomposition.""");
+            "Since this equation has one reactant with two elements, it must be Simple Decomposition.");
         return Type.decomp;
       }
       if (reactants[0].key.isAcid()) {
         typeSteps.add(
-            """Since this equation has one reactant which is an acid, it must be Decomposition of an Acid.""");
+            "Since this equation has one reactant which is an acid, it must be Decomposition of an Acid.");
         return Type.decompAcid;
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
         if (reactants[0].key.compoundUnits[1].key.equals('OH')) {
           typeSteps.add(
-              """Since this equation has one reactant which is a base, is must be Decomposition of a Base.""");
+              "Since this equation has one reactant which is a base, is must be Decomposition of a Base.");
           return Type.decompBase;
         }
         if (!reactants[0]
@@ -773,7 +771,7 @@ class Equation {
               .key
               .equals('O')) {
             typeSteps.add(
-                """Since this equation has one reactant which is a combination of a metal, nonmetal, and oxygen, it must be Decomposition of a Salt.""");
+                "Since this equation has one reactant which is a combination of a metal, nonmetal, and oxygen, it must be Decomposition of a Salt.");
             return Type.decompSalt;
           }
         }
@@ -781,12 +779,12 @@ class Equation {
     }
     if (reactants[0].key.isElement() && reactants[1].key.isElement()) {
       typeSteps.add(
-          """Since this equation has two reactants, each of which are elements, it must be Simple Composition.""");
+          "Since this equation has two reactants, each of which are elements, it must be Simple Composition.");
       return Type.comp; // Simple Composition
     } else if (reactants[0].key.isElement() &&
         reactants[1].key.isCompound()) {
       typeSteps.add(
-          """Since this equation has two reactants, one of which is an element and one of which is a compound, it must be a Single Replacement.""");
+          "Since this equation has two reactants, one of which is an element and one of which is a compound, it must be a Single Replacement.");
       return Type.singleReplacement;
     } else if (reactants[0].key.isCompound() &&
         reactants[1].key.isElement()) {
@@ -795,14 +793,14 @@ class Equation {
             reactants[0].key.compoundUnits[1].key.equals('H') &&
             reactants[1].key.equals('O')) {
           typeSteps.add(
-              """Since this equation has two reactants, one of which has carbon and hydrogen, and the other of which is oxygen, it must be Hydrocarbon Combustion.""");
+              "Since this equation has two reactants, one of which has carbon and hydrogen, and the other of which is oxygen, it must be Hydrocarbon Combustion.");
           return Type.combustion; // Hydrocarbon Combustion
         }
       }
     } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
         reactants[0].key.isBase() && reactants[1].key.isAcid()) {
       typeSteps.add(
-          """Since this equation has two reactants, one of which is an acid and the other of which is a base, it must be Double Replacement (Neutralization).""");
+          "Since this equation has two reactants, one of which is an acid and the other of which is a base, it must be Double Replacement (Neutralization).");
       return Type.neutralization;
     } else if (reactants[0].key.isCompound() &&
         reactants[1].key.isCompound()) {
@@ -810,21 +808,21 @@ class Equation {
         if (reactants[1].key.compoundUnits[1].key.equals('O')) {
           if (!reactants[1].key.compoundUnits[0].key.metal) {
             typeSteps.add(
-                """Since this equation has two reactants, one of which is water and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of an Acid.""");
+                "Since this equation has two reactants, one of which is water and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of an Acid.");
             return Type.compAcid;
           }
           typeSteps.add(
-              """Since this equation has two reactants, one of which is water and the other of which is the combination of a metal and oxygen (making it a metal oxide), it must be Composition of a Base.""");
+              "Since this equation has two reactants, one of which is water and the other of which is the combination of a metal and oxygen (making it a metal oxide), it must be Composition of a Base.");
           return Type.compBase;
         }
       } else if (reactants[0].key.compoundUnits[1].key.equals('O') &&
           reactants[1].key.compoundUnits[1].key.equals('O')) {
         typeSteps.add(
-            """Since this equation has two reactants, one of which is the combination of metal and oxygen (making it a metal oxide) and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of a Salt.""");
+            "Since this equation has two reactants, one of which is the combination of metal and oxygen (making it a metal oxide) and the other of which is the combination of a nonmetal and oxygen (making it a nonmetal oxide), it must be Composition of a Salt.");
         return Type.compSalt;
       }
       typeSteps.add(
-          """Since this equation has two reactants, both of which are compounds, it must be Double Replacement.""");
+          "Since this equation has two reactants, both of which are compounds, it must be Double Replacement.");
       return Type.doubleReplacement;
     }
     return null;
@@ -855,21 +853,21 @@ class Equation {
       List<MapEntry<CompoundUnit, int>> products) {
     if (this.rInWater) {
       this.productSteps.add(
-          """Since the type of this equation is ${typeToString[this.type]}, the reactants are in water.""");
+          "Since the type of this equation is ${typeToString[this.type]}, the reactants are in water.");
       for (Compound c in this
           .reactants
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
           this.productSteps.add(
-              """Since $c is ionic and one of the reactants of this equation, we need to check the solubility chart for its state.""");
+              "Since $c is ionic and one of the reactants of this equation, we need to check the solubility chart for its state.");
           c.state = c.getWaterState();
           this.productSteps.add(
-              """From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.""");
+              "From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.");
         }
     } else {
       this.productSteps.add(
-          """Since the type of this equation is ${typeToString[this.type]}, the reactants are not in water; so, each of the ionic reactants must be solid.""");
+          "Since the type of this equation is ${typeToString[this.type]}, the reactants are not in water; so, each of the ionic reactants must be solid.");
       for (Compound c in reactants
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
@@ -877,20 +875,20 @@ class Equation {
     }
     if (this.pInWater) {
       this.productSteps.add(
-          """Since the type of this equation is ${typeToString[this.type]}, the products are in water.""");
+          "Since the type of this equation is ${typeToString[this.type]}, the products are in water.");
       for (Compound c in products
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
         if (c.isCompound()) {
           this.productSteps.add(
-              """Since $c is ionic and one of the products of this equation, we need to check the solubility chart for its state.""");
+              "Since $c is ionic and one of the products of this equation, we need to check the solubility chart for its state.");
           c.state = c.getWaterState();
           this.productSteps.add(
-              """From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.""");
+              "From the solubility chart, we can see that the state of $c should be ${phaseToString[c.state]}.");
         }
     } else {
       this.productSteps.add(
-          """Since the type of this equation is ${typeToString[this.type]}, the products are not in water; so, each of the ionic products must be solid.""");
+          "Since the type of this equation is ${typeToString[this.type]}, the products are not in water; so, each of the ionic products must be solid.");
       for (Compound c in products
           .map((cu) => cu.key)
           .where((cu) => (cu.isCompound() && cu.ionic)))
