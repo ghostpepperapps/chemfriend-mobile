@@ -438,7 +438,6 @@ class Equation {
             """Since the charge of $nmOxide is ${nmOxide.getCharge()}, the count of H must be ${nmOxide.getCharge().abs()}. So, the product will be: ${result[0].key}.""");
         break;
       case Type.compBase:
-        _fixPolyatomicIons();
         result = [
           MapEntry(
               Compound.fromUnits([
@@ -488,10 +487,23 @@ class Equation {
           MapEntry(Compound('H2O(l)'), 1),
           MapEntry(
               Compound.fromUnits([
-                MapEntry(reactants[0].key.compoundUnits[1].key,
+                MapEntry(
+                    reactants[0]
+                        .key
+                        .compoundUnits[1]
+                        .key
+                        .compoundUnits[0]
+                        .key,
                     reactants[0].key.compoundUnits[1].value),
-                MapEntry(new Element('O'),
-                    reactants[0].key.compoundUnits[2].value - 1),
+                MapEntry(
+                    new Element('O'),
+                    reactants[0]
+                            .key
+                            .compoundUnits[1]
+                            .key
+                            .compoundUnits[1]
+                            .value -
+                        1),
               ]),
               1)
         ];
@@ -499,7 +511,6 @@ class Equation {
             """Since this is the decomposition of an acid, the first product will be H₂O(l) and the second product will be a compound with ${reactants[0].key.compoundUnits[1].key.formula} and O with a count of 1 less than the count of O in the acid. So, the second product (without the state) will be ${result[1].key}.""");
         break;
       case Type.decompBase:
-        _fixPolyatomicIons();
         int lcmCharge = lcm(reactants[0].key.compoundUnits[0].key.charge, 2);
         result = [
           MapEntry(Compound('H2O(l)'), 1),
@@ -554,7 +565,6 @@ class Equation {
       case Type.singleReplacement:
         this.productSteps.add(
             """Since this reaction is single replacement, the first product will be an element and the second product will be a compound. """);
-        _fixPolyatomicIons();
         int eIndex = (reactants[0].key.isElement()) ? 0 : 1;
         Element e = reactants[eIndex].key;
         Compound c = reactants[1 - eIndex].key;
@@ -620,7 +630,6 @@ class Equation {
             """As a result, the first product is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
         break;
       case Type.doubleReplacement:
-        _fixPolyatomicIons();
         List<List<int>> counts = [new List(2), new List(2)];
         List<List<int>> charges = [
           [
@@ -689,7 +698,6 @@ class Equation {
             """As a result, the first product (without the state) is ${result[0].key} and the second product (without the state) is ${result[1].key}.""");
         break;
       case Type.neutralization:
-        _fixPolyatomicIons();
         Compound acid =
             reactants[0].key.isAcid() ? reactants[0].key : reactants[1].key;
         Compound base =
@@ -729,6 +737,7 @@ class Equation {
   /// print(e.getType()); // Type.comp
   /// ```
   Type getType() {
+    _fixPolyatomicIons();
     if (reactants.length == 1) {
       // Decomposition
       if (reactants[0].key.isElement()) return null;
@@ -739,25 +748,30 @@ class Equation {
             """Since this equation has one reactant with two elements, it must be Simple Decomposition.""");
         return Type.decomp;
       }
-      if (reactants[0].key.compoundUnits[0].key.equals('H')) {
-        if (reactants[0].key.compoundUnits[2].key.equals('O')) {
-          if (!reactants[0].key.compoundUnits[1].key.metal) {
-            typeSteps.add(
-                """Since this equation has one reactant which is an acid, it must be Decomposition of an Acid.""");
-            return Type.decompAcid;
-          }
-        }
+      if (reactants[0].key.isAcid()) {
+        typeSteps.add(
+            """Since this equation has one reactant which is an acid, it must be Decomposition of an Acid.""");
+        return Type.decompAcid;
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
-        if (reactants[0].key.compoundUnits[1].key.formula.compareTo('O') ==
-                0 &&
-            reactants[0].key.compoundUnits[2].key.formula.compareTo('H') ==
-                0) {
+        if (reactants[0].key.compoundUnits[1].key.equals('OH')) {
           typeSteps.add(
               """Since this equation has one reactant which is a base, is must be Decomposition of a Base.""");
           return Type.decompBase;
         }
-        if (!reactants[0].key.compoundUnits[1].key.metal) {
-          if (reactants[0].key.compoundUnits[2].key.equals('O')) {
+        if (!reactants[0]
+            .key
+            .compoundUnits[1]
+            .key
+            .compoundUnits[0]
+            .key
+            .metal) {
+          if (reactants[0]
+              .key
+              .compoundUnits[1]
+              .key
+              .compoundUnits[1]
+              .key
+              .equals('O')) {
             typeSteps.add(
                 """Since this equation has one reactant which is a combination of a metal, nonmetal, and oxygen, it must be Decomposition of a Salt.""");
             return Type.decompSalt;
@@ -909,7 +923,10 @@ class Equation {
               1);
           r = reactants[i];
         }
-        if (r.key.compoundUnits.length > 2)
+        if (r.key.compoundUnits.length > 2 &&
+            !(r.key.compoundUnits[0].key.equals('C') &&
+                r.key.compoundUnits[1].key.equals('H') &&
+                r.key.compoundUnits[2].key.equals('O')))
           reactants[i] = MapEntry(
               Compound.fromUnits([
                 MapEntry(r.key.compoundUnits[0].key,
