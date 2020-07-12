@@ -537,11 +537,12 @@ class Equation {
                   2),
         ]);
         Compound nonmetalOxide = Compound.fromUnits([
-          MapEntry(reactants[0].key.compoundUnits[1].key,
-              reactants[0].key.compoundUnits[1].value),
+          MapEntry(
+              reactants[0].key.compoundUnits[1].key.compoundUnits[0].key,
+              reactants[0].key.compoundUnits[1].key.compoundUnits[0].value),
           MapEntry(
               new Element('O'),
-              reactants[0].key.compoundUnits[2].value -
+              reactants[0].key.compoundUnits[1].key.compoundUnits[1].value -
                   metalOxide.compoundUnits[1].value),
         ]);
         result = [MapEntry(metalOxide, 1), MapEntry(nonmetalOxide, 1)];
@@ -550,7 +551,7 @@ class Equation {
         this.productSteps.add(
             "To find the count of oxygen in the metal oxide we take the absolute value of the charge of the metal (${reactants[0].key.compoundUnits[0].key.charge}) divided by the charge of O (-2) to get ${metalOxide.compoundUnits[1].value}.");
         this.productSteps.add(
-            "We then add the remaining oxygens to the nonmetal oxide by subtracting the count of the oxygen in the metal oxide from the count of the oxygen in the salt: ${reactants[0].key.compoundUnits[2].value} - ${metalOxide.compoundUnits[1].value} = ${nonmetalOxide.compoundUnits[1].value}.");
+            "We then add the remaining oxygens to the nonmetal oxide by subtracting the count of the oxygen in the metal oxide from the count of the oxygen in the salt: ${reactants[0].key.compoundUnits[1].key.compoundUnits[1].value} - ${metalOxide.compoundUnits[1].value} = ${nonmetalOxide.compoundUnits[1].value}.");
         break;
       case Type.combustion:
         result = [
