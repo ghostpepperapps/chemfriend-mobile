@@ -45,14 +45,18 @@ class _SolutionState extends State<Solution> {
               heroTag: '_pushExplanation',
               child: Icon(Icons.info),
               mini: true,
+              backgroundColor: Colors.green,
               onPressed: () {
                 _pushExplanation(context);
                 _textController.text = '';
               },
             ),
           ),
-          Text(widget.solution,
-              style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center)
+          Expanded(
+              flex: 1,
+              child: Text(widget.solution,
+                  style: TextStyle(fontSize: 20.0),
+                  textAlign: TextAlign.center)),
         ])),
         SizedBox(height: 20),
         SizedBox(height: 20),
