@@ -314,6 +314,10 @@ class Equation {
         counts[0][0] *= lcmCountA ~/ r1.compoundUnits[0].value;
         counts[1][0] *= lcmCountA ~/ p1.compoundUnits[0].value;
 
+        // For each element, find the count of the element on each side, then
+        // multiply the counts on each side in order to make the count of the
+        // element the same.
+
         // Find the least common multiple of the count of the second element on
         // both sides.
         int lcmCountB = lcm(counts[0][0] * r1.compoundUnits[1].value,
@@ -342,6 +346,7 @@ class Equation {
         counts[1][0] *=
             lcmCountD ~/ (counts[1][0] * p1.compoundUnits[1].value);
 
+        // Set the counts of each reactant and product.
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
         products[0] = MapEntry(p1, counts[1][0].toInt());
