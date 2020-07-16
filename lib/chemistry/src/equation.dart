@@ -136,14 +136,24 @@ class Equation {
     // Balancing
     switch (this.type) {
       case Type.comp:
+
+        // A list to keep track of the count of each reactant/product.
         List<double> counts = [1, 1, 1];
+
+        // True if any of the counts turn out to be non-whole.
         bool halfElement = false;
+
+        // Loop through each reactant and find the counts needed to make the
+        // total number of each element the same on both sides.
         for (int i = 0; i < counts.length - 1; i++) {
           counts[i] = this.products[0].key.compoundUnits[i].value /
               this.reactants[i].key.count;
           if (counts[i] != counts[i].toInt()) halfElement = true;
         }
+        // If any counts are non-whole, multiply each count by 2
         if (halfElement) counts = counts.map((count) => count *= 2).toList();
+
+        // Set the counts of the reactants and product.
         for (int i = 0; i < this.reactants.length; i++)
           this.reactants[i] =
               MapEntry(this.reactants[i].key, counts[i].toInt());
@@ -153,14 +163,18 @@ class Equation {
       case Type.compAcid: // No balancing required
         break;
       case Type.compBase:
+        // Match each water molecule to one oxygen from the metal oxide.
         this.reactants[0] = MapEntry(
             reactants[0].key, reactants[1].key.compoundUnits[1].value);
+        // Set the number of base molecules to be the number of molecules of
+        // metal in the metal oxide.
         this.products[0] = MapEntry(
             this.products[0].key, reactants[1].key.compoundUnits[0].value);
         break;
       case Type.compSalt: // No balancing required
         break;
       case Type.decomp:
+        // The same method used for Simple Composition, but reversed.
         List<double> counts = [1, 1, 1];
         bool halfElement = false;
         for (int i = 0; i < counts.length - 1; i++) {
@@ -178,6 +192,7 @@ class Equation {
       case Type.decompAcid: // No balancing required
         break;
       case Type.decompBase:
+        // The same method used for Composition of a Base, but reversed.
         this.reactants[0] = MapEntry(
             this.reactants[0].key, products[1].key.compoundUnits[0].value);
         this.products[0] = MapEntry(
@@ -189,18 +204,31 @@ class Equation {
       case Type.decompSalt: // No balancing required
         break;
       case Type.combustion:
+        // A list to keep track of the count of each reactant/product.
         List<double> counts = [1, 1, 1, 1];
+        // Set the count of carbon dioxide to the number of carbons in the
+        // hydrocarbon.
         counts[3] = reactants[0].key.compoundUnits[0].value.toDouble();
+        // Set the count of water to the number of hydrogens in the
+        // hydrocarbon divided by 2 since H₂O has 2 hydrogens.
         counts[2] = (reactants[0].key.compoundUnits[1].value) / 2;
+        // Set the count of oxygen to be the total number of oxygen in the
+        // products, minus the number of oxygens in the hydrocarbon, divided
+        // by two since there are two oxygens in O₂.
         counts[1] = (products[0].key.compoundUnits[1].value * counts[2] +
                 products[1].key.compoundUnits[1].value * counts[3])
             .toDouble();
         if (reactants[0].key.compoundUnits.length > 2)
           counts[1] -= (reactants[0].key.compoundUnits[2].value * counts[0]);
         counts[1] /= 2;
+
+        // True if any of the counts are non-whole.
         bool halfElement = false;
         for (double c in counts) if (c != c.toInt()) halfElement = true;
+        // If any counts are non-whole, multiply each count by 2.
         if (halfElement) counts = counts.map((count) => count *= 2).toList();
+
+        // Set the counts of each reactant and product.
         reactants[0] = MapEntry(reactants[0].key, counts[0].toInt());
         reactants[1] = MapEntry(reactants[1].key, counts[1].toInt());
         products[0] = MapEntry(products[0].key, counts[2].toInt());
@@ -221,18 +249,34 @@ class Equation {
         int rIndex = e1.key.metal ? 0 : 1;
         int sIndex = 1 - rIndex;
 
+        // Find the least common multiple of the count of the element that
+        // stays in the compound.
         int lcmCount = lcm(c1.key.compoundUnits[sIndex].value,
                 c2.key.compoundUnits[sIndex].value)
             .abs();
         int e2Count = e2.key.isElement() ? e2.key.count : 1;
 
+        // Set the count of the compound in the reactants to be the least
+        // common multiple divided by the count of the element that stays in
+        // the compound on the reactants side and on the products side.
         counts[0][1] = lcmCount / c1.key.compoundUnits[sIndex].value;
+        // Set the count of the compound in the products to be the least
+        // common multiple divided by the count of the element that stays in
+        // the compound.
         counts[1][1] = lcmCount / c2.key.compoundUnits[sIndex].value;
+        // Set the count of the element in the reactants to be the total
+        // number of the element in the products side divided by the count of
+        // the element.
         counts[0][0] = (counts[1][1] * c2.key.compoundUnits[rIndex].value) /
             e1.key.count;
+        // Set the count of the element in the products to be the total
+        // number of the element in the reactants side divided by the count of
+        // the element.
         counts[1][0] =
             (counts[0][1] * c1.key.compoundUnits[rIndex].value) / e2Count;
 
+        // If the counts of the elements are not whole, multiply everything by
+        // 2.
         while (counts[0][0] != counts[0][0].toInt()) {
           counts[0][0] *= 2;
           counts[0][1] *= 2;
@@ -246,6 +290,7 @@ class Equation {
           counts[1][1] *= 2;
         }
 
+        // Set the counts of each reactant and product.
         reactants[0] = MapEntry(e1.key, counts[0][0].toInt());
         reactants[1] = MapEntry(c1.key, counts[0][1].toInt());
         products[0] = MapEntry(e2.key, counts[1][0].toInt());
@@ -259,10 +304,15 @@ class Equation {
         Compound p1 = products[0].key;
         Compound p2 = products[1].key;
 
+        // Find the least common multiple of the count of the first element in
+        // the first reactant on both sides.
         int lcmCount1 =
             lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value).abs();
+        // Find the least common multiple of the count of the second element
+        // in the first product on both sides.
         int lcmCount2 =
             lcm(p1.compoundUnits[1].value, r2.compoundUnits[1].value).abs();
+        // TODO: Change balancing for double replacement
         counts[1][0] = (lcmCount1 / p1.compoundUnits[0].value) *
             (lcmCount2 / p1.compoundUnits[1].value);
         counts[0][0] = (counts[1][0] * p1.compoundUnits[0].value) /
