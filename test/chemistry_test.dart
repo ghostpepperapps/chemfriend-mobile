@@ -116,6 +116,13 @@ void main() {
       expect(e.toString(),
           equals('2NH₄NO₃(aq) + CaSO₃(s) → (NH₄)₂SO₃(aq) + Ca(NO₃)₂(aq)'));
     });
+    test(
+        '.balance() works correctly for double replacement with coinciding charges',
+        () {
+      Equation e = Equation('Na2O(aq) + CaF2(s)');
+      e.balance();
+      expect(e.toString(), equals('Na₂O(aq) + CaF₂(s) → 2NaF(aq) + CaO(s)'));
+    });
     test('.balance() works correctly for neutralization', () {
       Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
       e.balance();
