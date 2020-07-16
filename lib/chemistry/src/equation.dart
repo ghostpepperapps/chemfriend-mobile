@@ -138,7 +138,10 @@ class Equation {
       case Type.comp:
 
         // A list to keep track of the count of each reactant/product.
-        List<double> counts = [1, 1, 1];
+        List<List<double>> counts = [
+          [1, 1],
+          [1]
+        ];
 
         // True if any of the counts turn out to be non-whole.
         bool halfElement = false;
@@ -146,19 +149,29 @@ class Equation {
         // Loop through each reactant and find the counts needed to make the
         // total number of each element the same on both sides.
         for (int i = 0; i < counts.length - 1; i++) {
-          counts[i] = this.products[0].key.compoundUnits[i].value /
+          counts[0][i] = this.products[0].key.compoundUnits[i].value /
               this.reactants[i].key.count;
-          if (counts[i] != counts[i].toInt()) halfElement = true;
+          if (counts[0][i] != counts[0][i].toInt()) halfElement = true;
         }
-        // If any counts are non-whole, multiply each count by 2
-        if (halfElement) counts = counts.map((count) => count *= 2).toList();
+        // If the counts of the elements are not whole, multiply everything by
+        // 2.
+        while (counts[0][0] != counts[0][0].toInt()) {
+          counts[0][0] *= 2;
+          counts[0][1] *= 2;
+          counts[1][0] *= 2;
+        }
+        while (counts[0][1] != counts[0][1].toInt()) {
+          counts[0][0] *= 2;
+          counts[0][1] *= 2;
+          counts[1][0] *= 2;
+        }
 
         // Set the counts of the reactants and product.
         for (int i = 0; i < this.reactants.length; i++)
           this.reactants[i] =
-              MapEntry(this.reactants[i].key, counts[i].toInt());
-        this.products[0] = MapEntry(
-            this.products[0].key, counts[counts.length - 1].toInt());
+              MapEntry(this.reactants[i].key, counts[0][i].toInt());
+        this.products[0] =
+            MapEntry(this.products[0].key, counts[0][1].toInt());
         break;
       case Type.compAcid: // No balancing required
         break;
