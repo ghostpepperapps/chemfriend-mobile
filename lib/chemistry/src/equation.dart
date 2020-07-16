@@ -148,9 +148,11 @@ class Equation {
 
         // Loop through each reactant and find the counts needed to make the
         // total number of each element the same on both sides.
-        for (int i = 0; i < counts.length - 1; i++) {
+        for (int i = 0; i < 2; i++) {
           counts[0][i] = this.products[0].key.compoundUnits[i].value /
               this.reactants[i].key.count;
+          this.balanceSteps.add(
+              "Since the number of ${this.reactants[i].key} on the reactants side is ${this.reactants[i].key.count} and the number on the products side is ${this.products[0].key.compoundUnits[i].value}, the count of ${this.reactants[i].key.formula} will be ${counts[0][i] == counts[0][i].toInt() ? counts[0][i].toInt() : counts[0][1]}.");
           if (counts[0][i] != counts[0][i].toInt()) halfElement = true;
         }
         // If the counts of the elements are not whole, multiply everything by
@@ -159,11 +161,15 @@ class Equation {
           counts[0][0] *= 2;
           counts[0][1] *= 2;
           counts[1][0] *= 2;
+          this.balanceSteps.add(
+              "Since the count of ${this.reactants[0].key} is not a whole number, multiply the counts of both reactants and the product by 2.");
         }
         while (counts[0][1] != counts[0][1].toInt()) {
           counts[0][0] *= 2;
           counts[0][1] *= 2;
           counts[1][0] *= 2;
+          this.balanceSteps.add(
+              "Since the count of ${this.reactants[1].key} is not a whole number, we multiply the counts of both reactants and the product by 2.");
         }
 
         // Set the counts of the reactants and product.
@@ -171,7 +177,10 @@ class Equation {
           this.reactants[i] =
               MapEntry(this.reactants[i].key, counts[0][i].toInt());
         this.products[0] =
-            MapEntry(this.products[0].key, counts[0][1].toInt());
+            MapEntry(this.products[0].key, counts[1][0].toInt());
+        this
+            .balanceSteps
+            .add("So, the final equation after balancing is: $this.");
         break;
       case Type.compAcid: // No balancing required
         break;
