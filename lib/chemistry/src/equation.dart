@@ -298,29 +298,49 @@ class Equation {
         break;
       case Type.doubleReplacement:
         // 2-dimensional list to hold number of each molecule.
-        List<List<double>> counts = [new List(2), new List(2)];
+        List<List<int>> counts = [
+          [1, 1],
+          [1, 1]
+        ];
         Compound r1 = reactants[0].key;
         Compound r2 = reactants[1].key;
         Compound p1 = products[0].key;
         Compound p2 = products[1].key;
 
-        // Find the least common multiple of the count of the first element in
-        // the first reactant on both sides.
-        int lcmCount1 =
+        // Find the least common multiple of the count of the first element on
+        // both sides.
+        int lcmCountA =
             lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value).abs();
-        // Find the least common multiple of the count of the second element
-        // in the first product on both sides.
-        int lcmCount2 =
-            lcm(p1.compoundUnits[1].value, r2.compoundUnits[1].value).abs();
-        // TODO: Change balancing for double replacement
-        counts[1][0] = (lcmCount1 / p1.compoundUnits[0].value) *
-            (lcmCount2 / p1.compoundUnits[1].value);
-        counts[0][0] = (counts[1][0] * p1.compoundUnits[0].value) /
-            r1.compoundUnits[0].value;
-        counts[0][1] = (counts[1][0] * p1.compoundUnits[1].value) /
-            r2.compoundUnits[1].value;
-        counts[1][1] = (counts[0][1] * r2.compoundUnits[0].value) /
-            p2.compoundUnits[0].value;
+        counts[0][0] *= lcmCountA ~/ r1.compoundUnits[0].value;
+        counts[1][0] *= lcmCountA ~/ p1.compoundUnits[0].value;
+
+        // Find the least common multiple of the count of the second element on
+        // both sides.
+        int lcmCountB = lcm(counts[0][0] * r1.compoundUnits[1].value,
+                p2.compoundUnits[1].value)
+            .abs();
+        counts[0][0] *=
+            lcmCountB ~/ (counts[0][0] * r1.compoundUnits[1].value);
+        counts[1][1] *= lcmCountB ~/ p2.compoundUnits[1].value;
+
+        // Find the least common multiple of the count of the third element on
+        // both sides.
+        int lcmCountC = lcm(r2.compoundUnits[0].value,
+                counts[1][1] * p2.compoundUnits[0].value)
+            .abs();
+        counts[0][1] *= lcmCountC ~/ r2.compoundUnits[0].value;
+        counts[1][1] *=
+            lcmCountC ~/ (counts[1][1] * p2.compoundUnits[0].value);
+
+        // Find the least common multiple of the count of the fourth element
+        // on both sides.
+        int lcmCountD = lcm(counts[0][1] * r2.compoundUnits[1].value,
+                counts[1][0] * p1.compoundUnits[1].value)
+            .abs();
+        counts[0][1] *=
+            lcmCountD ~/ (counts[0][1] * r2.compoundUnits[1].value);
+        counts[1][0] *=
+            lcmCountD ~/ (counts[1][0] * p1.compoundUnits[1].value);
 
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
