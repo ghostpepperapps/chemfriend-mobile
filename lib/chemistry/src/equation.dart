@@ -365,12 +365,22 @@ class Equation {
         int baseIndex = 1 - acidIndex;
         Compound acid = reactants[acidIndex].key;
         Compound base = reactants[baseIndex].key;
+
+        // Find the least common multiple of the charges of hydrogen in the
+        // acid and the charge of the metal in the base.
         int lcmCharge = lcm(acid.compoundUnits[0].value,
                 base.compoundUnits[0].key.charge)
             .abs();
+
+        // Set the counts of the acid and base so that the charges of the
+        // elements in the salt will be balanced.
         counts[0][acidIndex] = lcmCharge / acid.compoundUnits[0].value;
         counts[0][baseIndex] = lcmCharge / base.compoundUnits[0].key.charge;
+        // Set the count of water so that it has the same number of hydrogens
+        // as the acid.
         counts[1][0] = acid.compoundUnits[0].value * counts[0][acidIndex];
+        // Set the count of the salt so that the count of the metal is the
+        // same on both sides.
         counts[1][1] = (counts[0][baseIndex] * base.compoundUnits[0].value) /
             p2.compoundUnits[0].value;
 
