@@ -149,7 +149,7 @@ class Equation {
           counts[0][i] = this.products[0].key.compoundUnits[i].value /
               this.reactants[i].key.count;
           this.balanceSteps.add(
-              "Since the number of ${this.reactants[i].key} on the reactants side is ${this.reactants[i].key.count} and the number on the products side is ${this.products[0].key.compoundUnits[i].value}, the count of ${this.reactants[i].key.formula} will be ${counts[0][i] == counts[0][i].toInt() ? counts[0][i].toInt() : counts[0][1]}.");
+              "Since the number of ${this.reactants[i].key} on the reactants side is ${this.reactants[i].key.count} and the number on the products side is ${this.products[0].key.compoundUnits[i].value}, the count of ${this.reactants[i].key.formula} will be ${counts[0][i] == counts[0][i].toInt() ? counts[0][i].toInt() : counts[0][i]}.");
         }
         // If the counts of the elements are not whole, multiply everything by
         // 2.
@@ -158,7 +158,7 @@ class Equation {
           counts[0][1] *= 2;
           counts[1][0] *= 2;
           this.balanceSteps.add(
-              "Since the count of ${this.reactants[0].key} is not a whole number, multiply the counts of both reactants and the product by 2.");
+              "Since the count of ${this.reactants[0].key} is not a whole number, we multiply the counts of both reactants and the product by 2.");
         }
         while (counts[0][1] != counts[0][1].toInt()) {
           counts[0][0] *= 2;
@@ -205,16 +205,22 @@ class Equation {
         for (int i = 0; i < 2; i++) {
           counts[1][i] = this.reactants[0].key.compoundUnits[i].value /
               this.products[i].key.count;
+          this.balanceSteps.add(
+              "Since the number of ${this.products[i].key.formula} on the reactants side is ${this.reactants[0].key.compoundUnits[i].value} and the number on the products side is ${this.products[i].key.count}, the count of ${this.products[i].key} will be ${counts[1][i] == counts[1][i].toInt() ? counts[1][i].toInt() : counts[1][i]}.");
         }
         while (counts[1][0] != counts[1][0].toInt()) {
           counts[0][0] *= 2;
           counts[1][0] *= 2;
           counts[1][1] *= 2;
+          this.balanceSteps.add(
+              "Since the count of ${this.products[0].key} is not a whole number, we multiply the counts of both reactants and the product by 2.");
         }
         while (counts[1][1] != counts[1][1].toInt()) {
           counts[0][0] *= 2;
           counts[1][0] *= 2;
           counts[1][1] *= 2;
+          this.balanceSteps.add(
+              "Since the count of ${this.products[1].key} is not a whole number, we multiply the counts of both reactants and the product by 2.");
         }
         for (int i = 0; i < this.products.length; i++)
           this.products[i] =
