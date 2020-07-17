@@ -13,7 +13,7 @@ void main() {
     print(e.getExplanation());
   });
   test('Equation.getExplanation() works for composition of a base', () {
-    Equation e = new Equation('H2O(l) + Na2O(s)');
+    Equation e = new Equation('H2O(l) + CaO(s)');
     e.balance();
     print(e.getExplanation());
     print(e);
@@ -54,20 +54,23 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
-  test('.balance() works correctly for single replacement of metal', () {
+  test(
+      'Equation.getExplanation() works correctly for single replacement of metal',
+      () {
     Equation e = Equation('Ga(s) + Ca3P2(s)');
     e.balance();
     print(e.getExplanation());
     print(e);
   });
-  test('.balance() works correctly for double replacement', () {
+  test('Equation.getExplanation() works correctly for double replacement',
+      () {
     Equation e = Equation('Na3P(aq) + CaCl2(aq)');
     e.balance();
     print(e.getExplanation());
     print(e);
   });
   test(
-      '.balance() works correctly for double replacement with coinciding charges',
+      'Equation.getExplanation() works correctly for double replacement with coinciding charges',
       () {
     Equation e = Equation('Na2O + CaF2');
     e.balance();
@@ -75,20 +78,20 @@ void main() {
     print(e);
   });
   test(
-      '.balance() works correctly for double replacement of polyatomic ions',
+      'Equation.getExplanation() works correctly for double replacement of polyatomic ions',
       () {
     Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
     e.balance();
     print(e.getExplanation());
     print(e);
   });
-  test('.balance() works correctly for neutralization', () {
+  test('Equation.getExplanation() works correctly for neutralization', () {
     Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
     e.balance();
     print(e.getExplanation());
     print(e);
   });
-  test('.balance() works correctly for gas formation', () {
+  test('Equation.getExplanation() works correctly for gas formation', () {
     Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
     e.balance();
     print(e.getExplanation());
