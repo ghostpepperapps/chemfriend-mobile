@@ -28,6 +28,16 @@ abstract class CompoundUnit {
     return this.runtimeType == Compound;
   }
 
+  /// Returns the element with the same properties as this unit.
+  Element toElement() {
+    return new Element(this.formula);
+  }
+
+  /// Returns the compound with the same properties as this unit.
+  Compound toCompound() {
+    return new Compound.fromUnits(this.compoundUnits, this.state);
+  }
+
   /// Returns `true` if this unit is an acid.
   ///
   /// Checks if the first element is `H` and the phase is `Phase.aqueous`.

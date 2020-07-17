@@ -135,6 +135,11 @@ class Compound with CompoundUnit {
     _multivalent();
   }
 
+  /// Returns a copy of this compound with no state.
+  Compound withoutState() {
+    return Compound.fromUnits(this.compoundUnits, null);
+  }
+
   /// Returns true if the compound with [units] is ionic.
   bool isIonic() {
     if (this.equals('H2O')) return false;
