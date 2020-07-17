@@ -49,7 +49,7 @@ void main() {
     print(e);
   });
   test('Equation.getExplanation() works for combustion', () {
-    Equation e = new Equation('C6H12O6(s) + O2(g)');
+    Equation e = new Equation('C4H10(s) + O2(g)');
     e.balance();
     print(e.getExplanation());
     print(e);

@@ -259,9 +259,13 @@ class Equation {
         // Set the count of carbon dioxide to the number of carbons in the
         // hydrocarbon.
         counts[1][1] = reactants[0].key.compoundUnits[0].value.toDouble();
+        this.balanceSteps.add(
+            "Since there are ${counts[1][1].toInt()} carbons in ${reactants[0].key}, there will also be ${counts[1][1].toInt()} CO₂(g) molecule${counts[1][1] == 1 ? '' : 's'}. This is because each CO₂(g) molecule has 1 carbon atom.");
         // Set the count of water to the number of hydrogens in the
         // hydrocarbon divided by 2 since H₂O has 2 hydrogens.
         counts[1][0] = (reactants[0].key.compoundUnits[1].value) / 2;
+        this.balanceSteps.add(
+            "Since there are ${reactants[0].key.compoundUnits[1].value} hydrogens in ${reactants[0].key}, there will be ${reactants[0].key.compoundUnits[1].value} / 2 = ${counts[1][0].toInt()} H₂O(g) molecule${counts[1][0] == 1 ? '' : 's'}. This is because each H₂O(g) molecule has 2 hydrogen atoms.");
         // Set the count of oxygen to be the total number of oxygen in the
         // products, minus the number of oxygens in the hydrocarbon, divided
         // by two since there are two oxygens in O₂.
@@ -269,16 +273,30 @@ class Equation {
             (products[0].key.compoundUnits[1].value * counts[1][0] +
                     products[1].key.compoundUnits[1].value * counts[1][1])
                 .toDouble();
-        if (reactants[0].key.compoundUnits.length > 2)
+        this.balanceSteps.add(
+            "Since there are ${products[0].key.compoundUnits[1].value} * ${counts[1][0].toInt()} + ${products[1].key.compoundUnits[1].value} * ${counts[1][1].toInt()} = ${counts[0][1].toInt()} oxygen atoms on the products side, there should be ${counts[0][1].toInt()} oxygen atoms on the reactants side.");
+        if (reactants[0].key.compoundUnits.length > 2) {
           counts[0][1] -=
               (reactants[0].key.compoundUnits[2].value * counts[0][0]);
+          this.balanceSteps.add(
+              "Since ${reactants[0].key} contains oxygen, the count of oxygen atoms in the molecules of oxygen plus the count of oxygen in ${reactants[0].key} needs to add up to the count of oxygen on the products side. In other words, the number of oxygen atoms in O₂(g) needs to be ${(products[0].key.compoundUnits[1].value * counts[1][0] + products[1].key.compoundUnits[1].value * counts[1][1]).toInt()} - ${reactants[0].key.compoundUnits[2].value} = ${counts[0][1].toInt()}.");
+        }
+
         counts[0][1] /= 2;
+        this.balanceSteps.add(
+            "Because there are two oxygen atoms in each molecule of O₂(g), the count of O₂(g) should be ${(counts[0][1] * 2).toInt()} / 2 = ${counts[0][1] == counts[0][1].toInt() ? counts[0][1].toInt() : counts[0][1]}.");
 
         // If the count of oxygen is non-whole, multiply each count by 2.
-        if (counts[0][1] != counts[0][1].toInt())
-          counts = counts
-              .map((count) => (count.map((number) => number * 2)))
-              .toList();
+        if (counts[0][1] != counts[0][1].toInt()) {
+          this.balanceSteps.add(
+              "So, the count of ${this.reactants[0].key} is ${counts[0][0].toInt()}, the count of ${this.reactants[1].key} is ${counts[0][1]}, the count of ${this.products[0].key} is ${counts[1][0].toInt()}, and the count of ${this.products[1].key} is ${counts[1][1].toInt()}.");
+          counts[0][0] *= 2;
+          counts[0][1] *= 2;
+          counts[1][0] *= 2;
+          counts[1][1] *= 2;
+          this.balanceSteps.add(
+              "Since ${counts[0][1] / 2} is not a whole number, we multiply the count of each reactant and each product by 2 so that the count of O₂(g) becomes whole.");
+        }
 
         // Set the counts of each reactant and product.
         reactants[0] = MapEntry(reactants[0].key, counts[0][0].toInt());
