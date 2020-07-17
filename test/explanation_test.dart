@@ -19,7 +19,7 @@ void main() {
     print(e);
   });
   test('Equation.getExplanation() works for composition of a salt', () {
-    Equation e = new Equation('Na2O(s) + CO2(g)');
+    Equation e = new Equation('Al2O3(s) + CO2(g)');
     e.balance();
     print(e.getExplanation());
     print(e);

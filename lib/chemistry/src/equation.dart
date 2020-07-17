@@ -197,6 +197,8 @@ class Equation {
             "In order for the count of ${this.reactants[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.products[0].key} (the base) should be the the same as the count of ${this.reactants[1].key.compoundUnits[0].key.formula}. So, the count of ${this.products[0].key} is ${this.products[0].value}.");
         break;
       case Type.compSalt: // No balancing required
+        this.balanceSteps.add(
+            "Since this is the composition of a salt, balancing is not required.");
         break;
       case Type.decomp:
         // The same method used for Simple Composition, but reversed.
