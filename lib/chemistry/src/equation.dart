@@ -178,20 +178,23 @@ class Equation {
               MapEntry(this.reactants[i].key, counts[0][i].toInt());
         this.products[0] =
             MapEntry(this.products[0].key, counts[1][0].toInt());
-        this
-            .balanceSteps
-            .add("So, the final equation after balancing is: $this.");
         break;
       case Type.compAcid: // No balancing required
+        this.balanceSteps.add(
+            "Since this is the composition of an acid, balancing is not required.");
         break;
       case Type.compBase:
         // Match each water molecule to one oxygen from the metal oxide.
         this.reactants[0] = MapEntry(
             reactants[0].key, reactants[1].key.compoundUnits[1].value);
+        this.balanceSteps.add(
+            "In order to form the hydroxide for the base, we need to match each water molecule with one oxygen atom from the metal oxide. Since there ${this.reactants[0].value == 1 ? 'is' : 'are'} ${this.reactants[0].value} oxygen atom${this.reactants[0].value == 1 ? '' : 's'}, the count of water will also be ${this.reactants[0].value}.");
         // Set the number of base molecules to be the number of molecules of
         // metal in the metal oxide.
         this.products[0] = MapEntry(
             this.products[0].key, reactants[1].key.compoundUnits[0].value);
+        this.balanceSteps.add(
+            "In order for the count of ${this.reactants[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.products[0].key} (the base) should be the the same as the count of ${this.reactants[1].key.compoundUnits[0].key.formula}. So, the count of ${this.products[0].key} is ${this.products[0].value}.");
         break;
       case Type.compSalt: // No balancing required
         break;
@@ -412,6 +415,9 @@ class Equation {
         products[1] = MapEntry(p2, counts[1][1].toInt());
         break;
     }
+    this
+        .balanceSteps
+        .add("So, the final equation after balancing is: $this.");
   }
 
   /// Converts the appropriate products of this equation to gases.

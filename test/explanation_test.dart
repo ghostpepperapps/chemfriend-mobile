@@ -13,7 +13,7 @@ void main() {
     print(e.getExplanation());
   });
   test('Equation.getExplanation() works for composition of a base', () {
-    Equation e = new Equation('H2O(l) + CaO(s)');
+    Equation e = new Equation('H2O(l) + Al2O3(s)');
     e.balance();
     print(e.getExplanation());
     print(e);
