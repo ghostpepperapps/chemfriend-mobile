@@ -252,34 +252,39 @@ class Equation {
         break;
       case Type.combustion:
         // A list to keep track of the count of each reactant/product.
-        List<double> counts = [1, 1, 1, 1];
+        List<List<double>> counts = [
+          [1, 1],
+          [1, 1]
+        ];
         // Set the count of carbon dioxide to the number of carbons in the
         // hydrocarbon.
-        counts[3] = reactants[0].key.compoundUnits[0].value.toDouble();
+        counts[1][1] = reactants[0].key.compoundUnits[0].value.toDouble();
         // Set the count of water to the number of hydrogens in the
         // hydrocarbon divided by 2 since H₂O has 2 hydrogens.
-        counts[2] = (reactants[0].key.compoundUnits[1].value) / 2;
+        counts[1][0] = (reactants[0].key.compoundUnits[1].value) / 2;
         // Set the count of oxygen to be the total number of oxygen in the
         // products, minus the number of oxygens in the hydrocarbon, divided
         // by two since there are two oxygens in O₂.
-        counts[1] = (products[0].key.compoundUnits[1].value * counts[2] +
-                products[1].key.compoundUnits[1].value * counts[3])
-            .toDouble();
+        counts[0][1] =
+            (products[0].key.compoundUnits[1].value * counts[1][0] +
+                    products[1].key.compoundUnits[1].value * counts[1][1])
+                .toDouble();
         if (reactants[0].key.compoundUnits.length > 2)
-          counts[1] -= (reactants[0].key.compoundUnits[2].value * counts[0]);
-        counts[1] /= 2;
+          counts[0][1] -=
+              (reactants[0].key.compoundUnits[2].value * counts[0][0]);
+        counts[0][1] /= 2;
 
-        // True if any of the counts are non-whole.
-        bool halfElement = false;
-        for (double c in counts) if (c != c.toInt()) halfElement = true;
-        // If any counts are non-whole, multiply each count by 2.
-        if (halfElement) counts = counts.map((count) => count *= 2).toList();
+        // If the count of oxygen is non-whole, multiply each count by 2.
+        if (counts[0][1] != counts[0][1].toInt())
+          counts = counts
+              .map((count) => (count.map((number) => number * 2)))
+              .toList();
 
         // Set the counts of each reactant and product.
-        reactants[0] = MapEntry(reactants[0].key, counts[0].toInt());
-        reactants[1] = MapEntry(reactants[1].key, counts[1].toInt());
-        products[0] = MapEntry(products[0].key, counts[2].toInt());
-        products[1] = MapEntry(products[1].key, counts[3].toInt());
+        reactants[0] = MapEntry(reactants[0].key, counts[0][0].toInt());
+        reactants[1] = MapEntry(reactants[1].key, counts[0][1].toInt());
+        products[0] = MapEntry(products[0].key, counts[1][0].toInt());
+        products[1] = MapEntry(products[1].key, counts[1][1].toInt());
         break;
       case Type.singleReplacement:
 
