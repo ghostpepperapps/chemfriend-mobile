@@ -247,6 +247,8 @@ class Equation {
             "In order to form the hydroxide for the base, we need to match each water molecule with one oxygen atom from the metal oxide. Since there ${this.products[0].value == 1 ? 'is' : 'are'} ${this.products[0].value} oxygen atom${this.products[0].value == 1 ? '' : 's'}, the count of water will also be ${this.products[0].value}.");
         break;
       case Type.decompSalt: // No balancing required
+        this.balanceSteps.add(
+            "Since this is the decomposition of a salt, balancing is not required.");
         break;
       case Type.combustion:
         // A list to keep track of the count of each reactant/product.
