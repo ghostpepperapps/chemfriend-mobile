@@ -229,6 +229,8 @@ class Equation {
             MapEntry(this.reactants[0].key, counts[0][0].toInt());
         break;
       case Type.decompAcid: // No balancing required
+        this.balanceSteps.add(
+            "Since this is the decomposition of an acid, balancing is not required.");
         break;
       case Type.decompBase:
         // The same method used for Composition of a Base, but reversed.
