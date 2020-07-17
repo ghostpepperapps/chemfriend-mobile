@@ -236,11 +236,15 @@ class Equation {
         // The same method used for Composition of a Base, but reversed.
         this.reactants[0] = MapEntry(
             this.reactants[0].key, products[1].key.compoundUnits[0].value);
+        this.balanceSteps.add(
+            "In order for the count of ${this.products[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.reactants[0].key} (the base) should be the the same as the count of ${this.products[1].key.compoundUnits[0].key.formula}. So, the count of ${this.reactants[0].key} is ${this.reactants[0].value}.");
         this.products[0] = MapEntry(
             this.products[0].key,
             reactants[0].value *
                 reactants[0].key.compoundUnits[1].value ~/
                 2);
+        this.balanceSteps.add(
+            "In order to form the hydroxide for the base, we need to match each water molecule with one oxygen atom from the metal oxide. Since there ${this.products[0].value == 1 ? 'is' : 'are'} ${this.products[0].value} oxygen atom${this.products[0].value == 1 ? '' : 's'}, the count of water will also be ${this.products[0].value}.");
         break;
       case Type.decompSalt: // No balancing required
         break;
