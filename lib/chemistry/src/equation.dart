@@ -143,9 +143,6 @@ class Equation {
           [1]
         ];
 
-        // True if any of the counts turn out to be non-whole.
-        bool halfElement = false;
-
         // Loop through each reactant and find the counts needed to make the
         // total number of each element the same on both sides.
         for (int i = 0; i < 2; i++) {
@@ -153,7 +150,6 @@ class Equation {
               this.reactants[i].key.count;
           this.balanceSteps.add(
               "Since the number of ${this.reactants[i].key} on the reactants side is ${this.reactants[i].key.count} and the number on the products side is ${this.products[0].key.compoundUnits[i].value}, the count of ${this.reactants[i].key.formula} will be ${counts[0][i] == counts[0][i].toInt() ? counts[0][i].toInt() : counts[0][1]}.");
-          if (counts[0][i] != counts[0][i].toInt()) halfElement = true;
         }
         // If the counts of the elements are not whole, multiply everything by
         // 2.
@@ -202,19 +198,29 @@ class Equation {
         break;
       case Type.decomp:
         // The same method used for Simple Composition, but reversed.
-        List<double> counts = [1, 1, 1];
-        bool halfElement = false;
-        for (int i = 0; i < counts.length - 1; i++) {
-          counts[i] = this.reactants[0].key.compoundUnits[i].value /
+        List<List<double>> counts = [
+          [1],
+          [1, 1]
+        ];
+        for (int i = 0; i < 2; i++) {
+          counts[1][i] = this.reactants[0].key.compoundUnits[i].value /
               this.products[i].key.count;
-          if (counts[i] != counts[i].toInt()) halfElement = true;
         }
-        if (halfElement) counts = counts.map((count) => count *= 2).toList();
+        while (counts[1][0] != counts[1][0].toInt()) {
+          counts[0][0] *= 2;
+          counts[1][0] *= 2;
+          counts[1][1] *= 2;
+        }
+        while (counts[1][1] != counts[1][1].toInt()) {
+          counts[0][0] *= 2;
+          counts[1][0] *= 2;
+          counts[1][1] *= 2;
+        }
         for (int i = 0; i < this.products.length; i++)
           this.products[i] =
-              MapEntry(this.products[i].key, counts[i].toInt());
-        this.reactants[0] = MapEntry(
-            this.reactants[0].key, counts[counts.length - 1].toInt());
+              MapEntry(this.products[i].key, counts[1][i].toInt());
+        this.reactants[0] =
+            MapEntry(this.reactants[0].key, counts[0][0].toInt());
         break;
       case Type.decompAcid: // No balancing required
         break;
