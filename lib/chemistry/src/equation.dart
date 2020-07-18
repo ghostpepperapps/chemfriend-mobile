@@ -464,23 +464,33 @@ class Equation {
         Compound acid = reactants[acidIndex].key;
         Compound base = reactants[baseIndex].key;
 
-        // Find the least common multiple of the charges of hydrogen in the
-        // acid and the charge of the metal in the base.
+        // Find the least common multiple of the charges of the nonmetal oxide
+        // in the acid and the charge of the metal in the base.
         int lcmCharge = lcm(acid.compoundUnits[0].value,
                 base.compoundUnits[0].key.charge)
             .abs();
+        this.balanceSteps.add(
+            "First, we balance the acid and the base by making sure that the number of H atoms and OH ions are the same on both sides. To do this, we need to make sure that the number of H atoms in $acid, the number of OH ions in $base, and the number of H₂O(l) molecules are equal to each other. To do this, we use the least common multiple of the number of H atoms and the number of OH ions.");
+        this.balanceSteps.add(
+            "The least common multiple of ${acid.compoundUnits[0].value} and ${base.compoundUnits[0].key.charge} is $lcmCharge.");
 
         // Set the counts of the acid and base so that the charges of the
         // elements in the salt will be balanced.
         counts[0][acidIndex] = lcmCharge / acid.compoundUnits[0].value;
         counts[0][baseIndex] = lcmCharge / base.compoundUnits[0].key.charge;
+
         // Set the count of water so that it has the same number of hydrogens
         // as the acid.
-        counts[1][0] = acid.compoundUnits[0].value * counts[0][acidIndex];
+        counts[1][0] = lcmCharge.toDouble();
+        this.balanceSteps.add(
+            "The count of $acid will be $lcmCharge / ${acid.compoundUnits[0].value} =  ${lcmCharge ~/ acid.compoundUnits[0].value}, and the count of $base will be $lcmCharge / ${base.compoundUnits[0].key.charge} =  ${lcmCharge ~/ base.compoundUnits[0].key.charge}. Since there are now $lcmCharge H atoms and $lcmCharge OH ions on the reactants side, and each molecule of H₂O(l) is made of 1 H atom and 1 OH ion, the count of H₂O(l) will also be $lcmCharge.");
+
         // Set the count of the salt so that the count of the metal is the
         // same on both sides.
         counts[1][1] = (counts[0][baseIndex] * base.compoundUnits[0].value) /
             p2.compoundUnits[0].value;
+        this.balanceSteps.add(
+            "We determine the count of $p2 by making sure that the number of ${p2.compoundUnits[0].key.formula} atoms is the same on both sides. Since there are ${counts[0][baseIndex].toInt()} $base molecules, and ${base.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${base.compoundUnits[0].value == 1 ? '' : 's'} per molecule, there are a total of ${counts[0][baseIndex].toInt()} * ${base.compoundUnits[0].value} = ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atoms in the reactants. Since there are ${p2.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${p2.compoundUnits[0].value == 1 ? '' : 's'} per $p2 molecule, and ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atoms, there must be ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} / ${p2.compoundUnits[0].value} = ${counts[1][1].toInt()} $p2 molecule${counts[1][1] == 1 ? '' : 's'}.");
 
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
