@@ -57,7 +57,7 @@ void main() {
   test(
       'Equation.getExplanation() works correctly for single replacement of nonmetal',
       () {
-    Equation e = Equation('S8(s) + GaF3(s)');
+    Equation e = Equation('S8(s) + Ga(OH)3(s)');
     e.balance();
     print(e.getExplanation());
   });

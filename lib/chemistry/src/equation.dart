@@ -190,7 +190,7 @@ class Equation {
         this.products[0] = MapEntry(
             this.products[0].key, reactants[1].key.compoundUnits[0].value);
         this.balanceSteps.add(
-            "In order for the count of ${this.reactants[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.products[0].key} (the base) should be the the same as the count of ${this.reactants[1].key.compoundUnits[0].key.formula}. So, the count of ${this.products[0].key} is ${this.products[0].value}.");
+            "In order for the count of ${this.reactants[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.products[0].key} (the base) should be the the same as the count of ${this.reactants[1].key.compoundUnits[0].key.formula} in ${this.reactants[1].key} (the metal oxide). So, the count of ${this.products[0].key} is ${this.products[0].value}.");
         break;
       case Type.compSalt: // No balancing required
         this.balanceSteps.add(
@@ -237,7 +237,7 @@ class Equation {
         this.reactants[0] = MapEntry(
             this.reactants[0].key, products[1].key.compoundUnits[0].value);
         this.balanceSteps.add(
-            "In order for the count of ${this.products[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.reactants[0].key} (the base) should be the the same as the count of ${this.products[1].key.compoundUnits[0].key.formula}. So, the count of ${this.reactants[0].key} is ${this.reactants[0].value}.");
+            "In order for the count of ${this.products[1].key.compoundUnits[0].key.formula} (the metal) to be the same on both sides, the count of ${this.reactants[0].key} (the base) should be the the same as the count of ${this.products[1].key.compoundUnits[0].key.formula} in ${this.products[1].key} (the metal oxide). So, the count of ${this.reactants[0].key} is ${this.reactants[0].value}.");
         this.products[0] = MapEntry(
             this.products[0].key,
             reactants[0].value *
@@ -353,7 +353,7 @@ class Equation {
         counts[1][0] =
             (counts[0][1] * c1.key.compoundUnits[rIndex].value) / e2Count;
         this.balanceSteps.add(
-            "Since the number of ${e2.key.formula} atoms in ${c1.key} is ${c1.key.compoundUnits[rIndex].value} and the number of ${e2.key.formula} atoms in ${e2.key} is ${e2.key.count}, the count of ${e2.key} should be (${counts[0][1].toInt()} * ${c1.key.compoundUnits[rIndex].value}) / $e2Count = ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}.");
+            "Since the number of ${e2.key.formula} atoms in ${c1.key} is ${c1.key.compoundUnits[rIndex].value} and the number of ${e2.key.formula} atoms in ${e2.key} is $e2Count, the count of ${e2.key} should be (${counts[0][1].toInt()} * ${c1.key.compoundUnits[rIndex].value}) / $e2Count = ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}.");
 
         // If the counts of the elements are not whole, multiply everything by
         // 2.
@@ -490,7 +490,7 @@ class Equation {
         counts[1][1] = (counts[0][baseIndex] * base.compoundUnits[0].value) /
             p2.compoundUnits[0].value;
         this.balanceSteps.add(
-            "We determine the count of $p2 by making sure that the number of ${p2.compoundUnits[0].key.formula} atoms is the same on both sides. Since there are ${counts[0][baseIndex].toInt()} $base molecules, and ${base.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${base.compoundUnits[0].value == 1 ? '' : 's'} per molecule, there are a total of ${counts[0][baseIndex].toInt()} * ${base.compoundUnits[0].value} = ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atoms in the reactants. Since there are ${p2.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${p2.compoundUnits[0].value == 1 ? '' : 's'} per $p2 molecule, and ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atoms, there must be ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} / ${p2.compoundUnits[0].value} = ${counts[1][1].toInt()} $p2 molecule${counts[1][1] == 1 ? '' : 's'}.");
+            "We determine the count of $p2 by making sure that the number of ${p2.compoundUnits[0].key.formula} atoms is the same on both sides. Since there are ${counts[0][baseIndex].toInt()} $base molecules, and ${base.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${base.compoundUnits[0].value == 1 ? '' : 's'} per molecule, there are a total of ${counts[0][baseIndex].toInt()} * ${base.compoundUnits[0].value} = ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atoms in the reactants. Since there are ${p2.compoundUnits[0].value} ${p2.compoundUnits[0].key.formula} atom${p2.compoundUnits[0].value == 1 ? '' : 's'} per $p2 molecule, and ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} ${p2.compoundUnits[0].key.formula} atom${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt() == 1 ? '' : 's'}, there must be ${(counts[0][baseIndex] * base.compoundUnits[0].value).toInt()} / ${p2.compoundUnits[0].value} = ${counts[1][1].toInt()} $p2 molecule${counts[1][1] == 1 ? '' : 's'}.");
 
         reactants[0] = MapEntry(r1, counts[0][0].toInt());
         reactants[1] = MapEntry(r2, counts[0][1].toInt());
@@ -498,9 +498,6 @@ class Equation {
         products[1] = MapEntry(p2, counts[1][1].toInt());
         break;
     }
-    this
-        .balanceSteps
-        .add("So, the final equation after balancing is: $this.");
   }
 
   /// Converts the appropriate products of this equation to gases.
@@ -1155,6 +1152,8 @@ class Equation {
     result += this.productSteps.join('\n');
     result += '\n\nBalancing\n';
     result += this.balanceSteps.join('\n');
+    result += '\n\nSo, the final equation after balancing is:';
+    result += '\n$this';
     return result;
   }
 }

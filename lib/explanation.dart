@@ -18,7 +18,7 @@ class _ExplanationState extends State<Explanation> {
           controller: _scrollController,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0),
               child: Column(
                 children: <Widget>[
                   Text(
@@ -35,7 +35,12 @@ class _ExplanationState extends State<Explanation> {
                     "Balancing",
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  Text(widget.equation.balanceSteps.join('\n'))
+                  Text(widget.equation.balanceSteps.join('\n') + '\n'),
+                  Text(
+                    'Final Equation',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text('${widget.equation}')
                 ],
               ),
             ),
