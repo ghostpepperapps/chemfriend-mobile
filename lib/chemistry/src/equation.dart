@@ -369,7 +369,7 @@ class Equation {
         }
         while (counts[1][0] != counts[1][0].toInt()) {
           this.balanceSteps.add(
-              "So, the count of ${e1.key} is ${counts[0][0]}, the count of ${c1.key} is ${counts[0][1]}, the count of ${e2.key} is ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}, and the count of ${c2.key} is ${counts[1][1].toInt()}.");
+              "So, the count of ${e1.key} is ${counts[0][0]}, the count of ${c1.key} is ${counts[0][1].toInt()}, the count of ${e2.key} is ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}, and the count of ${c2.key} is ${counts[1][1].toInt()}.");
           counts[0][0] *= 2;
           counts[0][1] *= 2;
           counts[1][0] *= 2;
@@ -395,22 +395,28 @@ class Equation {
         Compound p1 = products[0].key;
         Compound p2 = products[1].key;
 
+        // For each element, find the count of the element on each side, then
+        // multiply the counts on each side in order to make the count of the
+        // element the same.
+        this.balanceSteps.add(
+            "In order to balance this equation, we will go through each element and find the number of atoms of the element on each side of the equation. Then, we will multiply the counts of the compounds that contain the element in such a way that the total number of atoms of the element is the same on both sides. We can do this using the following formula for each compound: new count = old count * (least common multiple / number of atoms of the element).");
+
         // Find the least common multiple of the count of the first element on
         // both sides.
         int lcmCountA =
             lcm(r1.compoundUnits[0].value, p1.compoundUnits[0].value).abs();
         counts[0][0] *= lcmCountA ~/ r1.compoundUnits[0].value;
         counts[1][0] *= lcmCountA ~/ p1.compoundUnits[0].value;
-
-        // For each element, find the count of the element on each side, then
-        // multiply the counts on each side in order to make the count of the
-        // element the same.
+        this.balanceSteps.add(
+            "Starting with ${r1.compoundUnits[0].key.formula}, its count in $r1 is ${r1.compoundUnits[0].value} and its count in $p1 is ${p1.compoundUnits[0].value}. The least common multiple of ${r1.compoundUnits[0].value} and ${p1.compoundUnits[0].value} is $lcmCountA. So, the count of $r1 is multiplied by $lcmCountA / ${r1.compoundUnits[0].value} = ${counts[0][0].toInt()} and the count of $p1 is multiplied by $lcmCountA / ${p1.compoundUnits[0].value} = ${counts[1][0].toInt()}. So, the new count of $r1 is 1 * ${counts[0][0].toInt()} = ${counts[0][0].toInt()} and the new count of $p1 is 1 * ${counts[1][0].toInt()} = ${counts[1][0].toInt()}.");
 
         // Find the least common multiple of the count of the second element on
         // both sides.
         int lcmCountB = lcm(counts[0][0] * r1.compoundUnits[1].value,
                 p2.compoundUnits[1].value)
             .abs();
+        this.balanceSteps.add(
+            "The count of ${r1.compoundUnits[1].key.formula} in $r1 is ${counts[0][0]} * ${r1.compoundUnits[1].value} = ${counts[0][0] * r1.compoundUnits[1].value} and its count in $p2 is 1 * ${p2.compoundUnits[1].value} = ${p2.compoundUnits[1].value}. The least common multiple of ${counts[0][0] * r1.compoundUnits[1].value} and ${p2.compoundUnits[1].value} is $lcmCountB. So, the count of $r1 is multiplied by $lcmCountB / ${counts[0][0] * r1.compoundUnits[1].value} = ${lcmCountB ~/ (counts[0][0] * r1.compoundUnits[1].value)} and the count of $p2 is multiplied by $lcmCountB / ${p2.compoundUnits[1].value} = ${lcmCountB ~/ p2.compoundUnits[1].value}. The new count of $r1 is ${counts[0][0].toInt()} * ${lcmCountB ~/ (counts[0][0] * r1.compoundUnits[1].value)} = ${counts[0][0].toInt() * lcmCountB ~/ (counts[0][0] * r1.compoundUnits[1].value)}, and the new count of $p2 is 1 * ${lcmCountB ~/ p2.compoundUnits[1].value} = ${lcmCountB ~/ p2.compoundUnits[1].value}.");
         counts[0][0] *=
             lcmCountB ~/ (counts[0][0] * r1.compoundUnits[1].value);
         counts[1][1] *= lcmCountB ~/ p2.compoundUnits[1].value;
@@ -420,6 +426,8 @@ class Equation {
         int lcmCountC = lcm(r2.compoundUnits[0].value,
                 counts[1][1] * p2.compoundUnits[0].value)
             .abs();
+        this.balanceSteps.add(
+            "The count of ${r2.compoundUnits[0].key.formula} in $r2 is 1 * ${r2.compoundUnits[0].value} = ${r2.compoundUnits[0].value} and its count in $p2 is ${counts[1][1]} * ${p2.compoundUnits[0].value} = ${counts[1][1] * p2.compoundUnits[0].value}. The least common multiple of ${r2.compoundUnits[0].value} and ${counts[1][1] * p2.compoundUnits[0].value} is $lcmCountC. So, the count of $r2 is multiplied by $lcmCountC / ${r2.compoundUnits[0].value} = ${lcmCountC ~/ r2.compoundUnits[0].value} and the count of $p2 is multiplied by $lcmCountC / ${counts[1][1] * p2.compoundUnits[0].value} = ${lcmCountC ~/ (counts[1][1] * p2.compoundUnits[0].value)}. The new count of $r2 is 1 * ${lcmCountC ~/ r2.compoundUnits[0].value} = ${lcmCountC ~/ r2.compoundUnits[0].value}, and the new count of $p2 is ${counts[1][1]} * ${lcmCountC ~/ (counts[1][1] * p2.compoundUnits[0].value)} = ${lcmCountC ~/ (counts[1][1] * p2.compoundUnits[0].value)}.");
         counts[0][1] *= lcmCountC ~/ r2.compoundUnits[0].value;
         counts[1][1] *=
             lcmCountC ~/ (counts[1][1] * p2.compoundUnits[0].value);
@@ -429,6 +437,8 @@ class Equation {
         int lcmCountD = lcm(counts[0][1] * r2.compoundUnits[1].value,
                 counts[1][0] * p1.compoundUnits[1].value)
             .abs();
+        this.balanceSteps.add(
+            "The count of ${r2.compoundUnits[1].key.formula} in $r2 is ${counts[0][1]} * ${r2.compoundUnits[1].value} = ${counts[0][1] * r2.compoundUnits[1].value} and its count in $p1 is ${counts[1][0]} * ${p1.compoundUnits[1].value} = ${counts[1][0] * p1.compoundUnits[1].value}. The least common multiple of ${counts[0][1] * r2.compoundUnits[1].value} and ${counts[1][0] * p1.compoundUnits[1].value} is $lcmCountD. So, the count of $r2 is multiplied by $lcmCountD / ${counts[0][1] * r2.compoundUnits[1].value} = ${lcmCountD ~/ (counts[0][1] * r2.compoundUnits[1].value)} and the count of $p1 is multiplied by $lcmCountD / ${counts[1][0] * p1.compoundUnits[1].value} = ${lcmCountD ~/ (counts[1][0] * p1.compoundUnits[1].value)}. The new count of $r2 is ${counts[0][1]} * ${lcmCountD ~/ (counts[0][1] * r2.compoundUnits[1].value)} = ${counts[0][1] * (lcmCountD ~/ (counts[0][1] * r2.compoundUnits[1].value))}, and the new count of $p1 is ${counts[1][0]} * ${lcmCountD ~/ (counts[1][0] * p1.compoundUnits[1].value)} = ${counts[1][0] * (lcmCountD ~/ (counts[1][0] * p1.compoundUnits[1].value))}.");
         counts[0][1] *=
             lcmCountD ~/ (counts[0][1] * r2.compoundUnits[1].value);
         counts[1][0] *=
