@@ -62,6 +62,14 @@ void main() {
     print(e.getExplanation());
     print(e);
   });
+  test(
+      'Equation.getExplanation() works correctly for single replacement of nonmetal',
+      () {
+    Equation e = Equation('S8(s) + GaF3(s)');
+    e.balance();
+    print(e.getExplanation());
+    print(e);
+  });
   test('Equation.getExplanation() works correctly for double replacement',
       () {
     Equation e = Equation('Na3P(aq) + CaCl2(aq)');

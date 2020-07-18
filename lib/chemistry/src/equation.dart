@@ -324,6 +324,8 @@ class Equation {
         int lcmCount = lcm(c1.key.compoundUnits[sIndex].value,
                 c2.key.compoundUnits[sIndex].value)
             .abs();
+        this.balanceSteps.add(
+            "First, we need to make the number of ${c1.key.compoundUnits[sIndex].key.formula} equal on both sides. To do this, we find the least common multiple of the number of ${c1.key.compoundUnits[sIndex].key.formula} atoms on both sides. The least common multiple of ${c1.key.compoundUnits[sIndex].value} (from ${c1.key}) and ${c2.key.compoundUnits[sIndex].value} (from ${c2.key}) is $lcmCount. We then divide this number by the number of ${c1.key.compoundUnits[sIndex].key.formula} atoms in each compound to get the counts of the compounds that will make the number of ${c1.key.compoundUnits[sIndex].key.formula} atoms the same on both sides.");
         int e2Count = e2.key.isElement() ? e2.key.count : 1;
 
         // Set the count of the compound in the reactants to be the least
@@ -334,30 +336,46 @@ class Equation {
         // common multiple divided by the count of the element that stays in
         // the compound.
         counts[1][1] = lcmCount / c2.key.compoundUnits[sIndex].value;
+        this.balanceSteps.add(
+            "So, the count of ${c1.key} should be $lcmCount / ${c1.key.compoundUnits[sIndex].value} = ${counts[0][1].toInt()} and the count of ${c2.key} should be $lcmCount / ${c2.key.compoundUnits[sIndex].value} = ${counts[1][1].toInt()}.");
+        this.balanceSteps.add(
+            "Next, we find the counts of the individual elements by dividing their count in the compound on the other side of the equation by their count as an element.");
         // Set the count of the element in the reactants to be the total
         // number of the element in the products side divided by the count of
         // the element.
         counts[0][0] = (counts[1][1] * c2.key.compoundUnits[rIndex].value) /
             e1.key.count;
+        this.balanceSteps.add(
+            "Since the number of ${e1.key.formula} atoms in ${c2.key} is ${c2.key.compoundUnits[rIndex].value} and the number of ${e1.key.formula} atoms in ${e1.key} is ${e1.key.count}, the count of ${e1.key} should be (${counts[1][1].toInt()} * ${c2.key.compoundUnits[rIndex].value}) / ${e1.key.count} = ${counts[0][0] == counts[0][0].toInt() ? counts[0][0].toInt() : counts[0][0]}.");
         // Set the count of the element in the products to be the total
         // number of the element in the reactants side divided by the count of
         // the element.
         counts[1][0] =
             (counts[0][1] * c1.key.compoundUnits[rIndex].value) / e2Count;
+        this.balanceSteps.add(
+            "Since the number of ${e2.key.formula} atoms in ${c1.key} is ${c1.key.compoundUnits[rIndex].value} and the number of ${e2.key.formula} atoms in ${e2.key} is ${e2.key.count}, the count of ${e2.key} should be (${counts[0][1].toInt()} * ${c1.key.compoundUnits[rIndex].value}) / $e2Count = ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}.");
 
         // If the counts of the elements are not whole, multiply everything by
         // 2.
         while (counts[0][0] != counts[0][0].toInt()) {
+          this.balanceSteps.add(
+              "So, the count of ${e1.key} is ${counts[0][0]}, the count of ${c1.key} is ${counts[0][1]}, the count of ${e2.key} is ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}, and the count of ${c2.key} is ${counts[1][1].toInt()}.");
           counts[0][0] *= 2;
           counts[0][1] *= 2;
           counts[1][0] *= 2;
           counts[1][1] *= 2;
+          this.balanceSteps.add(
+              "Since ${counts[0][0] / 2} is not a whole number, we multiply the count of each reactant and each product by 2 so that the count of ${e1.key} becomes whole.");
         }
         while (counts[1][0] != counts[1][0].toInt()) {
+          this.balanceSteps.add(
+              "So, the count of ${e1.key} is ${counts[0][0]}, the count of ${c1.key} is ${counts[0][1]}, the count of ${e2.key} is ${counts[1][0] == counts[1][0].toInt() ? counts[1][0].toInt() : counts[1][0]}, and the count of ${c2.key} is ${counts[1][1].toInt()}.");
           counts[0][0] *= 2;
           counts[0][1] *= 2;
           counts[1][0] *= 2;
           counts[1][1] *= 2;
+          this.balanceSteps.add(
+              "Since ${counts[1][0] / 2} is not a whole number, we multiply the count of each reactant and each product by 2 so that the count of ${e2.key} becomes whole.");
         }
 
         // Set the counts of each reactant and product.
