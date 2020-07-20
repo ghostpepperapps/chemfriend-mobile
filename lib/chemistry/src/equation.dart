@@ -975,22 +975,20 @@ class Equation {
       typeSteps.add(
           "Since this equation has two reactants, each of which are elements, it must be Simple Composition.");
       return Type.comp; // Simple Composition
-    } else if (reactants[0].key.isElement() &&
-        reactants[1].key.isCompound()) {
+    } else if (reactants[0].key.isCompound() &&
+        reactants[1].key.isElement() &&
+        reactants[0].key.compoundUnits[0].key.equals('C') &&
+        reactants[0].key.compoundUnits[1].key.equals('H') &&
+        reactants[1].key.equals('O')) {
+      typeSteps.add(
+          "Since this equation has two reactants, one of which has carbon and hydrogen, and the other of which is oxygen, it must be Hydrocarbon Combustion.");
+      return Type.combustion; // Hydrocarbon Combustion
+    } else if ((reactants[0].key.isElement() &&
+            reactants[1].key.isCompound()) ||
+        (reactants[0].key.isCompound() && reactants[1].key.isElement())) {
       typeSteps.add(
           "Since this equation has two reactants, one of which is an element and one of which is a compound, it must be a Single Replacement.");
       return Type.singleReplacement;
-    } else if (reactants[0].key.isCompound() &&
-        reactants[1].key.isElement()) {
-      if (reactants[0].key.compoundUnits[0].key.isElement()) {
-        if (reactants[0].key.compoundUnits[0].key.equals('C') &&
-            reactants[0].key.compoundUnits[1].key.equals('H') &&
-            reactants[1].key.equals('O')) {
-          typeSteps.add(
-              "Since this equation has two reactants, one of which has carbon and hydrogen, and the other of which is oxygen, it must be Hydrocarbon Combustion.");
-          return Type.combustion; // Hydrocarbon Combustion
-        }
-      }
     } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
         reactants[0].key.isBase() && reactants[1].key.isAcid()) {
       typeSteps.add(

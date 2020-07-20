@@ -102,6 +102,13 @@ void main() {
       e.balance();
       expect(e.toString(), equals('3Na(s) + GaF₃(aq) → Ga(s) + 3NaF(aq)'));
     });
+    test(
+        '.balance() works correctly for single replacement with different order',
+        () {
+      Equation e = Equation('GaF3(s) + Na(s)');
+      e.balance();
+      expect(e.toString(), equals('3Na(s) + GaF₃(aq) → Ga(s) + 3NaF(aq)'));
+    });
     test('.balance() works correctly for double replacement', () {
       Equation e = Equation('Na3P(aq) + CaCl2(aq)');
       e.balance();
