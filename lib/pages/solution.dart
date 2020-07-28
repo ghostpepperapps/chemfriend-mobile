@@ -81,6 +81,7 @@ class _SolutionState extends State<Solution> {
         Input(
           onPressed: _reloadSolution,
           scrollController: _scrollController,
+          placeholder: "",
         )
       ],
     ));

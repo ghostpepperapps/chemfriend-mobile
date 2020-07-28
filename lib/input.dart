@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class Input extends StatefulWidget {
-  Input({Key key, this.onPressed, this.scrollController}) : super(key: key);
+  Input({Key key, this.onPressed, this.scrollController, this.placeholder})
+      : super(key: key);
 
   /// This function is called every time the arrow button is pressed.
   final Function onPressed;
 
-  /// This is ths scroll controller for the page of the input.
+  /// This is the scroll controller for the page of the input.
   final ScrollController scrollController;
+
+  /// This String is the placeholder of the text input.
+  final String placeholder;
+
   @override
   _InputState createState() => _InputState();
 }
@@ -35,6 +40,9 @@ class _InputState extends State<Input> {
               onTap: _scrollToStart,
               style: TextStyle(
                 fontSize: 20.0,
+              ),
+              decoration: InputDecoration(
+                hintText: widget.placeholder,
               ),
             ),
           ),

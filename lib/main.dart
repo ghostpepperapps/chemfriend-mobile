@@ -66,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Input(
           onPressed: _pushSolution,
           scrollController: _scrollController,
+          placeholder: "E.g. C6H12O6(s) + O2(g)",
         )
       ]),
       drawer: Drawer(
