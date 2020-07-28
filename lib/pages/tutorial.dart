@@ -32,12 +32,12 @@ class _TutorialState extends State<Tutorial> {
                   ),
                   Text(
                     "• C6H12O6(s) + O2(g)",
-                    style: TextStyle(fontSize: 14.0),
+                    style: TextStyle(fontSize: 16.0),
                     textAlign: TextAlign.left,
                   ),
                   Text(
                     "• H2(g) + O2(g) => H2O(l)\n",
-                    style: TextStyle(fontSize: 14.0),
+                    style: TextStyle(fontSize: 16.0),
                     textAlign: TextAlign.left,
                   ),
                   Text(

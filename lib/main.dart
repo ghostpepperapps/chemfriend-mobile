@@ -73,17 +73,29 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.redAccent,
-              ),
-              child: Text(
-                'Chemfriend',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.red,
+                        Colors.orange,
+                        Colors.yellow,
+                        Colors.green,
+                      ]),
                 ),
-              ),
-            ),
+                child: Stack(children: <Widget>[
+                  Positioned(
+                      bottom: 12.0,
+                      left: 16.0,
+                      child: Text("Chemfriend",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w500))),
+                ])),
             ListTile(
               leading: Icon(Icons.info_outline),
               title: Text('About'),
