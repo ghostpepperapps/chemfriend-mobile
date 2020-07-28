@@ -26,10 +26,18 @@ class _AboutState extends State<About> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "Chemfriend is an app created by Saptarshi Bhattacherya for high school students studying chemistry. Currently, it is able to solve chemical equations taught in the Alberta Science 10 PreAP curriculum.",
+                    "Chemfriend is an app for high school students studying chemistry. Currently, it is able to solve chemical equations taught in the Alberta Science 10 PreAP curriculum.",
                     style: TextStyle(fontSize: 14.0),
                     textAlign: TextAlign.left,
                   ),
+                  SizedBox(height: 18),
+                  ListTile(
+                      leading: Icon(Icons.create),
+                      title:
+                          Text("Created by Saptarshi Bhattacherya in 2020")),
+                  ListTile(
+                      leading: Icon(Icons.email),
+                      title: Text("bhat.bab@gmail.com")),
                 ],
               ),
             ),
