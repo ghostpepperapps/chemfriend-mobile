@@ -20,10 +20,11 @@ class _TutorialState extends State<Tutorial> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Tutorial\n",
+                    "Tutorial",
                     style: TextStyle(fontSize: 18.0),
                     textAlign: TextAlign.left,
                   ),
+                  SizedBox(height: 8),
                   Text(
                     "Thank you for trying Chemfriend! In order to use the app, enter any chemical equation into the text field, with or without products, then press the red arrow. For example, these formats are both valid:\n",
                     style: TextStyle(fontSize: 14.0),

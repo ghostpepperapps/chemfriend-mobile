@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:chemfriend/chemistry/chemistry.dart';
 
-import 'input.dart';
+import '../input.dart';
 import 'explanation.dart';
 
 class Solution extends StatefulWidget {
   Solution({Key key, this.equation, this.solution, this.type})
       : super(key: key);
-  Equation equation;
-  String solution;
-  String type;
+  final Equation equation;
+  final String solution;
+  final String type;
   @override
   _SolutionState createState() => _SolutionState();
 }
@@ -17,6 +17,19 @@ class Solution extends StatefulWidget {
 class _SolutionState extends State<Solution> {
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
+
+  Equation equation;
+  String solution;
+  String type;
+
+  @override
+  void initState() {
+    super.initState();
+    equation = widget.equation;
+    solution = widget.solution;
+    type = widget.type;
+  }
+
   @override
   void dispose() {
     _textController.dispose();
@@ -42,7 +55,7 @@ class _SolutionState extends State<Solution> {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(12.0),
               child: FloatingActionButton(
                 heroTag: '_pushExplanation',
                 child: Icon(Icons.info),
@@ -56,7 +69,7 @@ class _SolutionState extends State<Solution> {
             ),
           ),
           Expanded(
-              flex: 8,
+              flex: 6,
               child: Padding(
                   padding: EdgeInsets.all(3.0),
                   child: Text(widget.solution,
@@ -78,9 +91,9 @@ class _SolutionState extends State<Solution> {
     e = Equation(text);
     e.balance();
     setState(() {
-      widget.equation = e;
-      widget.solution = e.toString();
-      widget.type = typeToString[e.type];
+      equation = e;
+      solution = e.toString();
+      type = typeToString[e.type];
     });
   }
 

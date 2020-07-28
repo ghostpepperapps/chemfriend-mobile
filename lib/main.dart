@@ -2,8 +2,9 @@ import 'package:chemfriend/chemistry/chemistry.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'tutorial.dart';
-import 'solution.dart';
+import 'pages/solution.dart';
+import 'pages/about.dart';
+import 'pages/tutorial.dart';
 import 'input.dart';
 
 void main() => runApp(MyApp());
@@ -37,7 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
     bool opened = prefs.getBool('opened');
     if (opened == null) {
       prefs.setBool('opened', true);
-      _pushTutorial();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Tutorial()),
+      );
     }
   }
 
@@ -83,20 +87,33 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: Icon(Icons.info_outline),
               title: Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => About()),
+                );
+              },
             ),
             ListTile(
               leading: Icon(Icons.school),
               title: Text('Tutorial'),
               onTap: () {
                 Navigator.pop(context);
-                _pushTutorial();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Tutorial()),
+                );
               },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _pushTutorial,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Tutorial()),
+        ),
         child: Icon(Icons.info_outline),
         backgroundColor: Colors.green,
       ),
@@ -114,13 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(
           builder: (context) =>
               Solution(equation: e, solution: solution, type: type)),
-    );
-  }
-
-  void _pushTutorial() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Tutorial()),
     );
   }
 }
