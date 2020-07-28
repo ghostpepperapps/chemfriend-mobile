@@ -1,6 +1,8 @@
 import 'package:chemfriend/chemistry/chemistry.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'tutorial.dart';
 import 'solution.dart';
 import 'input.dart';
 
@@ -10,11 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ChemFriend',
+      title: 'Chemfriend',
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'ChemFriend v0.0.0.8'),
+      home: MyHomePage(title: 'Chemfriend v0.0.0.8'),
     );
   }
 }
@@ -30,6 +32,21 @@ class _MyHomePageState extends State<MyHomePage> {
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
 
+  void startup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool opened = prefs.getBool('opened');
+    if (opened == null) {
+      prefs.setBool('opened', true);
+      _pushTutorial();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startup();
+  }
+
   @override
   void dispose() {
     _textController.dispose();
@@ -39,14 +56,51 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
-        body: ListView(controller: _scrollController, children: <Widget>[
-          SizedBox(height: 40),
-          Input(
-            onPressed: _pushSolution,
-            scrollController: _scrollController,
-          )
-        ]));
+      appBar: AppBar(title: Text(widget.title)),
+      body: ListView(controller: _scrollController, children: <Widget>[
+        SizedBox(height: 40),
+        Input(
+          onPressed: _pushSolution,
+          scrollController: _scrollController,
+        )
+      ]),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+              ),
+              child: Text(
+                'Chemfriend',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text('About'),
+            ),
+            ListTile(
+              leading: Icon(Icons.school),
+              title: Text('Tutorial'),
+              onTap: () {
+                Navigator.pop(context);
+                _pushTutorial();
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pushTutorial,
+        child: Icon(Icons.info_outline),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void _pushSolution(BuildContext context, String text) async {
@@ -60,6 +114,13 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(
           builder: (context) =>
               Solution(equation: e, solution: solution, type: type)),
+    );
+  }
+
+  void _pushTutorial() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Tutorial()),
     );
   }
 }
