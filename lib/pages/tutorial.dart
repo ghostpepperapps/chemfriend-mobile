@@ -26,7 +26,7 @@ class _TutorialState extends State<Tutorial> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "Thank you for trying Chemfriend! In order to use the app, enter any chemical equation into the text field, with or without products, then press the red arrow. For example, these formats are both valid:\n",
+                    "Enter any equation in the text field, with or without products. Examples:\n",
                     style: TextStyle(fontSize: 14.0),
                     textAlign: TextAlign.left,
                   ),
@@ -41,13 +41,13 @@ class _TutorialState extends State<Tutorial> {
                     textAlign: TextAlign.left,
                   ),
                   Text(
-                    "Be sure to use the buttons to help enter your equation (for example, instead of typing \"=>\" using the keyboard use the → button):",
+                    "Be sure to use the buttons to help enter your equation (for example, instead of typing \"=>\" use the → button):",
                     style: TextStyle(fontSize: 14.0),
                     textAlign: TextAlign.left,
                   ),
                   Image(image: AssetImage('assets/InputButtons.png')),
                   Text(
-                    "Finally, tap the info button that appears to the left of the equations in order to find out how the equation was solved:\n",
+                    "Finally, tap the info button that appears to the left of the equations to find out how the equation was solved:\n",
                     style: TextStyle(fontSize: 14.0),
                   ),
                   Image(image: AssetImage('assets/InfoButton.png')),
