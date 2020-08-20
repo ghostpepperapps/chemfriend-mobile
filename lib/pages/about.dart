@@ -37,7 +37,7 @@ class _AboutState extends State<About> {
                           Text("Created by Saptarshi Bhattacherya in 2020")),
                   ListTile(
                       leading: Icon(Icons.email),
-                      title: Text("bhat.bab@gmail.com")),
+                      title: Text("ghostpepperappswb@gmail.com")),
                 ],
               ),
             ),
