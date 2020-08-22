@@ -947,7 +947,7 @@ class Equation {
       } else if (reactants[0].key.compoundUnits[0].key.metal) {
         if (reactants[0].key.compoundUnits[1].key.equals('OH')) {
           typeSteps.add(
-              "Since this equation has one reactant which is a base, is must be Decomposition of a Base.");
+              "Since this equation has one reactant which is a base, it must be Decomposition of a Base.");
           return Type.decompBase;
         }
         if (!reactants[0]
@@ -987,7 +987,7 @@ class Equation {
             reactants[1].key.isCompound()) ||
         (reactants[0].key.isCompound() && reactants[1].key.isElement())) {
       typeSteps.add(
-          "Since this equation has two reactants, one of which is an element and one of which is a compound, it must be a Single Replacement.");
+          "Since this equation has two reactants, one of which is an element and one of which is a compound, it must be Single Replacement.");
       return Type.singleReplacement;
     } else if (reactants[0].key.isAcid() && reactants[1].key.isBase() ||
         reactants[0].key.isBase() && reactants[1].key.isAcid()) {
