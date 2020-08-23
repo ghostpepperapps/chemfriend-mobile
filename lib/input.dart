@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Input extends StatefulWidget {
-  Input({Key key, this.onPressed, this.scrollController, this.placeholder})
+  Input(
+      {Key key,
+      this.onPressed,
+      this.scrollController,
+      this.placeholder,
+      this.buttonSideLength})
       : super(key: key);
 
   /// This function is called every time the arrow button is pressed.
@@ -12,6 +17,9 @@ class Input extends StatefulWidget {
 
   /// This String is the placeholder of the text input.
   final String placeholder;
+
+  /// This is the side length of the red button.
+  final int buttonSideLength;
 
   @override
   _InputState createState() => _InputState();
@@ -69,8 +77,8 @@ class _InputState extends State<Input> {
           SizedBox(height: 25),
           Center(
               child: SizedBox(
-            width: 100,
-            height: 100,
+            width: widget.buttonSideLength.toDouble(),
+            height: widget.buttonSideLength.toDouble(),
             child: FloatingActionButton(
               heroTag: '_onPressed',
               child: Icon(Icons.forward),

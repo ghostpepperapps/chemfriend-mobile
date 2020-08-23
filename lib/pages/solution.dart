@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:chemfriend/chemistry/chemistry.dart';
 
 import '../input.dart';
+import '../custom_header.dart';
 import 'explanation.dart';
+import 'about.dart';
+import 'tutorial.dart';
 
 class Solution extends StatefulWidget {
   Solution({Key key, this.equation, this.solution, this.type})
@@ -39,52 +42,90 @@ class _SolutionState extends State<Solution> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      controller: _scrollController,
-      children: <Widget>[
-        SizedBox(height: 20),
-        Center(
-            child: Text(
-          'Type: ${widget.type}',
-          style: TextStyle(fontSize: 25.0, fontStyle: FontStyle.italic),
-          textAlign: TextAlign.center,
-        )),
-        SizedBox(height: 20),
-        Center(
-            child: Row(children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: FloatingActionButton(
-                heroTag: '_pushExplanation',
-                child: Icon(Icons.info),
-                mini: true,
-                backgroundColor: Colors.green,
-                onPressed: () {
-                  _pushExplanation(context);
-                  _textController.text = '';
-                },
+      appBar: AppBar(
+        title: Text(
+          'Chemfriend',
+          style: TextStyle(fontFamily: 'open_sans'),
+        ),
+        centerTitle: true,
+      ),
+      body: ListView(
+        controller: _scrollController,
+        children: <Widget>[
+          SizedBox(height: 20),
+          Center(
+              child: Text(
+            'Type: $type',
+            style: TextStyle(fontSize: 25.0, fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
+          )),
+          SizedBox(height: 20),
+          Center(
+              child: Row(children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: FloatingActionButton(
+                  heroTag: '_pushExplanation',
+                  child: Icon(Icons.info),
+                  mini: true,
+                  backgroundColor: Colors.green,
+                  onPressed: () {
+                    _pushExplanation(context);
+                    _textController.text = '';
+                  },
+                ),
               ),
             ),
+            Expanded(
+                flex: 6,
+                child: Padding(
+                    padding: EdgeInsets.all(3.0),
+                    child: Text(solution,
+                        style: TextStyle(fontSize: 20.0),
+                        textAlign: TextAlign.center))),
+          ])),
+          SizedBox(height: 20),
+          SizedBox(height: 20),
+          Input(
+            onPressed: _reloadSolution,
+            scrollController: _scrollController,
+            placeholder: "",
+            buttonSideLength: 88,
+          )
+        ],
+      ),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          customHeader(),
+          ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('About'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => About()),
+              );
+            },
           ),
-          Expanded(
-              flex: 6,
-              child: Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Text(widget.solution,
-                      style: TextStyle(fontSize: 20.0),
-                      textAlign: TextAlign.center))),
-        ])),
-        SizedBox(height: 20),
-        SizedBox(height: 20),
-        Input(
-          onPressed: _reloadSolution,
-          scrollController: _scrollController,
-          placeholder: "",
-        )
-      ],
-    ));
+          ListTile(
+            leading: Icon(Icons.school),
+            title: Text('Tutorial'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Tutorial()),
+              );
+            },
+          ),
+        ],
+      )),
+    );
   }
 
   void _reloadSolution(BuildContext context, String text) async {
@@ -102,7 +143,7 @@ class _SolutionState extends State<Solution> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Explanation(equation: widget.equation)),
+          builder: (context) => Explanation(equation: equation)),
     );
   }
 }

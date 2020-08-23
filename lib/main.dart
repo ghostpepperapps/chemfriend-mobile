@@ -6,6 +6,7 @@ import 'pages/solution.dart';
 import 'pages/about.dart';
 import 'pages/tutorial.dart';
 import 'input.dart';
+import 'custom_header.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'Chemfriend v0.0.0.8'),
+      home: MyHomePage(title: 'Chemfriend'),
     );
   }
 }
@@ -60,68 +61,48 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: true,
+      ),
       body: ListView(controller: _scrollController, children: <Widget>[
         SizedBox(height: 40),
         Input(
           onPressed: _pushSolution,
           scrollController: _scrollController,
           placeholder: "E.g. C6H12O6(s) + O2(g)",
+          buttonSideLength: 115,
         )
       ]),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-                margin: EdgeInsets.zero,
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.red,
-                        Colors.orange,
-                        Colors.yellow,
-                        Colors.green,
-                      ]),
-                ),
-                child: Stack(children: <Widget>[
-                  Positioned(
-                      bottom: 12.0,
-                      left: 16.0,
-                      child: Text("Chemfriend",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500))),
-                ])),
-            ListTile(
-              leading: Icon(Icons.info_outline),
-              title: Text('About'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => About()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.school),
-              title: Text('Tutorial'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Tutorial()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          customHeader(),
+          ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('About'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => About()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.school),
+            title: Text('Tutorial'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Tutorial()),
+              );
+            },
+          ),
+        ],
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
           context,

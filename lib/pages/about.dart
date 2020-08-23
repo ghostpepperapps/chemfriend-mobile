@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'tutorial.dart';
+import '../main.dart';
+import '../custom_header.dart';
+
 class About extends StatefulWidget {
   About({Key key}) : super(key: key);
   @override
@@ -12,6 +16,10 @@ class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Text('Chemfriend'),
+          centerTitle: true,
+        ),
         body: ListView(
           controller: _scrollController,
           children: <Widget>[
@@ -38,11 +46,44 @@ class _AboutState extends State<About> {
                   ListTile(
                       leading: Icon(Icons.email),
                       title: Text("ghostpepperappswb@gmail.com")),
+                  ListTile(
+                      leading: Icon(Icons.view_carousel),
+                      title: Text("v1.0.0"))
                 ],
               ),
             ),
           ],
         ),
+        drawer: Drawer(
+            child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            customHeader(),
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Solver'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyHomePage(title: 'Chemfriend')),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.school),
+              title: Text('Tutorial'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Tutorial()),
+                );
+              },
+            ),
+          ],
+        )),
         floatingActionButton: FloatingActionButton(
             onPressed: () => Navigator.pop(context),
             child: Icon(Icons.cancel)));

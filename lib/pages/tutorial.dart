@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'about.dart';
+import '../main.dart';
+import '../custom_header.dart';
+
 class Tutorial extends StatefulWidget {
   Tutorial({Key key}) : super(key: key);
   @override
@@ -12,6 +16,10 @@ class _TutorialState extends State<Tutorial> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Text('Chemfriend'),
+          centerTitle: true,
+        ),
         body: ListView(
           controller: _scrollController,
           children: <Widget>[
@@ -56,6 +64,36 @@ class _TutorialState extends State<Tutorial> {
             ),
           ],
         ),
+        drawer: Drawer(
+            child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            customHeader(),
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Solver'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyHomePage(title: 'Chemfriend')),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => About()),
+                );
+              },
+            ),
+          ],
+        )),
         floatingActionButton: FloatingActionButton(
             onPressed: () => Navigator.pop(context),
             child: Icon(Icons.cancel)));
