@@ -7,5 +7,4 @@ part 'src/compound.dart';
 part 'src/compound_unit.dart';
 part 'src/element.dart';
 part 'src/equation.dart';
-part 'src/equation_unit.dart';
 part 'src/helpers.dart';

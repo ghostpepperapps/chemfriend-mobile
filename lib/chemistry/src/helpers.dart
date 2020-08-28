@@ -1,5 +1,15 @@
 part of chemistry;
 
+/// Maps MatterPhases to their Phase variants.
+///
+/// MatterPhases are used in ChemicalElements and Phases are used in Elements
+/// and Compounds.
+Map<MatterPhase, Phase> mPhaseToPhase = {
+  MatterPhase.solid: Phase.solid,
+  MatterPhase.liquid: Phase.liquid,
+  MatterPhase.gas: Phase.gas,
+};
+
 /// Maps characters to their superscript and subscript variants.
 Map<String, List<String>> changeScript = {
   '0': ['\u2070', '\u2080'],
@@ -21,19 +31,12 @@ Map<String, List<String>> changeScript = {
   ')': ['\u207E', '\u208E'],
 };
 
-/// Maps MatterPhases (for Elements) to their String variants.
-Map<MatterPhase, String> ePhaseToString = {
-  MatterPhase.solid: '\u208D\u209b\u208E',
-  MatterPhase.liquid: '\u208D\u2097\u208E',
-  MatterPhase.gas: '\u208D\u1d67\u208E',
-};
-
-/// Maps Phases (for Compounds) to their String variants.
-Map<Phase, String> cPhaseToString = {
-  Phase.solid: '\u208D\u209b\u208E',
-  Phase.liquid: '\u208D\u2097\u208E',
-  Phase.gas: '\u208D\u1d67\u208E',
-  Phase.aqueous: '\u208D\u2090\u208E'
+/// Maps Phases to their String variants.
+Map<Phase, String> phaseToString = {
+  Phase.solid: '(s)',
+  Phase.liquid: '(l)',
+  Phase.gas: '(g)',
+  Phase.aqueous: '(aq)'
 };
 
 /// Maps Types (for Equations) to their String variants.
@@ -48,8 +51,53 @@ Map<Type, String> typeToString = {
   Type.decompSalt: 'Decomposition of a Salt',
   Type.combustion: 'Hydrocarbon Combustion',
   Type.singleReplacement: 'Single Replacement',
-  Type.doubleReplacement: 'Double Replacement'
+  Type.doubleReplacement: 'Double Replacement',
+  Type.neutralization: 'Double Replacement (Neutralization)'
 };
+
+/// Maps ions to ions they combine with to become solid in water.
+Map<List<String>, List<String>> ionToSolid = {
+  [
+    'H',
+    'Li',
+    'Na',
+    'K',
+    'Rb',
+    'Cs',
+    'Fr',
+    'NH4',
+    'NO3',
+    'ClO3',
+    'ClO4',
+    'CH3COO'
+  ]: [],
+  ['F']: ['Li', 'Mg', 'Ca', 'Sr', 'Ba', 'Fe2+', 'Hg22+', 'Pb2+'],
+  ['Cl', 'Br', 'I']: ['Cu+', 'Ag', 'Hg22+', 'Pb2+', 'Tl+'],
+  ['SO4']: ['Ca', 'Sr', 'Ba', 'Ag', 'Hg22+', 'Pb2+', 'Ra']
+};
+
+/// Maps ions to ions they combine with to become aqueous in water.
+Map<List<String>, List<String>> ionToAqueous = {
+  ['CO3', 'PO4', 'SO3']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['IO3', 'OOCCOO']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4'],
+  ['OH']: ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr', 'NH4']
+};
+
+/// List of formulas of compounds that are solid in water.
+List<String> solidCompounds = [
+  'RbClO4',
+  'CsClO4',
+  'AgCH3COO',
+  'Hg2(CH3COO)2'
+];
+
+/// List of formulas of compounds that are aqueous in water.
+List<String> aqueousCompounds = ['Co(IO3)2', 'Fe2(OOCCOO)3'];
+
+/// Returns `true` if [c] is `Hg₂2+`.
+bool isHg22plus(MapEntry<CompoundUnit, int> c) {
+  return c.key.equals('Hg') && c.value == 2 && c.key.charge == 2;
+}
 
 /// Returns `true` if [s] contains a number.
 bool isNumeric(String s) => double.tryParse(s) != null;

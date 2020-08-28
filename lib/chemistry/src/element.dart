@@ -1,20 +1,62 @@
 part of chemistry;
 
 /// A class representing a chemical element.
-class Element extends ChemicalElement with CompoundUnit, EquationUnit {
-  MatterPhase state;
+class Element extends ChemicalElement with CompoundUnit {
+  /// The state of this element.
+  Phase state;
+
+  /// A Boolean value that represents whether or not this element is a metal.
   bool metal;
+
+  /// The charge of this element.
   int charge;
+
+  /// The number of atoms this element needs to have in order to be stable.
   int count;
 
-  /// Constructs an element from the properties of [other].
-  Element.clone(ChemicalElement other) {
-    this.name = other.name;
-    this.formula = other.symbol;
-    this.category = other.category;
-    this.state = other.stpPhase;
-    this.number = other.number;
-    this.shells = other.shells;
+  /// The number of this element in the periodic table.
+  int number;
+
+  /// Constructs an element with the symbol [symbol] and charge [_charge].
+  ///
+  /// ```dart
+  /// Element e = new Element('Ca');
+  /// Element f = new Element('Fe', 3);
+  /// ```
+  Element(String symbol, [int _charge]) {
+    for (ChemicalElement e in periodicTable) {
+      if (e.symbol.compareTo(symbol) == 0) {
+        this.name = e.name;
+        this.formula = e.symbol;
+        this.category = e.category;
+        this.state = mPhaseToPhase[e.stpPhase];
+        this.number = e.number;
+        this.shells = e.shells;
+        break;
+      }
+    }
+    if (this.category.contains('metal'))
+      this.metal = !(this.category.contains('nonmetal'));
+    else
+      this.metal = false;
+    if (this.category.contains('diatomic'))
+      this.count = 2;
+    else if (this.formula.compareTo('P') == 0)
+      this.count = 4;
+    else if (this.formula.compareTo('S') == 0)
+      this.count = 8;
+    else
+      this.count = 1;
+    if (this.equals('H'))
+      this.charge = 1;
+    else if (_charge == null) {
+      int valence = this.shells[this.shells.length - 1];
+      if (valence < 5)
+        this.charge = valence;
+      else
+        this.charge = valence - 8;
+    } else
+      this.charge = _charge;
   }
 
   /// Returns the String representation of this element.
@@ -22,14 +64,26 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
   String toString() {
     String result = this.formula;
     if (this.count != 1) result += changeScript[this.count.toString()][1];
-    result += ePhaseToString[this.state];
+    result += phaseToString[this.state];
     return result;
   }
 
   /// Returns `true` if this element's formula is [symbol].
+  ///
+  /// ```dart
+  /// Element e = new Element('H');
+  /// print(e.equals('H')); // true
+  /// print(e.equals('Ca')); // false
+  /// ```
   @override
   bool equals(String symbol) {
-    return this.formula.compareTo(symbol) == 0;
+    String ionFormula = this.formula;
+    if (this.charge != null &&
+        (symbol.contains('+') || symbol.contains('-'))) {
+      if (this.charge.abs() > 1) ionFormula += this.charge.abs().toString();
+      if (this.charge != 0) ionFormula += (this.charge > 0) ? '+' : '-';
+    }
+    return ionFormula.compareTo(symbol) == 0;
   }
 
   /// Returns the name of this element.
@@ -37,41 +91,12 @@ class Element extends ChemicalElement with CompoundUnit, EquationUnit {
     return this.name;
   }
 
-  /// Returns an element with the symbol [symbol] and charge [_charge].
-  static Element from(String symbol, [int _charge]) {
-    Element result;
-    for (ChemicalElement e in periodicTable) {
-      if (e.symbol.compareTo(symbol) == 0) {
-        result = Element.clone(e);
-        break;
-      }
-    }
-    if (result.category.contains('metal'))
-      result.metal = !(result.category.contains('nonmetal'));
-    else
-      result.metal = false;
-    if (result.category.contains('diatomic'))
-      result.count = 2;
-    else if (result.formula.compareTo('P') == 0)
-      result.count = 4;
-    else if (result.formula.compareTo('S') == 0)
-      result.count = 8;
-    else
-      result.count = 1;
-    if (result.equals('H'))
-      result.charge = 1;
-    else if (_charge == null) {
-      int valence = result.shells[result.shells.length - 1];
-      if (valence < 5)
-        result.charge = valence;
-      else
-        result.charge = valence - 8;
-    } else
-      result.charge = _charge;
-    return result;
-  }
-
   /// Returns `true` if an element with the symbol [symbol] exists.
+  ///
+  /// ```dart
+  /// print(Element.exists('Na')); // true
+  /// print(Element.exists('Rr')); // false
+  /// ```
   static bool exists(String symbol) {
     for (ChemicalElement e in periodicTable) {
       if (e.symbol.compareTo(symbol) == 0) return true;

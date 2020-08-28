@@ -10,8 +10,10 @@ abstract class CompoundUnit {
   bool metal;
   int count;
   int charge;
+  bool ionic;
   List<int> shells;
   List<MapEntry<CompoundUnit, int>> compoundUnits;
+  Phase state;
 
   /// Returns `true` if this unit has the formula or symbol [s].
   bool equals(String s);
@@ -26,15 +28,44 @@ abstract class CompoundUnit {
     return this.runtimeType == Compound;
   }
 
+  /// Returns the element with the same properties as this unit.
+  Element toElement() {
+    return new Element(this.formula);
+  }
+
+  /// Returns the compound with the same properties as this unit.
+  Compound toCompound() {
+    return new Compound.fromUnits(this.compoundUnits, this.state);
+  }
+
+  /// Returns `true` if this unit is an acid.
+  ///
+  /// Checks if the first element is `H` and the phase is `Phase.aqueous`.
+  bool isAcid() {
+    return this.isCompound() && this.isAcid();
+  }
+
+  /// Returns `true` is this unit is a base.
+  ///
+  /// Checks is this is ammonia (`NH3`), or is ionic and contains hydroxide
+  /// (`OH`) or carbonate (`CO3`).
+  bool isBase() {
+    return this.isCompound() && this.isBase();
+  }
+
   /// Returns the charge of this unit.
+  ///
+  /// ```dart
+  /// Compound c = new Compound('SO4');
+  /// print(c.getCharge()); // -2
+  ///
+  /// Element e = Element.from('Na');
+  /// print(e.getCharge()); // 1
+  /// ```
   int getCharge() {
-    if (this.isCompound()) {
-      for (Compound c in polyatomicIons) {
-        if (this.equals(c.formula)) return c.charge;
-      }
-    }
     if (this.equals('H')) return 1;
-    if (this.isElement() && this.category.compareTo('transition metal') != 0) {
+    if (this.isElement() &&
+        this.category.compareTo('transition metal') != 0) {
       int valence = this.shells[this.shells.length - 1];
       if (valence < 5) return valence;
       return valence - 8;

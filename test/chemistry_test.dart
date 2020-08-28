@@ -4,19 +4,19 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Element', () {
     test('.getName() returns the name', () {
-      Element e = Element.from('O');
+      Element e = new Element('O');
       expect(e.getName(), equals('Oxygen'));
     });
     test('.toString() returns the subscripted name', () {
-      Element e = Element.from('S');
-      expect(e.toString(), equals('S\u2088\u208D\u209b\u208E'));
+      Element e = new Element('S');
+      expect(e.toString(), equals('S₈(s)'));
     });
     test('.equals() returns equality to another element', () {
-      Element e = Element.from('Mn');
+      Element e = new Element('Mn');
       expect(e.equals('Mn'), equals(true));
     });
     test('.getCharge() returns the charge', () {
-      Element e = Element.from('Al');
+      Element e = new Element('Al');
       expect(e.getCharge(), equals(e.charge));
     });
   });
@@ -27,7 +27,7 @@ void main() {
     });
     test('.toString() returns the subscripted name', () {
       Compound c = Compound('C6H12O6(s)');
-      expect(c.toString(), equals('C₆H₁₂O₆₍ₛ₎'));
+      expect(c.toString(), equals('C₆H₁₂O₆(s)'));
     });
     test('.equals() returns equality to another compound', () {
       Compound c = Compound('Al2O3(s)');
@@ -41,27 +41,108 @@ void main() {
   group('Equation', () {
     test('constructor  works regardless of indentation', () {
       Equation e = Equation('H2(g)  +O2(g)   => H2O(l)\n ');
-      expect(e.toString(), equals('H₂₍ᵧ₎ + O₂₍ᵧ₎ → H₂O₍ₗ₎'));
+      expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O(l)'));
     });
-    test('.solve() works correctly for simple composition', () {
+    test('constructor gives correct states for multivalent elements', () {
+      Equation e = Equation('FeF3 + CaCl2(aq)');
+      Equation f = Equation('FeF2 + CaCl2(aq)');
+      e.balance();
+      f.balance();
+      List<Phase> states = [
+        e.reactants[0].key.state,
+        f.reactants[0].key.state
+      ];
+      expect(states, equals([Phase.aqueous, Phase.solid]));
+    });
+    test('.balance() works correctly for simple composition', () {
       Equation e = Equation('H2(g) + O2(g)');
       e.balance();
-      expect(e.toString(), equals('H₂₍ᵧ₎ + O₂₍ᵧ₎ → H₂O₂'));
+      expect(e.toString(), equals('H₂(g) + O₂(g) → H₂O₂'));
     });
-    test('.solve() works correctly for composition of an acid', () {
+    test('.balance() works correctly for composition of an acid', () {
       Equation e = Equation('H2O(l) + CO2(g)');
       e.balance();
-      expect(e.toString(), equals('H₂O₍ₗ₎ + CO₂₍ᵧ₎ → H₂CO₃'));
+      expect(e.toString(), equals('H₂O(l) + CO₂(g) → H₂CO₃(aq)'));
     });
-    test('.solve() works correctly for combustion', () {
+    test('.balance() works correctly for composition of a base', () {
+      Equation e = Equation('H2O(l) + Na2O(aq)');
+      e.balance();
+      expect(e.toString(), equals('H₂O(l) + Na₂O(s) → 2NaOH(aq)'));
+    });
+    test('.balance() works correctly for simple decomposition', () {
+      Equation e = Equation('H2O2(l)');
+      e.balance();
+      expect(e.toString(), equals('H₂O₂(l) → H₂(g) + O₂(g)'));
+    });
+    test('.balance() works correctly for decomposition of an acid', () {
+      Equation e = Equation('H2CO3(aq)');
+      e.balance();
+      expect(e.toString(), equals('H₂CO₃(aq) → H₂O(l) + CO₂'));
+    });
+    test('.balance() works correctly for decomposition of a base', () {
+      Equation e = Equation('NaOH(aq)');
+      e.balance();
+      expect(e.toString(), equals('2NaOH(aq) → H₂O(l) + Na₂O(s)'));
+    });
+    test('.balance() works correctly for combustion', () {
       Equation e = Equation('C6H12O6(s) + O2(g)');
       e.balance();
-      expect(e.toString(), equals('C₆H₁₂O₆₍ₛ₎ + 6O₂₍ᵧ₎ → 6H₂O₍ᵧ₎ + 6CO₂₍ᵧ₎'));
+      expect(
+          e.toString(), equals('C₆H₁₂O₆(s) + 6O₂(g) → 6H₂O(g) + 6CO₂(g)'));
     });
-    /* test('.solve() works correctly for double replacement', () {
-      Equation e = Equation('AlF3(aq) + CaCl2(aq)');
+    test('.balance() works correctly for single replacement of nonmetal',
+        () {
+      Equation e = Equation('S8(s) + GaF3(s)');
       e.balance();
-      expect(e.toString(), equals('2AlF₃₍ₐ₎ + 3CaCl₂₍ₐ₎ → 2AlCl₃ + 3CaF₂'));
-    }); */
+      expect(
+          e.toString(), equals('3S₈(s) + 16GaF₃(aq) → 24F₂(g) + 8Ga₂S₃(s)'));
+    });
+    test('.balance() works correctly for single replacement of metal', () {
+      Equation e = Equation('Na(s) + GaF3(s)');
+      e.balance();
+      expect(e.toString(), equals('3Na(s) + GaF₃(aq) → Ga(s) + 3NaF(aq)'));
+    });
+    test(
+        '.balance() works correctly for single replacement with different order',
+        () {
+      Equation e = Equation('GaF3(s) + Na(s)');
+      e.balance();
+      expect(e.toString(), equals('3Na(s) + GaF₃(aq) → Ga(s) + 3NaF(aq)'));
+    });
+    test('.balance() works correctly for double replacement', () {
+      Equation e = Equation('Na3P(aq) + CaCl2(aq)');
+      e.balance();
+      expect(e.toString(),
+          equals('2Na₃P(aq) + 3CaCl₂(aq) → 6NaCl(aq) + Ca₃P₂(s)'));
+    });
+    test(
+        '.balance() works correctly for double replacement of polyatomic ions',
+        () {
+      Equation e = Equation('NH4NO3(aq) + CaSO3(aq)');
+      e.balance();
+      expect(e.toString(),
+          equals('2NH₄NO₃(aq) + CaSO₃(s) → (NH₄)₂SO₃(aq) + Ca(NO₃)₂(aq)'));
+    });
+    test(
+        '.balance() works correctly for double replacement with coinciding charges',
+        () {
+      Equation e = Equation('Na2O(aq) + CaF2(s)');
+      e.balance();
+      expect(e.toString(), equals('Na₂O(aq) + CaF₂(s) → 2NaF(aq) + CaO(s)'));
+    });
+    test('.balance() works correctly for neutralization', () {
+      Equation e = Equation('H2CO3(aq) + Al(OH)3(aq)');
+      e.balance();
+      expect(e.toString(),
+          equals('3H₂CO₃(aq) + 2Al(OH)₃(s) → 6H₂O(l) + Al₂(CO₃)₃(s)'));
+    });
+    test('.balance() works correctly for gas formation', () {
+      Equation e = Equation('(NH4)2S(aq) + Al(OH)3(aq)');
+      e.balance();
+      expect(
+          e.toString(),
+          equals(
+              '3(NH₄)₂S(aq) + 2Al(OH)₃(s) → 6H₂O(l) + 6NH₃(g) + Al₂S₃(s)'));
+    });
   });
 }
