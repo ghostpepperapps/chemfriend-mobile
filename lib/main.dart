@@ -1,6 +1,7 @@
 import 'package:chemfriend/chemistry/chemistry.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'pages/solution.dart';
 import 'pages/about.dart';
@@ -116,15 +117,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _pushSolution(BuildContext context, String text) async {
     Equation e;
-    e = Equation(text);
-    e.balance();
-    String solution = e.toString();
-    String type = typeToString[e.type];
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              Solution(equation: e, solution: solution, type: type)),
-    );
+    try {
+      e = Equation(text);
+      e.balance();
+      String solution = e.toString();
+      String type = typeToString[e.type];
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Solution(equation: e, solution: solution, type: type)),
+      );
+    } catch (err) {
+      Fluttertoast.showToast(
+          msg: "Sorry, I can't solve that!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.teal[900],
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 }
