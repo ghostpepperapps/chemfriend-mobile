@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:chemfriend/chemistry/chemistry.dart';
 
 class Input extends StatefulWidget {
   Input(
@@ -84,8 +86,22 @@ class _InputState extends State<Input> {
               heroTag: '_onPressed',
               child: Icon(Icons.forward),
               onPressed: () {
-                widget.onPressed(context, _textController.text);
-                _textController.text = '';
+                try {
+                  Equation e = new Equation(_textController.text);
+                  e.balance();
+                  widget.onPressed(context, e);
+                  _textController.text = '';
+                  FocusScope.of(context).unfocus();
+                } catch (err) {
+                  Fluttertoast.showToast(
+                      msg: "Sorry, I can't solve that!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.teal[900],
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
               },
             ),
           ))

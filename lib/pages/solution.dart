@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:chemfriend/chemistry/chemistry.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../input.dart';
 import '../custom_header.dart';
@@ -129,26 +128,12 @@ class _SolutionState extends State<Solution> {
     );
   }
 
-  void _reloadSolution(BuildContext context, String text) async {
-    Equation e;
-    try {
-      e = Equation(text);
-      e.balance();
-      setState(() {
-        equation = e;
-        solution = e.toString();
-        type = typeToString[e.type];
-      });
-    } catch (err) {
-      Fluttertoast.showToast(
-          msg: "Sorry, I can't solve that!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.teal[900],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
+  void _reloadSolution(BuildContext context, Equation e) async {
+    setState(() {
+      equation = e;
+      solution = e.toString();
+      type = typeToString[e.type];
+    });
   }
 
   void _pushExplanation(BuildContext context) {
