@@ -52,6 +52,7 @@ class _InputState extends State<Input> {
               decoration: InputDecoration(
                 hintText: widget.placeholder,
               ),
+              textCapitalization: TextCapitalization.characters,
             ),
           ),
           SizedBox(height: 25),
